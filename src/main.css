@@ -1,0 +1,17 @@
+* {
+	font-family: Inter;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 14px;
+}
+
+body {
+	margin: 0;
+}
+
+#root {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
