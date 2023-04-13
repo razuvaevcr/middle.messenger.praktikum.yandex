@@ -1,11 +1,12 @@
 import ChatList from '../../components/chatsList/ChatsList';
 import Chat from '../../components/chat/Chat';
+import EmptyChat from '../../components/chat/EmptyChat';
 
 import './homePage.scss'
 
 
 const HomePage = {
-	render: () => {
+	render: (path) => {
 		return `
 		<section class="home">
 			<div class="left">
@@ -17,7 +18,7 @@ const HomePage = {
 			</div>
 
 			<div class="right">
-				${Chat}
+				${path === "/home/chat" ? Chat : EmptyChat}
 			</div>
 		</section>`;
 	}

@@ -1,5 +1,4 @@
 import Handlebars from 'handlebars';
-//TODO: доверстать менюшки и поп-аппы
 
 const source = `<div class="user-bar">
 					<div class="user-bar__user">
@@ -13,9 +12,7 @@ const source = `<div class="user-bar">
 					</div>
 				</div>
 				<div class="message-history">
-					<div class="message-history__message message-friend">{{messageFriend}}</div>
-					<div class="message-history__message message-user">{{messageUser.first}}</div>
-					<div class="message-history__message message-user">{{messageUser.second}}</div>
+					<div class="message-history__empty">Выберите чат чтобы отправить сообщение</div>
 				</div>
 				<div class="message-bar">
 					<div class="message-bar__add-btn"></div>

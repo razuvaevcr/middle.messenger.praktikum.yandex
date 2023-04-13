@@ -1,8 +1,10 @@
 import Handlebars from 'handlebars';
 
+import './errorPage.scss'
+
 const source = `<div class="error__title">{{errorNumber}}</div>
 				<div class="error__subtitle">{{subtitle}}</div>
-				<button onclick="document.location='/#/home'" class="error__btn">{{button}}</button>`;
+				<a href="/#/home" class="error__link">{{button}}</a>`;
 
 			
 let template = Handlebars.compile(source);

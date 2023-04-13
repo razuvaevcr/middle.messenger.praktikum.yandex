@@ -9,6 +9,7 @@ const routes = [
 	{ path: '/login', component: EnterPage, },
 	{ path: '/signin', component: EnterPage, },
 	{ path: '/home', component: HomePage, },
+	{ path: '/home/chat', component: HomePage, },
 	{ path: '/error500', component: ErrorPage, },
 	{ path: '/error404', component: ErrorPage, },
 	{ path: '/profile', component: ProfilePage, },
