@@ -5,5 +5,5 @@
 .parcel-cache
 
 # production
-/build
-/dist
+# /build
+# /dist
