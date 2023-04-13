@@ -4,6 +4,6 @@
 # parcel
 .parcel-cache
 
-# production
-/build
-/dist
+# # production
+# /build
+# /dist
