@@ -1,0 +1,15 @@
+#IDE
+.vscode
+
+#git
+.github
+
+# dependencies
+/node_modules
+
+# parcel
+.parcel-cache
+
+# # production
+# /build
+# /dist

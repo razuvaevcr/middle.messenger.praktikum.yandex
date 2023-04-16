@@ -1,0 +1,31 @@
+@import '../../style/variables';
+
+.error {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	&__title {
+		min-width: 80px;
+		min-height: 40px;
+		font-weight: 500;
+		font-size: 45px;
+		line-height: 45px;
+		text-align: center;
+		color: $text;
+	}
+	&__subtitle {
+		min-width: 180px;
+		min-height: 20px;
+		font-weight: 500;
+		font-size: 25px;
+		line-height: 25px;
+		text-align: center;
+		color: $text;
+	}
+	&__link {
+		margin-top: 60px;
+		font-size: 15px;
+		line-height: 15px;
+	}
+}

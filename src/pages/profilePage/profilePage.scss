@@ -1,0 +1,72 @@
+@import '../../style/variables';
+
+.profile {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	.back-btn {
+		position: absolute;
+		width: 2%;
+		height: 70%;
+		left: 46px;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	.user {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		min-height: 150px;
+		margin-bottom: 30px;
+		&__avatar {
+			width: 130px;
+			height: 130px;
+			background: $main-shadow;
+			border-radius: 50%;
+			margin-bottom: 30px;
+		}
+		&__name {
+			width: 40px;
+			height: 16px;
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 16px;
+			color: $text;
+		}
+	}
+	.info {
+		padding: 20px 0;
+		min-width: 550px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-between;
+		&__value {
+			text-align: right;
+			color: $text-shadow;
+			border: none;
+		}
+	}
+	.actions {
+		padding: 30px 0;
+		height: 80px;
+		width: 550px;
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		justify-content: space-between;
+		&__btn {
+			text-align: left;
+			&_red {
+				color: $validate;
+			}
+			&-save {
+				margin-top: 50px;
+			}
+		}
+	}
+}
