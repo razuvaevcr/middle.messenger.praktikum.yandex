@@ -1,6 +1,6 @@
 import ChatList from '../../components/chatsList/ChatsList';
 import Chat from '../../components/chat/Chat';
-import EmptyChat from '../../components/chat/EmptyChat';
+import EmptyChat from '../../layouts/home/EmptyChatLayout';
 
 import './homePage.scss'
 
@@ -10,9 +10,9 @@ const HomePage = {
 		return `
 		<section class="home">
 			<div class="left">
-				<button onclick="document.location='/#/profile'" class="profile-btn">Профиль ></button>
+				<a href="/#/profile" class="profile-btn btn_flat">Профиль</a>
 				<div class="search">
-					<input placeholder="Поиск" type="text">
+					<input name="search" placeholder="Поиск" type="text">
 				</div>
 				${ChatList}
 			</div>

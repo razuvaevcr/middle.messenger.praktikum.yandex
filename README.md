@@ -7,34 +7,33 @@
 	|
 	|--- components
 	|		|
-	|		|--- enters
-	|		|		|--- logIn
-	|		|  		|
-	|		|	  	|--- signIn
-	|		|
-	|		|
 	|		|--- chat
 	|		|
 	|		|--- chatList
 	|		|
-	|		|--- profale
+	|		|--- errors
 	|		|
-	|		|--- change profale data
+	|		|--- logIn
 	|		|
-	|		|--- change profale password
+	|		|--- navigation
+	|		|
+	|		|--- change profile data
+	|		|
+	|		|--- profile info
+	|		|
+	|		|--- change profile password
+	|		|
+	|		|--- signIn
+	|
+	|
+	|--- layouts
+	|		|
+	|		|--- home
+	|		|	
+	|		|--- profile
 	|
 	|
 	|--- modules
-	|		|
-	|		|--- button
-	|		|
-	|		|--- chat (user/friend)
-	|		|
-	|		|--- message
-	|		|
-	|		|--- submenu
-	|		|
-	|		|--- pop-up
 	|
 	|
 	|--- pages
@@ -48,9 +47,7 @@
 	|		|--- error
 	|
 	|
+	|--- style
+	|
+	|
 	|--- utils
-			|
-			|--- router
-	
-	
-	

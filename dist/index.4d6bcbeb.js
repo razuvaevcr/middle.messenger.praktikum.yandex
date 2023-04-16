@@ -615,9 +615,9 @@ const routes = [
 },{"./pages/enterPage/EnterPage":"6l6zJ","./pages/errorPage/ErrorPage":"77TWF","./pages/homePage/HomePage":"iL2O4","./pages/profilePage/ProfilePage":"lpbML","./utils/router":"1bNbF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6l6zJ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _logIn = require("../../components/enters/logIn");
+var _logIn = require("../../components/logIn/LogIn");
 var _logInDefault = parcelHelpers.interopDefault(_logIn);
-var _signIn = require("../../components/enters/signIn");
+var _signIn = require("../../components/signIn/SignIn");
 var _signInDefault = parcelHelpers.interopDefault(_signIn);
 var _navigation = require("../../components/navigation/navigation");
 var _navigationDefault = parcelHelpers.interopDefault(_navigation);
@@ -625,7 +625,7 @@ var _enterPageScss = require("./enterPage.scss");
 const EnterPage = {
     render: (path)=>{
         return `
-		${0, _navigationDefault.default}
+		${path == "/signin" ? "" : (0, _navigationDefault.default)}
 		<section class="enter">
 			${path == "/signin" ? (0, _signInDefault.default) : (0, _logInDefault.default)}
 		</section>
@@ -634,38 +634,61 @@ const EnterPage = {
 };
 exports.default = EnterPage;
 
-},{"../../components/enters/logIn":"4MEvh","../../components/enters/signIn":"fMO4j","../../components/navigation/navigation":"bT9hR","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4MEvh":[function(require,module,exports) {
+},{"../../components/navigation/navigation":"bT9hR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./enterPage.scss":"7j52r","../../components/logIn/LogIn":"7TNE1","../../components/signIn/SignIn":"dIn3p"}],"bT9hR":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<form onSubmit="document.location='/#/home'" class="enter__form">
-					<div class="enter__title">{{title}}</div>
-					<div class="enter__input">
-					{{#each inputs}}
-						<label for="{{@key}}" class="enter__input__label">{{this}}</label>
-						<input name="{{@key}}" type="text" class="enter__input__value">
-					{{/each}}
-					</div>
-					<div class="enter__btns">
-						<button type="submit" class="enter__btns__autorisation">{{buttons.logIn}}</button>
-						<a href="#/signin" class="enter__btns__link">{{buttons.noAccount}}</a>
-					</div>
-				</form>`;
+const source = `<nav class="nav">
+					<ul class="nav__list">
+						{{#each links}}
+						<li class="nav__list__item"><a class="btn" href="{{value}}">{{label}}</a></li>
+						{{/each}}
+					</ul>
+				</nav>`;
 let template = (0, _handlebarsDefault.default).compile(source);
-let context = {
-    title: "Вход",
-    inputs: {
-        logIn: "Логин",
-        pass: "Пароль"
-    },
-    buttons: {
-        logIn: "Авторизоваться",
-        noAccount: "Нет аккаунта"
+const listItems = {
+    links: {
+        enter: {
+            label: "Вход",
+            value: "/#/login"
+        },
+        registration: {
+            label: "Регистрация",
+            value: "/#/signin"
+        },
+        home: {
+            label: "Домашняя",
+            value: "/#/home"
+        },
+        chat: {
+            label: "Чат",
+            value: "/#/home/chat"
+        },
+        profile: {
+            label: "Профиль",
+            value: "/#/profile"
+        },
+        page404: {
+            label: "Страница 404",
+            value: "/#/error404"
+        },
+        page500: {
+            label: "Страница 500",
+            value: "/#/error500"
+        },
+        changeProfile: {
+            label: "Изменить профиль",
+            value: "/#/profile/changedata"
+        },
+        changePassword: {
+            label: "Изменить пароль",
+            value: "/#/profile/changepass"
+        }
     }
 };
-const LogIn = template(context);
-exports.default = LogIn;
+const navigation = template(listItems);
+exports.default = navigation;
 
 },{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i0QfX":[function(require,module,exports) {
 // USAGE:
@@ -12014,167 +12037,205 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"fMO4j":[function(require,module,exports) {
+},{}],"7j52r":[function() {},{}],"7TNE1":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<form onSubmit="document.location='/#/home'" class="enter__form">
-					<div class="enter__title">{{title}}</div>
-					<div class="enter__input">
-					{{#each inputs}}
-						<label for="{{@key}}" class="enter__input__label">{{this}}</label>
-						<input name="{{@key}}" type="text" class="enter__input__value">
-					{{/each}}
-					</div>
-					<div class="enter__btns">
-						<button type="submit" class="enter__btns__autorisation">{{buttons.register}}</button>
-						<a href="#/login" class="enter__btns__link">{{buttons.enter}}</a>
-					</div>
-				</form>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-let context = {
+var _enterLayout = require("../../layouts/EnterLayout");
+var _enterLayoutDefault = parcelHelpers.interopDefault(_enterLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _enterLayoutDefault.default));
+const logIn = {
+    title: "Вход",
+    inputs: {
+        login: "Логин",
+        password: "Пароль"
+    },
+    buttons: {
+        main: "Авторизоваться",
+        secondary: "Нет аккаунта",
+        link: "#/signin"
+    }
+};
+const LogIn = template(logIn);
+exports.default = LogIn;
+
+},{"handlebars":"i0QfX","../../layouts/EnterLayout":"ebJHF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ebJHF":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const enterLayout = `<form onSubmit="document.location='/#/home'" class="enter__form">
+						<div class="enter__title">{{title}}</div>
+						<ul class="inputs">
+							{{#each inputs}}
+							<li class="inputs__item input-wrapper">
+								<label for="{{@key}}" class="inputs__item__label label">{{this}}</label>
+								<input name="{{@key}}" type="text" class="inputs__item__value input">
+							</li>
+							{{/each}}
+						</ul>
+						<div class="enter__btns">
+							<button type="submit" class="enter__btns__autorisation btn">{{buttons.main}}</button>
+							<a href="{{buttons.link}}" class="enter__btns__link btn_flat">{{buttons.secondary}}</a>
+						</div>
+					</form>`;
+exports.default = enterLayout;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dIn3p":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _handlebars = require("handlebars");
+var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+var _enterLayout = require("../../layouts/EnterLayout");
+var _enterLayoutDefault = parcelHelpers.interopDefault(_enterLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _enterLayoutDefault.default));
+const signIn = {
     title: "Регистрация",
     inputs: {
         email: "Почта",
-        logIn: "Логин",
-        name: "Имя",
-        surname: "Фамилия",
-        tel: "Телефон",
-        pass: "Пароль",
-        verification: "Пароль (еще раз)"
+        login: "Логин",
+        first_name: "Имя",
+        second_name: "Фамилия",
+        phone: "Телефон",
+        password: "Пароль",
+        second_password: "Пароль (еще раз)"
     },
     buttons: {
-        register: "Зарегистрироваться",
-        enter: "Войти"
+        main: "Зарегистрироваться",
+        secondary: "Войти",
+        link: "#/login"
     }
 };
-const SignIn = template(context);
+const SignIn = template(signIn);
 exports.default = SignIn;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bT9hR":[function(require,module,exports) {
+},{"handlebars":"i0QfX","../../layouts/EnterLayout":"ebJHF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"77TWF":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<nav class="nav">
-					<ul class="nav__list">
-						{{#each links}}
-						<li class="nav__list__item"><a href="{{value}}">{{label}}</a></li>
-						{{/each}}
-					</ul>
-				</nav>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-const listItems = {
-    links: {
-        enter: {
-            label: "Вход",
-            value: "/#/login"
-        },
-        registration: {
-            label: "Регистрация",
-            value: "/#/signin"
-        },
-        home: {
-            label: "Домашняя",
-            value: "/#/home"
-        },
-        chat: {
-            label: "Чат",
-            value: "/#/home/chat"
-        },
-        profile: {
-            label: "Профиль",
-            value: "/#/profile"
-        },
-        page404: {
-            label: "Страница 404",
-            value: "/#/error404"
-        },
-        page500: {
-            label: "Страница 500",
-            value: "/#/error500"
-        },
-        changeProfile: {
-            label: "Изменить профиль",
-            value: "/#/profile/changedata"
-        },
-        changePassword: {
-            label: "Изменить пароль",
-            value: "/#/profile/changepass"
-        }
-    }
-};
-const navigation = template(listItems);
-exports.default = navigation;
-
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"77TWF":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+var _error404 = require("../../components/errors/Error404");
+var _error404Default = parcelHelpers.interopDefault(_error404);
+var _error500 = require("../../components/errors/Error500");
+var _error500Default = parcelHelpers.interopDefault(_error500);
 var _errorPageScss = require("./errorPage.scss");
-const source = `<div class="error__title">{{errorNumber}}</div>
-				<div class="error__subtitle">{{subtitle}}</div>
-				<a href="/#/home" class="error__link">{{button}}</a>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-const error404 = {
-    errorNumber: "404",
-    subtitle: "Не туда попали",
-    button: "Назад к чатам"
-};
-const error500 = {
-    errorNumber: "500",
-    subtitle: "Мы уже фиксим",
-    button: "Назад к чатам"
-};
 const ErrorPage = {
     render: (path)=>{
-        console.log(path);
         return `
 			<section class="error">
-				${path === "/error500" ? template(error500) : template(error404)}
+				${path === "/error500" ? (0, _error500Default.default) : (0, _error404Default.default)}
 			</section>
 		`;
     }
 };
 exports.default = ErrorPage;
 
-},{"handlebars":"i0QfX","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}],"iL2O4":[function(require,module,exports) {
+},{"./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/errors/Error404":"2wglc","../../components/errors/Error500":"ljICK"}],"3kp0d":[function() {},{}],"2wglc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _handlebars = require("handlebars");
+var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+var _errorLayout = require("../../layouts/ErrorLayout");
+var _errorLayoutDefault = parcelHelpers.interopDefault(_errorLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _errorLayoutDefault.default));
+const error404 = {
+    errorNumber: "404",
+    subtitle: "Не туда попали",
+    button: "Назад к чатам"
+};
+const Error404 = template(error404);
+exports.default = Error404;
+
+},{"handlebars":"i0QfX","../../layouts/ErrorLayout":"7HgAR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7HgAR":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const errorLayout = `<div class="error__title">{{errorNumber}}</div>
+					<div class="error__subtitle">{{subtitle}}</div>
+					<a href="/#/home" class="error__link btn_flat">{{button}}</a>`;
+exports.default = errorLayout;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ljICK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _handlebars = require("handlebars");
+var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+var _errorLayout = require("../../layouts/ErrorLayout");
+var _errorLayoutDefault = parcelHelpers.interopDefault(_errorLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _errorLayoutDefault.default));
+const error500 = {
+    errorNumber: "500",
+    subtitle: "Мы уже фиксим",
+    button: "Назад к чатам"
+};
+const Error500 = template(error500);
+exports.default = Error500;
+
+},{"handlebars":"i0QfX","../../layouts/ErrorLayout":"7HgAR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iL2O4":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _chatsList = require("../../components/chatsList/ChatsList");
 var _chatsListDefault = parcelHelpers.interopDefault(_chatsList);
 var _chat = require("../../components/chat/Chat");
 var _chatDefault = parcelHelpers.interopDefault(_chat);
-var _emptyChat = require("../../components/chat/EmptyChat");
-var _emptyChatDefault = parcelHelpers.interopDefault(_emptyChat);
+var _emptyChatLayout = require("../../layouts/home/EmptyChatLayout");
+var _emptyChatLayoutDefault = parcelHelpers.interopDefault(_emptyChatLayout);
 var _homePageScss = require("./homePage.scss");
 const HomePage = {
     render: (path)=>{
         return `
 		<section class="home">
 			<div class="left">
-				<button onclick="document.location='/#/profile'" class="profile-btn">Профиль ></button>
+				<a href="/#/profile" class="profile-btn btn_flat">Профиль</a>
 				<div class="search">
-					<input placeholder="Поиск" type="text">
+					<input name="search" placeholder="Поиск" type="text">
 				</div>
 				${0, _chatsListDefault.default}
 			</div>
 
 			<div class="right">
-				${path === "/home/chat" ? (0, _chatDefault.default) : (0, _emptyChatDefault.default)}
+				${path === "/home/chat" ? (0, _chatDefault.default) : (0, _emptyChatLayoutDefault.default)}
 			</div>
 		</section>`;
     }
 };
 exports.default = HomePage;
 
-},{"../../components/chatsList/ChatsList":"204dg","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/chat/Chat":"8WaPN","../../components/chat/EmptyChat":"8DwlK"}],"204dg":[function(require,module,exports) {
+},{"../../components/chatsList/ChatsList":"204dg","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/chat/Chat":"8WaPN","../../layouts/home/EmptyChatLayout":"itg8K"}],"204dg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+var _chatListLayout = require("../../layouts/home/ChatListLayout");
+var _chatListLayoutDefault = parcelHelpers.interopDefault(_chatListLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _chatListLayoutDefault.default));
+let chats = {
+    id: {
+        1: {
+            name: "Андрей",
+            last_msg: "Друзья, у меня для вас выпуск новостей!...",
+            time: "12:40",
+            new_msg: "chat__info__new-msg_active",
+            active: false
+        },
+        2: {
+            name: "Сергей",
+            last_msg: "Друзья,не для вас у меня выпуск новостей!...",
+            time: "06:30",
+            new_msg: "",
+            active: true
+        },
+        3: {
+            name: "Петр",
+            last_msg: "Выпуск новостей, у меня для вас, друзья!...",
+            time: "13:40",
+            new_msg: "",
+            active: false
+        }
+    }
+};
+const ChatsList = template(chats);
+exports.default = ChatsList;
+
+},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/home/ChatListLayout":"57l52"}],"57l52":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
 const chatsInner = `<div class="chat__photo"></div>
 					<div class="chat__info">
 						<div class="chat__info__message">
@@ -12183,294 +12244,270 @@ const chatsInner = `<div class="chat__photo"></div>
 						</div>
 						<div class="chat__info__stat">
 							<div class="chat__info__time">{{time}}</div>
-							<div class="chat__info__new-msg"></div>
+							<div class="chat__info__new-msg {{new_msg}}"></div>
 						</div>
 					</div>`;
-const source = `<div class="chats">
-					{{#each id}}
-						{{#if active}}
-						<div class="chat chat_active">
-							${chatsInner}
-						</div>
-						{{else}}
-						<div class="chat">
-							${chatsInner}
-						</div>
-						{{/if}}
-					{{/each}}
-				</div>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-let context = {
-    id: {
-        1: {
-            name: "Андрей",
-            last_msg: "Друзья, у меня для вас выпуск новостей!...",
-            time: "12:40",
-            new_msg: true,
-            active: true
-        },
-        2: {
-            name: "Сергей",
-            last_msg: "Друзья,не для вас у меня выпуск новостей!...",
-            time: "06:30",
-            new_msg: false,
-            active: false
-        },
-        3: {
-            name: "Петр",
-            last_msg: "Выпуск новостей, у меня для вас друзья!...",
-            time: "13:40",
-            new_msg: true,
-            active: false
-        }
-    }
-};
-const ChatsList = template(context);
-exports.default = ChatsList;
+const ChatListLayout = `<div class="chats">
+							{{#each id}}
+								{{#if active}}
+								<div class="chat chat_active">
+									${chatsInner}
+								</div>
+								{{else}}
+								<div class="chat">
+									${chatsInner}
+								</div>
+								{{/if}}
+							{{/each}}
+						</div>`;
+exports.default = ChatListLayout;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jkT4w":[function() {},{}],"8WaPN":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jkT4w":[function() {},{}],"8WaPN":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-//TODO: доверстать менюшки и поп-аппы
-const source = `<div class="user-bar">
-					<div class="user-bar__user">
-						<div class="user-bar__photo"></div>
-						<div class="user-bar__name">{{name}}</div>
-					</div>
-					<div class="user-bar__menu">
-						<span></span>
-						<span></span>
-						<span></span>
-					</div>
-				</div>
-				<div class="message-history">
-					<div class="message-history__message message-friend">{{messageFriend}}</div>
-					<div class="message-history__message message-user">{{messageUser.first}}</div>
-					<div class="message-history__message message-user">{{messageUser.second}}</div>
-				</div>
-				<div class="message-bar">
-					<div class="message-bar__add-btn"></div>
-					<input placeholder="Сообщение" class="message-bar__message">
-					<div class="message-bar__send-btn"></div>
-				</div>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-let context = {
+var _chatLayout = require("../../layouts/home/ChatLayout");
+var _chatLayoutDefault = parcelHelpers.interopDefault(_chatLayout);
+const template = (0, _handlebarsDefault.default).compile((0, _chatLayoutDefault.default));
+const chat = {
     name: "Андрей",
-    messageFriend: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!",
-    messageUser: {
-        first: "Lorem?",
-        second: "ipsum!"
+    message: {
+        message_friend: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!",
+        message_user: "Lorem?"
     }
 };
-const Chat = template(context);
+const Chat = template(chat);
 exports.default = Chat;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8DwlK":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","handlebars":"i0QfX","../../layouts/home/ChatLayout":"7FmyE"}],"7FmyE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<div class="user-bar">
-					<div class="user-bar__user">
-						<div class="user-bar__photo"></div>
-						<div class="user-bar__name">{{name}}</div>
+const ChatLayout = `<div class="user-bar">
+						<div class="user-bar__user">
+							<div class="user-bar__photo"></div>
+							<div class="user-bar__name">{{name}}</div>
+						</div>
+						<div class="user-bar__menu">
+							<span></span>
+							<span></span>
+							<span></span>
+						</div>
 					</div>
-					<div class="user-bar__menu">
-						<span></span>
-						<span></span>
-						<span></span>
+					<div class="message-history">
+						{{#each message}}
+						<div class="message-history__message {{@key}}">{{this}}</div>
+						{{/each}}
 					</div>
-				</div>
-				<div class="message-history">
-					<div class="message-history__empty">Выберите чат чтобы отправить сообщение</div>
-				</div>
-				<div class="message-bar">
-					<div class="message-bar__add-btn"></div>
-					<input placeholder="Сообщение" class="message-bar__message">
-					<div class="message-bar__send-btn"></div>
-				</div>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-let context = {
-    name: "Андрей",
-    messageFriend: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!",
-    messageUser: {
-        first: "Lorem?",
-        second: "ipsum!"
-    }
-};
-const Chat = template(context);
-exports.default = Chat;
+					<div class="message-bar">
+						<button class="btn btn_mini"></button>
+						<input name="message" placeholder="Сообщение" class="message-bar__message">
+						<button class="btn btn_mini"></button>
+					</div>`;
+exports.default = ChatLayout;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lpbML":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"itg8K":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const EmptyChatLayout = `<div class="message-history__empty">Выберите чат чтобы отправить сообщение</div>`;
+exports.default = EmptyChatLayout;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lpbML":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _profileInfo = require("../../components/profileInfo/ProfileInfo");
 var _profileInfoDefault = parcelHelpers.interopDefault(_profileInfo);
 var _profileChange = require("../../components/profileChange/ProfileChange");
 var _profileChangeDefault = parcelHelpers.interopDefault(_profileChange);
-var _profilePass = require("../../components/profilePass/ProfilePass");
-var _profilePassDefault = parcelHelpers.interopDefault(_profilePass);
+var _profilePassword = require("../../components/profilePassword/ProfilePassword");
+var _profilePasswordDefault = parcelHelpers.interopDefault(_profilePassword);
+var _profileButtons = require("../../layouts/profile/ProfileButtons");
+var _profileButtonsDefault = parcelHelpers.interopDefault(_profileButtons);
+var _profileSaveButton = require("../../layouts/profile/ProfileSaveButton");
+var _profileSaveButtonDefault = parcelHelpers.interopDefault(_profileSaveButton);
 var _profilePageScss = require("./profilePage.scss");
-const profileButtons = `<div class="actions">
-							<button onclick="document.location='/#/profile/changeData'" class="actions__btn">Изменить данные</button>
-							<button onclick="document.location='/#/profile/changePass'" class="actions__btn">Изменить пароль</button>
-							<button onclick="document.location='/#/home'" class="actions__btn actions__btn_red">Выйти</button>
-						</div>`;
-const saveButton = `<button onclick="document.location='/#/profile'" class="actions__btn-save">Сохранить</button>`;
 const ProfilePage = {
     render: (path)=>{
-        console.log(path);
         return `
 			<section class="profile">
-				<button onclick="document.location='/#/home'" class="back-btn"><-</button>
+				<button onclick="document.location='/#/home'" class="back-btn btn"><-</button>
 				<div class="user">
-					<div class="user__avatar"></div>
+					<div name="avatar" class="user__avatar"></div>
 					<div class="user__name">Иван</div>
 				</div>
-				${path == "/profile" ? (0, _profileInfoDefault.default) : path == "/profile/changedata" ? (0, _profileChangeDefault.default) : (0, _profilePassDefault.default)}
-				${path == "/profile" ? profileButtons : saveButton}	
+				${path == "/profile" ? (0, _profileInfoDefault.default) : path == "/profile/changedata" ? (0, _profileChangeDefault.default) : (0, _profilePasswordDefault.default)}
+				${path == "/profile" ? (0, _profileButtonsDefault.default) : (0, _profileSaveButtonDefault.default)}	
 			</section>
 		`;
     }
 };
-exports.default = ProfilePage; // info
- // btns
- // 
+exports.default = ProfilePage;
 
-},{"../../components/profileInfo/ProfileInfo":"ioFyA","../../components/profileChange/ProfileChange":"kTKcA","../../components/profilePass/ProfilePass":"86XaR","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ioFyA":[function(require,module,exports) {
+},{"../../components/profileInfo/ProfileInfo":"ioFyA","../../components/profileChange/ProfileChange":"kTKcA","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileButtons":"kaPbh","../../layouts/profile/ProfileSaveButton":"dUlyo","../../components/profilePassword/ProfilePassword":"iL2jX"}],"ioFyA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<ul class="info">
-					{{#each fields}}
-					<li class="info__fields">
-						<div class="info__fields__label">{{label}}</div>
-						<div class="info__fields__value">{{value}}</div>
-					</li>
-					{{/each}}
-				</ul>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-const infoData = {
+var _profileInfoLayout = require("../../layouts/profile/ProfileInfoLayout");
+var _profileInfoLayoutDefault = parcelHelpers.interopDefault(_profileInfoLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _profileInfoLayoutDefault.default));
+const profileData = {
     fields: {
-        mail: {
+        email: {
             label: "Почта",
-            value: "lorem@ipsum.com"
+            value: "lorem@ipsum.com",
+            changeable: false
         },
         login: {
             label: "Логин",
-            value: "ivanivanov"
+            value: "ivanivanov",
+            changeable: false
         },
-        name: {
+        first_name: {
             label: "Имя",
-            value: "Иван"
+            value: "Иван",
+            changeable: false
         },
-        surname: {
+        second_name: {
             label: "Фамилия",
-            value: "Иванов"
+            value: "Иванов",
+            changeable: false
         },
-        nickname: {
+        display_name: {
             label: "Имя в чате",
-            value: "Иван"
+            value: "Иван",
+            changeable: false
         },
         phone: {
             label: "Телефон",
-            value: "+7 (909) 967 30 30"
+            value: "+7 (909) 967 30 30",
+            changeable: false
         }
     }
 };
-const ProfileInfo = template(infoData);
+const ProfileInfo = template(profileData);
 exports.default = ProfileInfo;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kTKcA":[function(require,module,exports) {
+},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileInfoLayout":"2j05I"}],"2j05I":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const ProfileInfoLayout = `<ul class="info">
+							{{#each fields}}
+							<li class="input-wrapper_long">
+								{{#if changeable}}
+									<label for="{{@key}}" class="label_long">{{label}}</label>
+									<input name="{{@key}}" placeholder="{{value}}" class="input_long">
+								{{else}}
+									<div class="label_long">{{label}}</div>
+									<div class="info__value">{{value}}</div>
+								{{/if}}
+							</li>
+							{{/each}}
+						</ul>`;
+exports.default = ProfileInfoLayout;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kTKcA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<ul class="info">
-					{{#each fields}}
-					<li class="info__fields">
-						<div class="info__fields__label">{{label}}</div>
-						<input placeholder="{{value}}" class="info__fields__value_inp"></input>
-					</li>
-					{{/each}}
-				</ul>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-const infoData = {
+var _profileInfoLayout = require("../../layouts/profile/ProfileInfoLayout");
+var _profileInfoLayoutDefault = parcelHelpers.interopDefault(_profileInfoLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _profileInfoLayoutDefault.default));
+const profileDataChangeable = {
     fields: {
-        mail: {
+        email: {
             label: "Почта",
-            value: "lorem@ipsum.com"
+            value: "lorem@ipsum.com",
+            changeable: true
         },
         login: {
             label: "Логин",
-            value: "ivanivanov"
+            value: "ivanivanov",
+            changeable: true
         },
-        name: {
+        first_name: {
             label: "Имя",
-            value: "Иван"
+            value: "Иван",
+            changeable: true
         },
-        surname: {
+        second_name: {
             label: "Фамилия",
-            value: "Иванов"
+            value: "Иванов",
+            changeable: true
         },
-        nickname: {
+        display_name: {
             label: "Имя в чате",
-            value: "Иван"
+            value: "Иван",
+            changeable: true
         },
         phone: {
             label: "Телефон",
-            value: "+7 (909) 967 30 30"
+            value: "+7 (909) 967 30 30",
+            changeable: true
         }
     }
 };
-const ProfileChange = template(infoData);
+const ProfileChange = template(profileDataChangeable);
 exports.default = ProfileChange;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"86XaR":[function(require,module,exports) {
+},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileInfoLayout":"2j05I"}],"f2frq":[function() {},{}],"kaPbh":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const ProfileButtons = `<div class="actions">
+							<button onclick="document.location='/#/profile/changeData'" class="actions__btn btn btn_flat">Изменить данные</button>
+							<button onclick="document.location='/#/profile/changePass'" class="actions__btn btn btn_flat">Изменить пароль</button>
+							<button onclick="document.location='/#/home'" class="actions__btn actions__btn_red btn btn_flat">Выйти</button>
+						</div>`;
+exports.default = ProfileButtons;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dUlyo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const SaveButton = `<button onclick="document.location='/#/profile'" class="actions__btn-save btn">Сохранить</button>`;
+exports.default = SaveButton;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iL2jX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<ul class="info">
-					{{#each fields}}
-					<li class="info__fields">
-						<div class="info__fields__label">{{label}}</div>
-						<div class="info__fields__value">{{value}}</div>
-					</li>
-					{{/each}}
-				</ul>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-const infoData = {
+var _profileInfoLayout = require("../../layouts/profile/ProfileInfoLayout");
+var _profileInfoLayoutDefault = parcelHelpers.interopDefault(_profileInfoLayout);
+let template = (0, _handlebarsDefault.default).compile((0, _profileInfoLayoutDefault.default));
+const profilePasswordChangeable = {
     fields: {
-        mail: {
+        oldPassword: {
             label: "Старый пароль",
-            value: "•••••••"
+            value: "•••••••",
+            changeable: true
         },
-        login: {
+        newPassword: {
             label: "Новый пароль",
-            value: "•••••••••••"
+            value: "•••••••••••",
+            changeable: true
         },
-        name: {
+        repeatNewPassword: {
             label: "Повторите новый пароль",
-            value: "•••••••••••"
+            value: "•••••••••••",
+            changeable: true
         }
     }
 };
-const ProfileInfo = template(infoData);
-exports.default = ProfileInfo;
+const ProfilePasswod = template(profilePasswordChangeable);
+exports.default = ProfilePasswod;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f2frq":[function() {},{}],"1bNbF":[function(require,module,exports) {
+},{"handlebars":"i0QfX","../../layouts/profile/ProfileInfoLayout":"2j05I","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1bNbF":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _errorPage = require("../pages/errorPage/ErrorPage");
+var _errorPageDefault = parcelHelpers.interopDefault(_errorPage);
 const router = (routes)=>{
     const parseLocation = ()=>location.hash.slice(1).toLowerCase() || "/";
     const findComponentByPath = (path, routes)=>routes.find((r)=>r.path.match(new RegExp(`^\\${path}$`, "gm"))) || undefined;
     const router = ()=>{
         const path = parseLocation();
-        const { component =ErrorPage  } = findComponentByPath(path, routes) || {};
+        const { component =(0, _errorPageDefault.default)  } = findComponentByPath(path, routes) || {};
         document.querySelector("#root").innerHTML = component.render(path);
     };
     window.addEventListener("hashchange", router);
@@ -12478,6 +12515,6 @@ const router = (routes)=>{
 };
 exports.default = router;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["e11Rl","gLLPy"], "gLLPy", "parcelRequirefc40")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../pages/errorPage/ErrorPage":"77TWF"}]},["e11Rl","gLLPy"], "gLLPy", "parcelRequirefc40")
 
 //# sourceMappingURL=index.4d6bcbeb.js.map

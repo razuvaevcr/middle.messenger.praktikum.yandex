@@ -1,3 +1,5 @@
+import ErrorPage from '../pages/errorPage/ErrorPage';
+
 const router = (routes) => {
 	
 	const parseLocation = () => location.hash.slice(1).toLowerCase() || '/';
@@ -12,6 +14,5 @@ const router = (routes) => {
 	window.addEventListener('hashchange', router);
 	window.addEventListener('load', router);
 }
-
 
 export default router;

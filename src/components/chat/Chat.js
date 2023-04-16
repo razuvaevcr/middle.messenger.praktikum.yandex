@@ -1,41 +1,18 @@
 import Handlebars from 'handlebars';
-//TODO: доверстать менюшки и поп-аппы
 
-const source = `<div class="user-bar">
-					<div class="user-bar__user">
-						<div class="user-bar__photo"></div>
-						<div class="user-bar__name">{{name}}</div>
-					</div>
-					<div class="user-bar__menu">
-						<span></span>
-						<span></span>
-						<span></span>
-					</div>
-				</div>
-				<div class="message-history">
-					<div class="message-history__message message-friend">{{messageFriend}}</div>
-					<div class="message-history__message message-user">{{messageUser.first}}</div>
-					<div class="message-history__message message-user">{{messageUser.second}}</div>
-				</div>
-				<div class="message-bar">
-					<div class="message-bar__add-btn"></div>
-					<input placeholder="Сообщение" class="message-bar__message">
-					<div class="message-bar__send-btn"></div>
-				</div>`;
+import ChatLayout from '../../layouts/home/ChatLayout';
 
-			
-let template = Handlebars.compile(source);
 
-let context = {
+const template = Handlebars.compile(ChatLayout);
+
+const chat = {
 	name: 'Андрей',
-	messageFriend: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!',
-	messageUser: {
-		first: 'Lorem?',
-		second: 'ipsum!',
-	}
+	message: {
+		message_friend: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!',
+		message_user: 'Lorem?',
+	},
 };
 
-const Chat = template(context);
-
+const Chat = template(chat);
 
 export default Chat;
