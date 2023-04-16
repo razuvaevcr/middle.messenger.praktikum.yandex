@@ -1,16 +1,15 @@
 #IDE
 .vscode
 
+#git
+.github
+
 # dependencies
 /node_modules
 
 # parcel
 .parcel-cache
 
-<<<<<<< HEAD
 # # production
-=======
-# production
->>>>>>> sprint_1
 # /build
 # /dist
