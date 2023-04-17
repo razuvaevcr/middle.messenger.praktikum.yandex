@@ -12343,7 +12343,7 @@ const ProfilePage = {
 };
 exports.default = ProfilePage;
 
-},{"../../components/profileInfo/ProfileInfo":"ioFyA","../../components/profileChange/ProfileChange":"kTKcA","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileButtons":"kaPbh","../../layouts/profile/ProfileSaveButton":"dUlyo","../../components/profilePassword/ProfilePassword":"iL2jX"}],"ioFyA":[function(require,module,exports) {
+},{"../../components/profileInfo/ProfileInfo":"ioFyA","../../components/profileChange/ProfileChange":"kTKcA","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/profilePassword/ProfilePassword":"iL2jX","../../layouts/profile/ProfileButtons":"kaPbh","../../layouts/profile/ProfileSaveButton":"dUlyo"}],"ioFyA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
@@ -12451,23 +12451,7 @@ const profileDataChangeable = {
 const ProfileChange = template(profileDataChangeable);
 exports.default = ProfileChange;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileInfoLayout":"2j05I"}],"f2frq":[function() {},{}],"kaPbh":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const ProfileButtons = `<div class="actions">
-							<button onclick="document.location='/#/profile/changeData'" class="actions__btn btn btn_flat">Изменить данные</button>
-							<button onclick="document.location='/#/profile/changePass'" class="actions__btn btn btn_flat">Изменить пароль</button>
-							<button onclick="document.location='/#/home'" class="actions__btn actions__btn_red btn btn_flat">Выйти</button>
-						</div>`;
-exports.default = ProfileButtons;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dUlyo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const SaveButton = `<button onclick="document.location='/#/profile'" class="actions__btn-save btn">Сохранить</button>`;
-exports.default = SaveButton;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iL2jX":[function(require,module,exports) {
+},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileInfoLayout":"2j05I"}],"f2frq":[function() {},{}],"iL2jX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
@@ -12497,7 +12481,23 @@ const profilePasswordChangeable = {
 const ProfilePasswod = template(profilePasswordChangeable);
 exports.default = ProfilePasswod;
 
-},{"handlebars":"i0QfX","../../layouts/profile/ProfileInfoLayout":"2j05I","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1bNbF":[function(require,module,exports) {
+},{"handlebars":"i0QfX","../../layouts/profile/ProfileInfoLayout":"2j05I","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kaPbh":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const ProfileButtons = `<div class="actions">
+							<button onclick="document.location='/#/profile/changeData'" class="actions__btn btn btn_flat">Изменить данные</button>
+							<button onclick="document.location='/#/profile/changePass'" class="actions__btn btn btn_flat">Изменить пароль</button>
+							<button onclick="document.location='/#/home'" class="actions__btn actions__btn_red btn btn_flat">Выйти</button>
+						</div>`;
+exports.default = ProfileButtons;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dUlyo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const SaveButton = `<button onclick="document.location='/#/profile'" class="actions__btn-save btn">Сохранить</button>`;
+exports.default = SaveButton;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1bNbF":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _errorPage = require("../pages/errorPage/ErrorPage");
