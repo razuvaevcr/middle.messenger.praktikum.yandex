@@ -1,4 +1,4 @@
-//netlify  https://heroic-malabi-690923.netlify.app/
+//netlify  https://papaya-fairy-f48d5b.netlify.app/
 
 //design reference https://www.figma.com/file/jF5fFFzgGOxQeB4CmKWTiE/Chat_external_link?node-id=0-1&t=WIOudi7IwyoQqTI0-0
 
@@ -7,34 +7,33 @@
 	|
 	|--- components
 	|		|
-	|		|--- enters
-	|		|		|--- logIn
-	|		|  		|
-	|		|	  	|--- signIn
-	|		|
-	|		|
 	|		|--- chat
 	|		|
 	|		|--- chatList
 	|		|
-	|		|--- profale
+	|		|--- errors
 	|		|
-	|		|--- change profale data
+	|		|--- logIn
 	|		|
-	|		|--- change profale password
+	|		|--- navigation
+	|		|
+	|		|--- change profile data
+	|		|
+	|		|--- profile info
+	|		|
+	|		|--- change profile password
+	|		|
+	|		|--- signIn
+	|
+	|
+	|--- layouts
+	|		|
+	|		|--- home
+	|		|	
+	|		|--- profile
 	|
 	|
 	|--- modules
-	|		|
-	|		|--- button
-	|		|
-	|		|--- chat (user/friend)
-	|		|
-	|		|--- message
-	|		|
-	|		|--- submenu
-	|		|
-	|		|--- pop-up
 	|
 	|
 	|--- pages
@@ -48,9 +47,7 @@
 	|		|--- error
 	|
 	|
+	|--- style
+	|
+	|
 	|--- utils
-			|
-			|--- router
-	
-	
-	

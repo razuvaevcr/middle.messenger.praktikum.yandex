@@ -1,0 +1,43 @@
+@import './variables';
+
+.input-wrapper {
+	display: flex;
+	flex-direction: column;
+	&_long {
+		margin-bottom: 25px;
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+}
+
+.label {
+	min-height: 15px;
+	color: $text-shadow;
+	text-align: left;
+	&_long {
+		color: $text;
+	}
+}
+
+.input {
+		text-align: left;
+		min-height: 30px;
+		color: $text;
+		border: none;
+		font-size: 15px;
+		border-bottom: 1px solid $accent;
+		&:focus {
+			outline: none;
+		}
+	&_long {
+		text-align: right;
+		color: $text-shadow;
+		border: none;
+			&:focus {
+				outline: none;
+			}
+	}
+}

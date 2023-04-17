@@ -1,16 +1,16 @@
-import logIn from '../../components/enters/logIn';
-import signIn from '../../components/enters/signIn';
+import LogIn from '../../components/logIn/LogIn';
+import SignIn from '../../components/signIn/SignIn';
 import navigation from '../../components/navigation/navigation';
 
-import './enterPage.scss'
+import './enterPage.scss';
 
 
 const EnterPage = {
 	render: (path) => {
 		return `
-		${navigation}
+		${path == '/signin' ? '' : navigation}
 		<section class="enter">
-			${path == '/signin' ? signIn : logIn}
+			${path == '/signin' ? SignIn : LogIn}
 		</section>
 		`;
 	}

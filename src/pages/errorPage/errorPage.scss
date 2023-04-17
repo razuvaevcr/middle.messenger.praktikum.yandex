@@ -1,3 +1,5 @@
+@import '../../style/variables';
+
 .error {
 	display: flex;
 	flex-direction: column;
@@ -10,7 +12,7 @@
 		font-size: 45px;
 		line-height: 45px;
 		text-align: center;
-		color: #1E1E1E;
+		color: $text;
 	}
 	&__subtitle {
 		min-width: 180px;
@@ -19,15 +21,11 @@
 		font-size: 25px;
 		line-height: 25px;
 		text-align: center;
-		color: #1E1E1E;
+		color: $text;
 	}
 	&__link {
 		margin-top: 60px;
-		font-weight: 500;
 		font-size: 15px;
 		line-height: 15px;
-		text-align: center;
-		color: #3369F3;
-		text-decoration: none;
 	}
 }

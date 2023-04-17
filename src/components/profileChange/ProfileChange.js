@@ -1,46 +1,45 @@
 import Handlebars from 'handlebars';
 
-const source = `<ul class="info">
-					{{#each fields}}
-					<li class="info__fields">
-						<div class="info__fields__label">{{label}}</div>
-						<input placeholder="{{value}}" class="info__fields__value_inp"></input>
-					</li>
-					{{/each}}
-				</ul>`;
+import ProfileInfoLayout from '../../layouts/profile/ProfileInfoLayout';
 
-			
-let template = Handlebars.compile(source);
+		
+let template = Handlebars.compile(ProfileInfoLayout);
 
-const infoData = {
+const profileDataChangeable = {
 	fields: {
-		mail: {
+		email: {
 			label: 'Почта',
 			value: 'lorem@ipsum.com',
+			changeable: true,
 		},
 		login: {
 			label: 'Логин',
 			value: 'ivanivanov',
+			changeable: true,
 		},
-		name: {
+		first_name: {
 			label: 'Имя',
 			value: 'Иван',
+			changeable: true,
 		},
-		surname: {
+		second_name: {
 			label: 'Фамилия',
 			value: 'Иванов',
+			changeable: true,
 		},
-		nickname: {
+		display_name: {
 			label: 'Имя в чате',
 			value: 'Иван',
+			changeable: true,
 		},
 		phone: {
 			label: 'Телефон',
 			value: '+7 (909) 967 30 30',
+			changeable: true,
 		},
 	}
 };
 
-const ProfileChange = template(infoData);
+const ProfileChange = template(profileDataChangeable);
 
 export default ProfileChange;

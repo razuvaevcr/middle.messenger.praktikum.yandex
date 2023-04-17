@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "parcel src/index.hbs --port 3000",
+    "start": "parcel src/index.hbs --port 3000 --open",
     "dev": "parcel src/index.hbs",
     "build": "parcel build src/index.hbs"
   },
