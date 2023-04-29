@@ -1,0 +1,33 @@
+.enter {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.enter__form {
+  width: 340px;
+  height: 450px;
+  background: #fff;
+  border-radius: 12px;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  display: flex;
+  box-shadow: 0 0 6px #00000024;
+}
+
+.enter__title {
+  width: 50px;
+  height: 20px;
+  text-align: center;
+  color: #1e1e1e;
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+
+
+/*# sourceMappingURL=index.f1000970.css.map */
