@@ -1,5 +1,6 @@
 @import './variables';
 
+
 .input-wrapper {
 	display: flex;
 	flex-direction: column;
@@ -39,5 +40,8 @@
 			&:focus {
 				outline: none;
 			}
+	}
+	&_validate {
+		border-bottom: 1px solid red;
 	}
 }
