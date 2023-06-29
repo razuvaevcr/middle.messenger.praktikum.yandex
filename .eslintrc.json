@@ -1,0 +1,67 @@
+{
+	"parser": "@typescript-eslint/parser",
+	"plugins": [
+		"import",
+		"@typescript-eslint"
+	],
+	  "settings": {
+		"import/resolver": {
+		  "node": {
+			"extensions": [".js", ".jsx", ".ts", ".tsx"]
+		  }
+		}
+	  },
+	"rules": {
+		"import/extensions": [
+			"error",
+			"ignorePackages",
+			{
+			  "js": "never",
+			  "jsx": "never",
+			  "ts": "never",
+			  "tsx": "never"
+			}
+		 ],
+		"@typescript-eslint/no-unused-vars": 2,
+		"indent": ["error", "tab"],
+		"no-extra-semi": "error",
+		"keyword-spacing": ["error", {
+			"before": true,
+			"after": true
+		}],
+		"quotes": ["error", "single"],
+		"spaced-comment": ["error", "always"],
+		"object-curly-spacing": ["error", "always"],
+		"no-multiple-empty-lines": ["error", {"max": 2}],
+		"no-trailing-spaces": "error",
+		"semi": "error",
+		"comma-dangle": ["error", {
+			"arrays": "always-multiline",
+			"objects": "always-multiline",
+			"imports": "always-multiline",
+			"exports": "always-multiline",
+			"functions": "always-multiline"
+		  }],
+		"no-multi-spaces": "error",
+		"space-before-blocks": "error",
+		"object-shorthand": "error",
+		"padded-blocks": ["error", {
+			"blocks": "never",
+			"classes": "never",
+			"switches": "never"
+		  }, {
+			"allowSingleLineBlocks": true
+		  }],
+		"implicit-arrow-linebreak": ["error", "beside"],
+		"consistent-return": "error",
+		"func-names": "warn",
+		"arrow-parens": ["error", "always"],
+		"lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": false }],
+		"arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": false }],
+		"prefer-promise-reject-errors": ["error", { "allowEmptyReject": true }],
+		"space-infix-ops": "error",
+		"import/prefer-default-export": "error",
+		"space-in-parens": ["error", "never"]
+    },
+	"ignorePatterns": ["/dist", "/node_modules"]
+} 

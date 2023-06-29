@@ -7,47 +7,48 @@
 	|
 	|--- components
 	|		|
+	|		|--- button
+	|		|
 	|		|--- chat
 	|		|
-	|		|--- chatList
+	|		|--- chatItem
 	|		|
-	|		|--- errors
+	|		|--- chatsList
 	|		|
-	|		|--- logIn
+	|		|--- form
+	|		|
+	|		|--- input
+	|		|
+	|		|--- message
 	|		|
 	|		|--- navigation
-	|		|
-	|		|--- change profile data
-	|		|
-	|		|--- profile info
-	|		|
-	|		|--- change profile password
-	|		|
-	|		|--- signIn
-	|
-	|
-	|--- layouts
-	|		|
-	|		|--- home
-	|		|	
-	|		|--- profile
-	|
-	|
-	|--- modules
 	|
 	|
 	|--- pages
 	|		|
-	|		|--- enter
+	|		|--- enterPage
 	|		|
-	|		|--- home (chat)
+	|		|--- errorPage
 	|		|
-	|		|--- profile
+	|		|--- homePage
 	|		|
-	|		|--- error
+	|		|--- profilePage
 	|
 	|
 	|--- style
 	|
 	|
+	|--- types
+	|
+	|
 	|--- utils
+			|
+			|--- compiler
+			|
+			|--- eventBus
+			|
+			|--- HTTPTransport
+			|
+			|--- router
+			|
+			|--- validate

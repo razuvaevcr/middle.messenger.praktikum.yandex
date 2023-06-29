@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"e11Rl":[function(require,module,exports) {
+})({"f3BSW":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -150,7 +150,7 @@ var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
 module.bundle.HMR_BUNDLE_ID = "bed887d14d6bcbeb";
 "use strict";
-/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
+/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
   HMRMessage,
@@ -214,43 +214,50 @@ function Module(moduleName) {
 }
 module.bundle.Module = Module;
 module.bundle.hotData = {};
-var checkedAssets, assetsToDispose, assetsToAccept /*: Array<[ParcelRequire, string]> */ ;
+var checkedAssets /*: {|[string]: boolean|} */ , assetsToDispose /*: Array<[ParcelRequire, string]> */ , assetsToAccept /*: Array<[ParcelRequire, string]> */ ;
 function getHostname() {
     return HMR_HOST || (location.protocol.indexOf("http") === 0 ? location.hostname : "localhost");
 }
 function getPort() {
     return HMR_PORT || location.port;
-} // eslint-disable-next-line no-redeclare
+}
+// eslint-disable-next-line no-redeclare
 var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
     var hostname = getHostname();
     var port = getPort();
     var protocol = HMR_SECURE || location.protocol == "https:" && !/localhost|127.0.0.1|0.0.0.0/.test(hostname) ? "wss" : "ws";
-    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/"); // Web extension context
-    var extCtx = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome; // Safari doesn't support sourceURL in error stacks.
+    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/");
+    // Web extension context
+    var extCtx = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome;
+    // Safari doesn't support sourceURL in error stacks.
     // eval may also be disabled via CSP, so do a quick check.
     var supportsSourceURL = false;
     try {
         (0, eval)('throw new Error("test"); //# sourceURL=test.js');
     } catch (err) {
         supportsSourceURL = err.stack.includes("test.js");
-    } // $FlowFixMe
-    ws.onmessage = async function(event) {
+    }
+    // $FlowFixMe
+    ws.onmessage = async function(event /*: {data: string, ...} */ ) {
         checkedAssets = {} /*: {|[string]: boolean|} */ ;
         assetsToAccept = [];
         assetsToDispose = [];
-        var data = JSON.parse(event.data);
+        var data /*: HMRMessage */  = JSON.parse(event.data);
         if (data.type === "update") {
             // Remove error overlay if there is one
             if (typeof document !== "undefined") removeErrorOverlay();
-            let assets = data.assets.filter((asset)=>asset.envHash === HMR_ENV_HASH); // Handle HMR Update
+            let assets = data.assets.filter((asset)=>asset.envHash === HMR_ENV_HASH);
+            // Handle HMR Update
             let handled = assets.every((asset)=>{
                 return asset.type === "css" || asset.type === "js" && hmrAcceptCheck(module.bundle.root, asset.id, asset.depsByBundle);
             });
             if (handled) {
-                console.clear(); // Dispatch custom event so other runtimes (e.g React Refresh) are aware.
+                console.clear();
+                // Dispatch custom event so other runtimes (e.g React Refresh) are aware.
                 if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") window.dispatchEvent(new CustomEvent("parcelhmraccept"));
-                await hmrApplyUpdates(assets); // Dispose all old assets.
+                await hmrApplyUpdates(assets);
+                // Dispose all old assets.
                 let processedAssets = {} /*: {|[string]: boolean|} */ ;
                 for(let i = 0; i < assetsToDispose.length; i++){
                     let id = assetsToDispose[i][1];
@@ -258,7 +265,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
                         hmrDispose(assetsToDispose[i][0], id);
                         processedAssets[id] = true;
                     }
-                } // Run accept callbacks. This will also re-execute other disposed assets in topological order.
+                }
+                // Run accept callbacks. This will also re-execute other disposed assets in topological order.
                 processedAssets = {};
                 for(let i = 0; i < assetsToAccept.length; i++){
                     let id = assetsToAccept[i][1];
@@ -278,7 +286,8 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
             if (typeof document !== "undefined") {
                 // Render the fancy html overlay
                 removeErrorOverlay();
-                var overlay = createErrorOverlay(data.diagnostics.html); // $FlowFixMe
+                var overlay = createErrorOverlay(data.diagnostics.html);
+                // $FlowFixMe
                 document.body.appendChild(overlay);
             }
         }
@@ -344,12 +353,16 @@ function getParents(bundle, id) /*: Array<[ParcelRequire, string]> */ {
     return parents;
 }
 function updateLink(link) {
+    var href = link.getAttribute("href");
+    if (!href) return;
     var newLink = link.cloneNode();
     newLink.onload = function() {
         if (link.parentNode !== null) // $FlowFixMe
         link.parentNode.removeChild(link);
     };
-    newLink.setAttribute("href", link.getAttribute("href").split("?")[0] + "?" + Date.now()); // $FlowFixMe
+    newLink.setAttribute("href", // $FlowFixMe
+    href.split("?")[0] + "?" + Date.now());
+    // $FlowFixMe
     link.parentNode.insertBefore(newLink, link.nextSibling);
 }
 var cssTimeout = null;
@@ -359,7 +372,7 @@ function reloadCSS() {
         var links = document.querySelectorAll('link[rel="stylesheet"]');
         for(var i = 0; i < links.length; i++){
             // $FlowFixMe[incompatible-type]
-            var href = links[i].getAttribute("href");
+            var href /*: string */  = links[i].getAttribute("href");
             var hostname = getHostname();
             var servedFromHMRServer = hostname === "localhost" ? new RegExp("^(https?:\\/\\/(0.0.0.0|127.0.0.1)|localhost):" + getPort()).test(href) : href.indexOf(hostname + ":" + getPort());
             var absolute = /^https?:\/\//i.test(href) && href.indexOf(location.origin) !== 0 && !servedFromHMRServer;
@@ -436,7 +449,7 @@ async function hmrApplyUpdates(assets) {
         });
     }
 }
-function hmrApply(bundle, asset) {
+function hmrApply(bundle /*: ParcelRequire */ , asset /*:  HMRAsset */ ) {
     var modules = bundle.modules;
     if (!modules) return;
     if (asset.type === "css") reloadCSS();
@@ -456,7 +469,7 @@ function hmrApply(bundle, asset) {
             if (supportsSourceURL) // Global eval. We would use `new Function` here but browser
             // support for source maps is better with eval.
             (0, eval)(asset.output);
-             // $FlowFixMe
+            // $FlowFixMe
             let fn = global.parcelHotUpdate[asset.id];
             modules[asset.id] = [
                 fn,
@@ -475,17 +488,19 @@ function hmrDelete(bundle, id) {
         for(let dep in deps){
             let parents = getParents(module.bundle.root, deps[dep]);
             if (parents.length === 1) orphans.push(deps[dep]);
-        } // Delete the module. This must be done before deleting dependencies in case of circular dependencies.
+        }
+        // Delete the module. This must be done before deleting dependencies in case of circular dependencies.
         delete modules[id];
-        delete bundle.cache[id]; // Now delete the orphans.
+        delete bundle.cache[id];
+        // Now delete the orphans.
         orphans.forEach((id)=>{
             hmrDelete(module.bundle.root, id);
         });
     } else if (bundle.parent) hmrDelete(bundle.parent, id);
 }
-function hmrAcceptCheck(bundle, id, depsByBundle) {
+function hmrAcceptCheck(bundle /*: ParcelRequire */ , id /*: string */ , depsByBundle /*: ?{ [string]: { [string]: string } }*/ ) {
     if (hmrAcceptCheckOne(bundle, id, depsByBundle)) return true;
-     // Traverse parents breadth first. All possible ancestries must accept the HMR update, or we'll reload.
+    // Traverse parents breadth first. All possible ancestries must accept the HMR update, or we'll reload.
     let parents = getParents(module.bundle.root, id);
     let accepted = false;
     while(parents.length > 0){
@@ -506,7 +521,7 @@ function hmrAcceptCheck(bundle, id, depsByBundle) {
     }
     return accepted;
 }
-function hmrAcceptCheckOne(bundle, id, depsByBundle) {
+function hmrAcceptCheckOne(bundle /*: ParcelRequire */ , id /*: string */ , depsByBundle /*: ?{ [string]: { [string]: string } }*/ ) {
     var modules = bundle.modules;
     if (!modules) return;
     if (depsByBundle && !depsByBundle[bundle.HMR_BUNDLE_ID]) {
@@ -530,7 +545,7 @@ function hmrAcceptCheckOne(bundle, id, depsByBundle) {
         return true;
     }
 }
-function hmrDispose(bundle, id) {
+function hmrDispose(bundle /*: ParcelRequire */ , id /*: string */ ) {
     var cached = bundle.cache[id];
     bundle.hotData[id] = {};
     if (cached && cached.hot) cached.hot.data = bundle.hotData[id];
@@ -539,9 +554,10 @@ function hmrDispose(bundle, id) {
     });
     delete bundle.cache[id];
 }
-function hmrAccept(bundle, id) {
+function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
     // Execute the module.
-    bundle(id); // Run the accept callbacks in the new version of the module.
+    bundle(id);
+    // Run the accept callbacks in the new version of the module.
     var cached = bundle.cache[id];
     if (cached && cached.hot && cached.hot._acceptCallbacks.length) cached.hot._acceptCallbacks.forEach(function(cb) {
         var assetsToAlsoAccept = cb(function() {
@@ -550,7 +566,8 @@ function hmrAccept(bundle, id) {
         if (assetsToAlsoAccept && assetsToAccept.length) {
             assetsToAlsoAccept.forEach(function(a) {
                 hmrDispose(a[0], a[1]);
-            }); // $FlowFixMe[method-unbinding]
+            });
+            // $FlowFixMe[method-unbinding]
             assetsToAccept.push.apply(assetsToAccept, assetsToAlsoAccept);
         }
     });
@@ -559,27 +576,24 @@ function hmrAccept(bundle, id) {
 },{}],"gLLPy":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _enterPage = require("./pages/enterPage/EnterPage");
-var _enterPageDefault = parcelHelpers.interopDefault(_enterPage);
-var _errorPage = require("./pages/errorPage/ErrorPage");
-var _errorPageDefault = parcelHelpers.interopDefault(_errorPage);
 var _homePage = require("./pages/homePage/HomePage");
 var _homePageDefault = parcelHelpers.interopDefault(_homePage);
 var _profilePage = require("./pages/profilePage/ProfilePage");
-var _profilePageDefault = parcelHelpers.interopDefault(_profilePage);
+var _errorPage = require("./pages/errorPage/ErrorPage");
 var _router = require("./utils/router");
 var _routerDefault = parcelHelpers.interopDefault(_router);
 const routes = [
     {
         path: "/",
-        component: (0, _enterPageDefault.default)
+        component: (0, _enterPage.LogInPage)
     },
     {
         path: "/login",
-        component: (0, _enterPageDefault.default)
+        component: (0, _enterPage.LogInPage)
     },
     {
         path: "/signin",
-        component: (0, _enterPageDefault.default)
+        component: (0, _enterPage.SignInPage)
     },
     {
         path: "/home",
@@ -591,117 +605,439 @@ const routes = [
     },
     {
         path: "/error500",
-        component: (0, _errorPageDefault.default)
+        component: (0, _errorPage.Error500Page)
     },
     {
         path: "/error404",
-        component: (0, _errorPageDefault.default)
+        component: (0, _errorPage.Error404Page)
     },
     {
         path: "/profile",
-        component: (0, _profilePageDefault.default)
+        component: (0, _profilePage.ProfilePage)
     },
     {
         path: "/profile/changedata",
-        component: (0, _profilePageDefault.default)
+        component: (0, _profilePage.ChangeProfilePage)
     },
     {
         path: "/profile/changepass",
-        component: (0, _profilePageDefault.default)
+        component: (0, _profilePage.ChangeProfilePasswordPage)
     }
 ];
 (0, _routerDefault.default)(routes);
 
-},{"./pages/enterPage/EnterPage":"6l6zJ","./pages/errorPage/ErrorPage":"77TWF","./pages/homePage/HomePage":"iL2O4","./pages/profilePage/ProfilePage":"lpbML","./utils/router":"1bNbF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6l6zJ":[function(require,module,exports) {
+},{"./pages/enterPage/EnterPage":"6l6zJ","./pages/homePage/HomePage":"iL2O4","./pages/profilePage/ProfilePage":"lpbML","./pages/errorPage/ErrorPage":"77TWF","./utils/router":"1bNbF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6l6zJ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _logIn = require("../../components/logIn/LogIn");
-var _logInDefault = parcelHelpers.interopDefault(_logIn);
-var _signIn = require("../../components/signIn/SignIn");
-var _signInDefault = parcelHelpers.interopDefault(_signIn);
+parcelHelpers.export(exports, "LogInPage", ()=>LogInPage);
+parcelHelpers.export(exports, "SignInPage", ()=>SignInPage);
+var _page = require("../Page");
+var _pageDefault = parcelHelpers.interopDefault(_page);
+var _form = require("../../components/form");
 var _navigation = require("../../components/navigation/navigation");
 var _navigationDefault = parcelHelpers.interopDefault(_navigation);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _enterPageScss = require("./enterPage.scss");
-const EnterPage = {
-    render: (path)=>{
-        return `
-		${path == "/signin" ? "" : (0, _navigationDefault.default)}
-		<section class="enter">
-			${path == "/signin" ? (0, _signInDefault.default) : (0, _logInDefault.default)}
-		</section>
-		`;
-    }
-};
-exports.default = EnterPage;
+const LogInPage = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "enter"
+    ],
+    form: (0, _form.logInForm),
+    navigation: (0, _navigationDefault.default)
+});
+const SignInPage = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "enter"
+    ],
+    form: (0, _form.signInForm)
+});
 
-},{"../../components/navigation/navigation":"bT9hR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./enterPage.scss":"7j52r","../../components/logIn/LogIn":"7TNE1","../../components/signIn/SignIn":"dIn3p"}],"bT9hR":[function(require,module,exports) {
+},{"../Page":"ahuV5","../../components/form":"gtMo0","../../components/navigation/navigation":"bT9hR","./tmp":"ikSQA","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ahuV5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+class Page extends (0, _blockDefault.default) {
+    constructor(props){
+        super("section", props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        // console.log(this.props)
+        return this.compile(this.props.layout, this.props);
+    }
+}
+exports.default = Page;
+
+},{"../utils/eventBus/Block":"khckK","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"khckK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _uuid = require("uuid");
+var _eventBus = require("./EventBus");
+var _eventBusDefault = parcelHelpers.interopDefault(_eventBus);
+var _compiler = require("../compiler/compiler");
+var _compilerDefault = parcelHelpers.interopDefault(_compiler);
+class Block {
+    static EVENTS = {
+        INIT: "init",
+        FLOW_CDM: "flow:component-did-mount",
+        FLOW_CDU: "flow:component-did-update",
+        FLOW_RENDER: "flow:render"
+    };
+    _element = null;
+    _meta = null;
+    _id = null;
+    /** JSDoc
+	 * @param {string} tagName
+	 * @param {Object} props
+	 *
+	 * @returns {void}
+	 */ constructor(tagName = "div", propsAndChildren = {}){
+        const { children, props } = this._getChildren(propsAndChildren);
+        this.children = children;
+        const eventBus = new (0, _eventBusDefault.default)();
+        this._meta = {
+            tagName,
+            props
+        };
+        this._id = (0, _uuid.v4)();
+        this.props = this._makePropsProxy({
+            ...props,
+            __id: this._id
+        });
+        this.eventBus = ()=>eventBus;
+        this._registerEvents(eventBus);
+        eventBus.emit(Block.EVENTS.INIT);
+    }
+    _getChildren(propsAndChildren) {
+        const children = {};
+        const props = {};
+        Object.entries(propsAndChildren).forEach(([key, value])=>{
+            if (value instanceof Block) children[key] = value;
+            else props[key] = value;
+        });
+        return {
+            children,
+            props
+        };
+    }
+    _registerEvents(eventBus) {
+        eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
+    }
+    _createResources() {
+        const { tagName } = this._meta;
+        this._element = this._createDocumentElement(tagName);
+    }
+    init() {
+        this._createResources();
+        this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
+    }
+    compile(template, props) {
+        const propsAndStubs = {
+            ...props
+        };
+        Object.entries(this.children).forEach(([key, child])=>{
+            propsAndStubs[key] = `<div data-id="${child.id}"></div>`;
+        });
+        const fragment = this._createDocumentElement("template");
+        fragment.innerHTML = (0, _compilerDefault.default)(template, propsAndStubs);
+        Object.values(this.children).forEach((child)=>{
+            const stub = fragment.content.querySelector(`[data-id="${child.id}"]`);
+            if (!stub) return;
+            stub.replaceWith(child.getContent());
+        });
+        return fragment.content;
+    }
+    _componentDidMount() {
+        this.componentDidMount();
+        Object.values(this.children).forEach((child)=>{
+            child.dispatchComponentDidMount();
+        });
+    }
+    componentDidMount(oldProps) {}
+    dispatchComponentDidMount() {
+        this.eventBus().emit(Block.EVENTS.FLOW_CDM);
+    }
+    _componentDidUpdate(oldProps, newProps) {
+        const response = this.componentDidUpdate(oldProps, newProps);
+        if (!response) return;
+        this._render();
+    }
+    componentDidUpdate(oldProps, newProps) {
+        return true;
+    }
+    setProps = (nextProps)=>{
+        if (!nextProps) return;
+        Object.assign(this.props, nextProps);
+    };
+    get element() {
+        return this._element;
+    }
+    _render() {
+        const block = this.render();
+        this._removeEvents();
+        this._element.innerHTML = ""; // удаляем предыдущее содержимое
+        this._element.appendChild(block);
+        this._addEvents();
+    }
+    render() {}
+    getContent() {
+        return this.element;
+    }
+    _makePropsProxy(props) {
+        const self = this;
+        return new Proxy(props, {
+            get (target, prop) {
+                const value = target[prop];
+                return typeof value === "function" ? value.bind(target) : value;
+            },
+            set (target, prop, value) {
+                target[prop] = value;
+                self.eventBus().emit(Block.EVENTS.FLOW_CDU, {
+                    ...target
+                }, target);
+                return true;
+            },
+            deleteProperty () {
+                throw new Error("Нет доступа");
+            }
+        });
+    }
+    _addEvents() {
+        const { events = {} } = this.props;
+        Object.keys(events).forEach((eventName)=>{
+            this._element.addEventListener(eventName, events[eventName]);
+        });
+    }
+    _removeEvents() {
+        const { events = {} } = this.props;
+        Object.keys(events).forEach((eventName)=>{
+            this._element.removeEventListener(eventName, events[eventName]);
+        });
+    }
+    _createDocumentElement(tagName) {
+        const element = document.createElement(tagName);
+        element.setAttribute("data-id", this._id);
+        return element;
+    }
+    show() {
+        this.getContent().style.display = "block";
+    }
+    hide() {
+        this.getContent().style.display = "none";
+    }
+}
+exports.default = Block;
+
+},{"uuid":"j4KJi","./EventBus":"39C8U","../compiler/compiler":"6KS9K","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j4KJi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "v1", ()=>(0, _v1JsDefault.default));
+parcelHelpers.export(exports, "v3", ()=>(0, _v3JsDefault.default));
+parcelHelpers.export(exports, "v4", ()=>(0, _v4JsDefault.default));
+parcelHelpers.export(exports, "v5", ()=>(0, _v5JsDefault.default));
+parcelHelpers.export(exports, "NIL", ()=>(0, _nilJsDefault.default));
+parcelHelpers.export(exports, "version", ()=>(0, _versionJsDefault.default));
+parcelHelpers.export(exports, "validate", ()=>(0, _validateJsDefault.default));
+parcelHelpers.export(exports, "stringify", ()=>(0, _stringifyJsDefault.default));
+parcelHelpers.export(exports, "parse", ()=>(0, _parseJsDefault.default));
+var _v1Js = require("./v1.js");
+var _v1JsDefault = parcelHelpers.interopDefault(_v1Js);
+var _v3Js = require("./v3.js");
+var _v3JsDefault = parcelHelpers.interopDefault(_v3Js);
+var _v4Js = require("./v4.js");
+var _v4JsDefault = parcelHelpers.interopDefault(_v4Js);
+var _v5Js = require("./v5.js");
+var _v5JsDefault = parcelHelpers.interopDefault(_v5Js);
+var _nilJs = require("./nil.js");
+var _nilJsDefault = parcelHelpers.interopDefault(_nilJs);
+var _versionJs = require("./version.js");
+var _versionJsDefault = parcelHelpers.interopDefault(_versionJs);
+var _validateJs = require("./validate.js");
+var _validateJsDefault = parcelHelpers.interopDefault(_validateJs);
+var _stringifyJs = require("./stringify.js");
+var _stringifyJsDefault = parcelHelpers.interopDefault(_stringifyJs);
+var _parseJs = require("./parse.js");
+var _parseJsDefault = parcelHelpers.interopDefault(_parseJs);
+
+},{"./v1.js":false,"./v3.js":false,"./v4.js":"8zJtu","./v5.js":false,"./nil.js":false,"./version.js":false,"./validate.js":false,"./stringify.js":false,"./parse.js":false,"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8zJtu":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _nativeJs = require("./native.js");
+var _nativeJsDefault = parcelHelpers.interopDefault(_nativeJs);
+var _rngJs = require("./rng.js");
+var _rngJsDefault = parcelHelpers.interopDefault(_rngJs);
+var _stringifyJs = require("./stringify.js");
+function v4(options, buf, offset) {
+    if ((0, _nativeJsDefault.default).randomUUID && !buf && !options) return (0, _nativeJsDefault.default).randomUUID();
+    options = options || {};
+    const rnds = options.random || (options.rng || (0, _rngJsDefault.default))(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+    rnds[6] = rnds[6] & 0x0f | 0x40;
+    rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+    if (buf) {
+        offset = offset || 0;
+        for(let i = 0; i < 16; ++i)buf[offset + i] = rnds[i];
+        return buf;
+    }
+    return (0, _stringifyJs.unsafeStringify)(rnds);
+}
+exports.default = v4;
+
+},{"./native.js":"lYayS","./rng.js":"2psyE","./stringify.js":"5Y9F1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lYayS":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const randomUUID = typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+exports.default = {
+    randomUUID
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"2psyE":[function(require,module,exports) {
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>rng);
+let getRandomValues;
+const rnds8 = new Uint8Array(16);
+function rng() {
+    // lazy load so that environments that need to polyfill have a chance to do so
+    if (!getRandomValues) {
+        // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
+        getRandomValues = typeof crypto !== "undefined" && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+        if (!getRandomValues) throw new Error("crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported");
+    }
+    return getRandomValues(rnds8);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5Y9F1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "unsafeStringify", ()=>unsafeStringify);
+var _validateJs = require("./validate.js");
+var _validateJsDefault = parcelHelpers.interopDefault(_validateJs);
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */ const byteToHex = [];
+for(let i = 0; i < 256; ++i)byteToHex.push((i + 0x100).toString(16).slice(1));
+function unsafeStringify(arr, offset = 0) {
+    // Note: Be careful editing this code!  It's been tuned for performance
+    // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+    return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + "-" + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + "-" + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + "-" + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
+}
+function stringify(arr, offset = 0) {
+    const uuid = unsafeStringify(arr, offset); // Consistency check for valid UUID.  If this throws, it's likely due to one
+    // of the following:
+    // - One or more input array values don't map to a hex octet (leading to
+    // "undefined" in the uuid)
+    // - Invalid input values for the RFC `version` or `variant` fields
+    if (!(0, _validateJsDefault.default)(uuid)) throw TypeError("Stringified UUID is invalid");
+    return uuid;
+}
+exports.default = stringify;
+
+},{"./validate.js":"eHPgI","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eHPgI":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _regexJs = require("./regex.js");
+var _regexJsDefault = parcelHelpers.interopDefault(_regexJs);
+function validate(uuid) {
+    return typeof uuid === "string" && (0, _regexJsDefault.default).test(uuid);
+}
+exports.default = validate;
+
+},{"./regex.js":"bUa5g","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bUa5g":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+exports.default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"39C8U":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class EventBus {
+    constructor(){
+        this.listeners = {};
+    }
+    on(event, callback) {
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(callback);
+    // console.log(`on ${event}`)
+    }
+    off(event, callback) {
+        if (!this.listeners[event]) throw new Error(`Нет события: ${event}`);
+        this.listeners[event] = this.listeners[event].filter((listener)=>listener !== callback);
+    }
+    emit(event, ...args) {
+        if (!this.listeners[event]) throw new Error(`Нет события: ${event}`);
+        this.listeners[event].forEach(function(listener) {
+            listener(...args);
+        });
+    }
+}
+exports.default = EventBus;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6KS9K":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-const source = `<nav class="nav">
-					<ul class="nav__list">
-						{{#each links}}
-						<li class="nav__list__item"><a class="btn" href="{{value}}">{{label}}</a></li>
-						{{/each}}
-					</ul>
-				</nav>`;
-let template = (0, _handlebarsDefault.default).compile(source);
-const listItems = {
-    links: {
-        enter: {
-            label: "Вход",
-            value: "/#/login"
-        },
-        registration: {
-            label: "Регистрация",
-            value: "/#/signin"
-        },
-        home: {
-            label: "Домашняя",
-            value: "/#/home"
-        },
-        chat: {
-            label: "Чат",
-            value: "/#/home/chat"
-        },
-        profile: {
-            label: "Профиль",
-            value: "/#/profile"
-        },
-        page404: {
-            label: "Страница 404",
-            value: "/#/error404"
-        },
-        page500: {
-            label: "Страница 500",
-            value: "/#/error500"
-        },
-        changeProfile: {
-            label: "Изменить профиль",
-            value: "/#/profile/changedata"
-        },
-        changePassword: {
-            label: "Изменить пароль",
-            value: "/#/profile/changepass"
-        }
-    }
+const Compiler = (layout, props)=>{
+    const template = (0, _handlebarsDefault.default).compile(layout);
+    return template(props);
 };
-const navigation = template(listItems);
-exports.default = navigation;
+exports.default = Compiler;
 
 },{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i0QfX":[function(require,module,exports) {
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */ // var local = handlebars.create();
-var handlebars = require("9529c657f5995452")["default"];
-var printer = require("774c9b641ae54dc0");
+var handlebars = require("b9e566e85516be13")["default"];
+var printer = require("40fc92a2bf5079b5");
 handlebars.PrintVisitor = printer.PrintVisitor;
 handlebars.print = printer.print;
 module.exports = handlebars;
 // Publish a Node.js require() handler for .handlebars and .hbs files
 function extension(module1, filename) {
-    var fs = require("26d9787d341d9d48");
+    var fs = require("fabd1e7895c56ecd");
     var templateString = fs.readFileSync(filename, "utf8");
     module1.exports = handlebars.compile(templateString);
 }
@@ -710,7 +1046,7 @@ function extension(module1, filename) {
     undefined[".hbs"] = extension;
 }
 
-},{"9529c657f5995452":"56TWV","774c9b641ae54dc0":"j0OeV","26d9787d341d9d48":"jhUEF"}],"56TWV":[function(require,module,exports) {
+},{"b9e566e85516be13":"56TWV","40fc92a2bf5079b5":"j0OeV","fabd1e7895c56ecd":"jhUEF"}],"56TWV":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 // istanbul ignore next
@@ -719,18 +1055,18 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _handlebarsRuntime = require("b6722822297e4e4e");
+var _handlebarsRuntime = require("dace82ca4fa82d09");
 var _handlebarsRuntime2 = _interopRequireDefault(_handlebarsRuntime);
 // Compiler imports
-var _handlebarsCompilerAst = require("11a49acff546a65c");
+var _handlebarsCompilerAst = require("55d6571b0684487f");
 var _handlebarsCompilerAst2 = _interopRequireDefault(_handlebarsCompilerAst);
-var _handlebarsCompilerBase = require("12fd90191b46a8f9");
-var _handlebarsCompilerCompiler = require("6d648234d9b71f8c");
-var _handlebarsCompilerJavascriptCompiler = require("5cd41e859570f3b5");
+var _handlebarsCompilerBase = require("d2401330935e41f4");
+var _handlebarsCompilerCompiler = require("300c50185aceb8ce");
+var _handlebarsCompilerJavascriptCompiler = require("4c8208884d4d255f");
 var _handlebarsCompilerJavascriptCompiler2 = _interopRequireDefault(_handlebarsCompilerJavascriptCompiler);
-var _handlebarsCompilerVisitor = require("497071b5f6745413");
+var _handlebarsCompilerVisitor = require("a22ebe793edc8181");
 var _handlebarsCompilerVisitor2 = _interopRequireDefault(_handlebarsCompilerVisitor);
-var _handlebarsNoConflict = require("89a3ee4e51955f33");
+var _handlebarsNoConflict = require("d367057010f3400e");
 var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
 var _create = _handlebarsRuntime2["default"].create;
 function create() {
@@ -757,7 +1093,7 @@ inst["default"] = inst;
 exports["default"] = inst;
 module.exports = exports["default"];
 
-},{"b6722822297e4e4e":"48O1v","11a49acff546a65c":"iOlHO","12fd90191b46a8f9":"kVun2","6d648234d9b71f8c":"4Udtq","5cd41e859570f3b5":"7iXdU","497071b5f6745413":"fk5sS","89a3ee4e51955f33":"gyMyS"}],"48O1v":[function(require,module,exports) {
+},{"dace82ca4fa82d09":"48O1v","55d6571b0684487f":"iOlHO","d2401330935e41f4":"kVun2","300c50185aceb8ce":"4Udtq","4c8208884d4d255f":"7iXdU","a22ebe793edc8181":"fk5sS","d367057010f3400e":"gyMyS"}],"48O1v":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 // istanbul ignore next
@@ -778,19 +1114,19 @@ function _interopRequireWildcard(obj) {
         return newObj;
     }
 }
-var _handlebarsBase = require("d722b4fd6ac8adb8");
+var _handlebarsBase = require("5189b13b1bf4f35d");
 var base = _interopRequireWildcard(_handlebarsBase);
 // Each of these augment the Handlebars object. No need to setup here.
 // (This is done to easily share code between commonjs and browse envs)
-var _handlebarsSafeString = require("1ffe18a7fea1f9be");
+var _handlebarsSafeString = require("29e779a04116da4");
 var _handlebarsSafeString2 = _interopRequireDefault(_handlebarsSafeString);
-var _handlebarsException = require("ed4a9559202bcfa3");
+var _handlebarsException = require("c6e11e8d1a79afbb");
 var _handlebarsException2 = _interopRequireDefault(_handlebarsException);
-var _handlebarsUtils = require("3a4d03851cd45420");
+var _handlebarsUtils = require("4e1f243f38a8b2d0");
 var Utils = _interopRequireWildcard(_handlebarsUtils);
-var _handlebarsRuntime = require("e130920be7b84a5");
+var _handlebarsRuntime = require("8a480915b8bcb3c8");
 var runtime = _interopRequireWildcard(_handlebarsRuntime);
-var _handlebarsNoConflict = require("4c490a451a001dbe");
+var _handlebarsNoConflict = require("261057eb44c1e90c");
 var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
 // For compatibility and usage outside of module systems, make the Handlebars object a namespace
 function create() {
@@ -813,7 +1149,7 @@ inst["default"] = inst;
 exports["default"] = inst;
 module.exports = exports["default"];
 
-},{"d722b4fd6ac8adb8":"dt4wA","1ffe18a7fea1f9be":"fUPg1","ed4a9559202bcfa3":"gO63O","3a4d03851cd45420":"1az9o","e130920be7b84a5":"lcUM0","4c490a451a001dbe":"gyMyS"}],"dt4wA":[function(require,module,exports) {
+},{"5189b13b1bf4f35d":"dt4wA","29e779a04116da4":"fUPg1","c6e11e8d1a79afbb":"gO63O","4e1f243f38a8b2d0":"1az9o","8a480915b8bcb3c8":"lcUM0","261057eb44c1e90c":"gyMyS"}],"dt4wA":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.HandlebarsEnvironment = HandlebarsEnvironment;
@@ -823,14 +1159,14 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _utils = require("9a0148931463fe30");
-var _exception = require("46cbdfbca722acb9");
+var _utils = require("4991264a6ecb5c6b");
+var _exception = require("e4673ac149ffa7c");
 var _exception2 = _interopRequireDefault(_exception);
-var _helpers = require("4eaffdfa56e2d56c");
-var _decorators = require("1cfe85b1fcc12ba7");
-var _logger = require("5d54d260d5efd6c1");
+var _helpers = require("981170f7187ce468");
+var _decorators = require("ae06834a8db4d94c");
+var _logger = require("35fef4b90bf7743");
 var _logger2 = _interopRequireDefault(_logger);
-var _internalProtoAccess = require("d7d65c00868dd389");
+var _internalProtoAccess = require("2adbdb537ec9595f");
 var VERSION = "4.7.7";
 exports.VERSION = VERSION;
 var COMPILER_REVISION = 8;
@@ -900,7 +1236,7 @@ exports.log = log;
 exports.createFrame = _utils.createFrame;
 exports.logger = _logger2["default"];
 
-},{"9a0148931463fe30":"1az9o","46cbdfbca722acb9":"gO63O","4eaffdfa56e2d56c":"bxbLz","1cfe85b1fcc12ba7":"IozU1","5d54d260d5efd6c1":"gqRvw","d7d65c00868dd389":"hJ0HO"}],"1az9o":[function(require,module,exports) {
+},{"4991264a6ecb5c6b":"1az9o","e4673ac149ffa7c":"gO63O","981170f7187ce468":"bxbLz","ae06834a8db4d94c":"IozU1","35fef4b90bf7743":"gqRvw","2adbdb537ec9595f":"hJ0HO"}],"1az9o":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.extend = extend;
@@ -1047,19 +1383,19 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _helpersBlockHelperMissing = require("bdf5bf3c1f1f066a");
+var _helpersBlockHelperMissing = require("817b5223939b0f70");
 var _helpersBlockHelperMissing2 = _interopRequireDefault(_helpersBlockHelperMissing);
-var _helpersEach = require("fcf483f793fd463a");
+var _helpersEach = require("8268a3aef10dd64d");
 var _helpersEach2 = _interopRequireDefault(_helpersEach);
-var _helpersHelperMissing = require("9fac7053775c965b");
+var _helpersHelperMissing = require("b726f4668cdedb66");
 var _helpersHelperMissing2 = _interopRequireDefault(_helpersHelperMissing);
-var _helpersIf = require("b06920803e202f2");
+var _helpersIf = require("8cd91e8af9210478");
 var _helpersIf2 = _interopRequireDefault(_helpersIf);
-var _helpersLog = require("2e6e5543e119ec19");
+var _helpersLog = require("565cabdafd6dcf40");
 var _helpersLog2 = _interopRequireDefault(_helpersLog);
-var _helpersLookup = require("663f8b44d7f762ac");
+var _helpersLookup = require("7892b3b4b00506a9");
 var _helpersLookup2 = _interopRequireDefault(_helpersLookup);
-var _helpersWith = require("8c0b4abdeddfe8d5");
+var _helpersWith = require("c976d072e7e0289");
 var _helpersWith2 = _interopRequireDefault(_helpersWith);
 function registerDefaultHelpers(instance) {
     _helpersBlockHelperMissing2["default"](instance);
@@ -1077,10 +1413,10 @@ function moveHelperToHooks(instance, helperName, keepHelper) {
     }
 }
 
-},{"bdf5bf3c1f1f066a":"b2Nig","fcf483f793fd463a":"cxvVH","9fac7053775c965b":"kqALW","b06920803e202f2":"23VdI","2e6e5543e119ec19":"15jv3","663f8b44d7f762ac":"8QG3w","8c0b4abdeddfe8d5":"f8k9w"}],"b2Nig":[function(require,module,exports) {
+},{"817b5223939b0f70":"b2Nig","8268a3aef10dd64d":"cxvVH","b726f4668cdedb66":"kqALW","8cd91e8af9210478":"23VdI","565cabdafd6dcf40":"15jv3","7892b3b4b00506a9":"8QG3w","c976d072e7e0289":"f8k9w"}],"b2Nig":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
-var _utils = require("142d0359ad53c2b4");
+var _utils = require("2e9f7b43a3f3ed64");
 exports["default"] = function(instance) {
     instance.registerHelper("blockHelperMissing", function(context, options) {
         var inverse = options.inverse, fn = options.fn;
@@ -1107,7 +1443,7 @@ exports["default"] = function(instance) {
 };
 module.exports = exports["default"];
 
-},{"142d0359ad53c2b4":"1az9o"}],"cxvVH":[function(require,module,exports) {
+},{"2e9f7b43a3f3ed64":"1az9o"}],"cxvVH":[function(require,module,exports) {
 var global = arguments[3];
 "use strict";
 exports.__esModule = true;
@@ -1117,8 +1453,8 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _utils = require("29d8d48d71941abf");
-var _exception = require("bb396a41fab88067");
+var _utils = require("8733c54d8e9aa93c");
+var _exception = require("2c934d2484a6224c");
 var _exception2 = _interopRequireDefault(_exception);
 exports["default"] = function(instance) {
     instance.registerHelper("each", function(context, options) {
@@ -1174,7 +1510,7 @@ exports["default"] = function(instance) {
 };
 module.exports = exports["default"];
 
-},{"29d8d48d71941abf":"1az9o","bb396a41fab88067":"gO63O"}],"kqALW":[function(require,module,exports) {
+},{"8733c54d8e9aa93c":"1az9o","2c934d2484a6224c":"gO63O"}],"kqALW":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 // istanbul ignore next
@@ -1183,7 +1519,7 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _exception = require("789192773606c9ba");
+var _exception = require("892d5fcb527c9723");
 var _exception2 = _interopRequireDefault(_exception);
 exports["default"] = function(instance) {
     instance.registerHelper("helperMissing", function() /* [args, ]options */ {
@@ -1195,7 +1531,7 @@ exports["default"] = function(instance) {
 };
 module.exports = exports["default"];
 
-},{"789192773606c9ba":"gO63O"}],"23VdI":[function(require,module,exports) {
+},{"892d5fcb527c9723":"gO63O"}],"23VdI":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 // istanbul ignore next
@@ -1204,8 +1540,8 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _utils = require("7d48ce492b6669c7");
-var _exception = require("26a9c299bf67630b");
+var _utils = require("9d4ef5ba9185cc77");
+var _exception = require("dae1cebe64ff2466");
 var _exception2 = _interopRequireDefault(_exception);
 exports["default"] = function(instance) {
     instance.registerHelper("if", function(conditional, options) {
@@ -1228,7 +1564,7 @@ exports["default"] = function(instance) {
 };
 module.exports = exports["default"];
 
-},{"7d48ce492b6669c7":"1az9o","26a9c299bf67630b":"gO63O"}],"15jv3":[function(require,module,exports) {
+},{"9d4ef5ba9185cc77":"1az9o","dae1cebe64ff2466":"gO63O"}],"15jv3":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports["default"] = function(instance) {
@@ -1267,8 +1603,8 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _utils = require("7bed294bb306b4e2");
-var _exception = require("2e08de296d885af8");
+var _utils = require("4cf8b7b9d21f65fd");
+var _exception = require("3fe725e9a0c860cc");
 var _exception2 = _interopRequireDefault(_exception);
 exports["default"] = function(instance) {
     instance.registerHelper("with", function(context, options) {
@@ -1294,7 +1630,7 @@ exports["default"] = function(instance) {
 };
 module.exports = exports["default"];
 
-},{"7bed294bb306b4e2":"1az9o","2e08de296d885af8":"gO63O"}],"IozU1":[function(require,module,exports) {
+},{"4cf8b7b9d21f65fd":"1az9o","3fe725e9a0c860cc":"gO63O"}],"IozU1":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.registerDefaultDecorators = registerDefaultDecorators;
@@ -1304,16 +1640,16 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _decoratorsInline = require("d603ff6bf9ba54f9");
+var _decoratorsInline = require("1b226d84ad64b747");
 var _decoratorsInline2 = _interopRequireDefault(_decoratorsInline);
 function registerDefaultDecorators(instance) {
     _decoratorsInline2["default"](instance);
 }
 
-},{"d603ff6bf9ba54f9":"gLVN4"}],"gLVN4":[function(require,module,exports) {
+},{"1b226d84ad64b747":"gLVN4"}],"gLVN4":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
-var _utils = require("fc09ad34359e1a19");
+var _utils = require("15f855348e482cd8");
 exports["default"] = function(instance) {
     instance.registerDecorator("inline", function(fn, props, container, options) {
         var ret = fn;
@@ -1334,10 +1670,10 @@ exports["default"] = function(instance) {
 };
 module.exports = exports["default"];
 
-},{"fc09ad34359e1a19":"1az9o"}],"gqRvw":[function(require,module,exports) {
+},{"15f855348e482cd8":"1az9o"}],"gqRvw":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
-var _utils = require("86025a7885668af5");
+var _utils = require("58f53b6c24134408");
 var logger = {
     methodMap: [
         "debug",
@@ -1370,7 +1706,7 @@ var logger = {
 exports["default"] = logger;
 module.exports = exports["default"];
 
-},{"86025a7885668af5":"1az9o"}],"hJ0HO":[function(require,module,exports) {
+},{"58f53b6c24134408":"1az9o"}],"hJ0HO":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.createProtoAccessControl = createProtoAccessControl;
@@ -1388,8 +1724,8 @@ function _interopRequireWildcard(obj) {
         return newObj;
     }
 }
-var _createNewLookupObject = require("c30278caad7215a2");
-var _logger = require("54eeb040ba1b049d");
+var _createNewLookupObject = require("68f49ceb6bf11b32");
+var _logger = require("d501e14593152748");
 var logger = _interopRequireWildcard(_logger);
 var loggedProperties = Object.create(null);
 function createProtoAccessControl(runtimeOptions) {
@@ -1434,11 +1770,11 @@ function resetLoggedProperties() {
     });
 }
 
-},{"c30278caad7215a2":"1UqVd","54eeb040ba1b049d":"gqRvw"}],"1UqVd":[function(require,module,exports) {
+},{"68f49ceb6bf11b32":"1UqVd","d501e14593152748":"gqRvw"}],"1UqVd":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.createNewLookupObject = createNewLookupObject;
-var _utils = require("9ba73c82c8d5db25");
+var _utils = require("9364f912605bf53f");
 /**
  * Create a new object with "null"-prototype to avoid truthy results on prototype properties.
  * The resulting object can be used with "object[property]" to check if a property exists
@@ -1451,7 +1787,7 @@ var _utils = require("9ba73c82c8d5db25");
     ].concat(sources));
 }
 
-},{"9ba73c82c8d5db25":"1az9o"}],"fUPg1":[function(require,module,exports) {
+},{"9364f912605bf53f":"1az9o"}],"fUPg1":[function(require,module,exports) {
 // Build out our basic SafeString type
 "use strict";
 exports.__esModule = true;
@@ -1491,14 +1827,14 @@ function _interopRequireWildcard(obj) {
         return newObj;
     }
 }
-var _utils = require("72d195a24d0807e8");
+var _utils = require("e0cd7490a4a8815b");
 var Utils = _interopRequireWildcard(_utils);
-var _exception = require("7e24f596bd0db389");
+var _exception = require("3cdd666125a00268");
 var _exception2 = _interopRequireDefault(_exception);
-var _base = require("eddabb0a993c7e61");
-var _helpers = require("8bd84894bd806cd");
-var _internalWrapHelper = require("b2b1001631b61581");
-var _internalProtoAccess = require("e9182cca5e844a4a");
+var _base = require("61483b81fde4c3fd");
+var _helpers = require("1784f0b71cba0d71");
+var _internalWrapHelper = require("8ec17d2237199ec0");
+var _internalProtoAccess = require("6c7d31140c725cfe");
 function checkRevision(compilerInfo) {
     var compilerRevision = compilerInfo && compilerInfo[0] || 1, currentRevision = _base.COMPILER_REVISION;
     if (compilerRevision >= _base.LAST_COMPATIBLE_COMPILER_REVISION && compilerRevision <= _base.COMPILER_REVISION) return;
@@ -1733,7 +2069,7 @@ function passLookupPropertyOption(helper, container) {
     });
 }
 
-},{"72d195a24d0807e8":"1az9o","7e24f596bd0db389":"gO63O","eddabb0a993c7e61":"dt4wA","8bd84894bd806cd":"bxbLz","b2b1001631b61581":"bKEVr","e9182cca5e844a4a":"hJ0HO"}],"bKEVr":[function(require,module,exports) {
+},{"e0cd7490a4a8815b":"1az9o","3cdd666125a00268":"gO63O","61483b81fde4c3fd":"dt4wA","1784f0b71cba0d71":"bxbLz","8ec17d2237199ec0":"bKEVr","6c7d31140c725cfe":"hJ0HO"}],"bKEVr":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.wrapHelper = wrapHelper;
@@ -1812,13 +2148,13 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _parser = require("2d498110320086f5");
+var _parser = require("541314b1b882bb40");
 var _parser2 = _interopRequireDefault(_parser);
-var _whitespaceControl = require("f2cce6d8b9a32b36");
+var _whitespaceControl = require("bad178b173809688");
 var _whitespaceControl2 = _interopRequireDefault(_whitespaceControl);
-var _helpers = require("2ae734c0d8e9ae87");
+var _helpers = require("eae10f32d37a7735");
 var Helpers = _interopRequireWildcard(_helpers);
-var _utils = require("e87c5718ab7531ff");
+var _utils = require("d76332258c7b1d5c");
 exports.parser = _parser2["default"];
 var yy = {};
 _utils.extend(yy, Helpers);
@@ -1839,7 +2175,7 @@ function parse(input, options) {
     return strip.accept(ast);
 }
 
-},{"2d498110320086f5":"lu457","f2cce6d8b9a32b36":"7ezbr","2ae734c0d8e9ae87":"aNd96","e87c5718ab7531ff":"1az9o"}],"lu457":[function(require,module,exports) {
+},{"541314b1b882bb40":"lu457","bad178b173809688":"7ezbr","eae10f32d37a7735":"aNd96","d76332258c7b1d5c":"1az9o"}],"lu457":[function(require,module,exports) {
 // File ignored in coverage tests via setting in .istanbul.yml
 /* Jison generated parser */ "use strict";
 exports.__esModule = true;
@@ -7752,7 +8088,7 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _visitor = require("35c579b9861eda49");
+var _visitor = require("b78876b053176903");
 var _visitor2 = _interopRequireDefault(_visitor);
 function WhitespaceControl() {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -7881,7 +8217,7 @@ function omitLeft(body, i, multiple) {
 exports["default"] = WhitespaceControl;
 module.exports = exports["default"];
 
-},{"35c579b9861eda49":"fk5sS"}],"fk5sS":[function(require,module,exports) {
+},{"b78876b053176903":"fk5sS"}],"fk5sS":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 // istanbul ignore next
@@ -7890,7 +8226,7 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _exception = require("43dae92450408301");
+var _exception = require("76ca3a022ba69006");
 var _exception2 = _interopRequireDefault(_exception);
 function Visitor() {
     this.parents = [];
@@ -7982,7 +8318,7 @@ function visitPartial(partial) {
 exports["default"] = Visitor;
 module.exports = exports["default"];
 
-},{"43dae92450408301":"gO63O"}],"aNd96":[function(require,module,exports) {
+},{"76ca3a022ba69006":"gO63O"}],"aNd96":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 exports.SourceLocation = SourceLocation;
@@ -8001,7 +8337,7 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _exception = require("eddfbca50d3cd8d6");
+var _exception = require("490e821ab297818f");
 var _exception2 = _interopRequireDefault(_exception);
 function validateClose(open, close) {
     close = close.path ? close.path.original : close;
@@ -8160,7 +8496,7 @@ function preparePartialBlock(open, program, close, locInfo) {
     };
 }
 
-},{"eddfbca50d3cd8d6":"gO63O"}],"4Udtq":[function(require,module,exports) {
+},{"490e821ab297818f":"gO63O"}],"4Udtq":[function(require,module,exports) {
 /* eslint-disable new-cap */ "use strict";
 exports.__esModule = true;
 exports.Compiler = Compiler;
@@ -8172,10 +8508,10 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _exception = require("fa5d2cdfbaed4390");
+var _exception = require("16d5909d44d4f16f");
 var _exception2 = _interopRequireDefault(_exception);
-var _utils = require("c8efef2fe042b939");
-var _ast = require("cd2d05b9ace19982");
+var _utils = require("959490b0f7c68258");
+var _ast = require("88466b3bf9ae2d15");
 var _ast2 = _interopRequireDefault(_ast);
 var slice = [].slice;
 function Compiler() {}
@@ -8526,7 +8862,7 @@ function transformLiteralToPath(sexpr) {
     }
 }
 
-},{"fa5d2cdfbaed4390":"gO63O","c8efef2fe042b939":"1az9o","cd2d05b9ace19982":"iOlHO"}],"7iXdU":[function(require,module,exports) {
+},{"16d5909d44d4f16f":"gO63O","959490b0f7c68258":"1az9o","88466b3bf9ae2d15":"iOlHO"}],"7iXdU":[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 // istanbul ignore next
@@ -8535,11 +8871,11 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _base = require("8c218119532870e2");
-var _exception = require("1aff6d2cf1c0e7ee");
+var _base = require("a0a16efc5d27e7a7");
+var _exception = require("d25f115c9a9762da");
 var _exception2 = _interopRequireDefault(_exception);
-var _utils = require("c66aa61e7740a60f");
-var _codeGen = require("c3b3b03f3bfa41be");
+var _utils = require("930fe40140fd5914");
+var _codeGen = require("5a4632a3990a4ddf");
 var _codeGen2 = _interopRequireDefault(_codeGen);
 function Literal(value) {
     this.value = value;
@@ -9501,16 +9837,16 @@ function strictLookup(requireTerminal, compiler, parts, type) {
 exports["default"] = JavaScriptCompiler;
 module.exports = exports["default"];
 
-},{"8c218119532870e2":"dt4wA","1aff6d2cf1c0e7ee":"gO63O","c66aa61e7740a60f":"1az9o","c3b3b03f3bfa41be":"62qpE"}],"62qpE":[function(require,module,exports) {
+},{"a0a16efc5d27e7a7":"dt4wA","d25f115c9a9762da":"gO63O","930fe40140fd5914":"1az9o","5a4632a3990a4ddf":"62qpE"}],"62qpE":[function(require,module,exports) {
 /* global define */ "use strict";
 exports.__esModule = true;
-var _utils = require("3ba1ebc59a394267");
+var _utils = require("21db19743b10c9d0");
 var SourceNode = undefined;
 try {
     /* istanbul ignore next */ if (typeof define !== "function" || !define.amd) {
         // We don't support this in AMD environments. For these environments, we asusme that
         // they are running on the browser and thus have no need for the source-map library.
-        var SourceMap = require("a5ae38a16b48c631");
+        var SourceMap = require("f318d3d11bf97e0a");
         SourceNode = SourceMap.SourceNode;
     }
 } catch (err) {}
@@ -9637,24 +9973,24 @@ CodeGen.prototype = {
 exports["default"] = CodeGen;
 module.exports = exports["default"];
 
-},{"3ba1ebc59a394267":"1az9o","a5ae38a16b48c631":"6klNI"}],"6klNI":[function(require,module,exports) {
+},{"21db19743b10c9d0":"1az9o","f318d3d11bf97e0a":"6klNI"}],"6klNI":[function(require,module,exports) {
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
  * http://opensource.org/licenses/BSD-3-Clause
- */ exports.SourceMapGenerator = require("64b61ece2075d9f9").SourceMapGenerator;
-exports.SourceMapConsumer = require("6e2a61804140229e").SourceMapConsumer;
-exports.SourceNode = require("b8020c151adfae0b").SourceNode;
+ */ exports.SourceMapGenerator = require("4f3489f7a4aa86a").SourceMapGenerator;
+exports.SourceMapConsumer = require("74f5da57ddba8e").SourceMapConsumer;
+exports.SourceNode = require("24e5bc41542c0363").SourceNode;
 
-},{"64b61ece2075d9f9":"eAEEU","6e2a61804140229e":"29bOB","b8020c151adfae0b":"RKG6B"}],"eAEEU":[function(require,module,exports) {
+},{"4f3489f7a4aa86a":"eAEEU","74f5da57ddba8e":"29bOB","24e5bc41542c0363":"RKG6B"}],"eAEEU":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
  * http://opensource.org/licenses/BSD-3-Clause
- */ var base64VLQ = require("1f3cd2f38fbd5fa0");
-var util = require("8e53c5a954bb5b32");
-var ArraySet = require("5d2f1dbf44542aab").ArraySet;
-var MappingList = require("320a9be841512a07").MappingList;
+ */ var base64VLQ = require("c40e1500640cbc22");
+var util = require("c65fbfec2259bb0f");
+var ArraySet = require("fce2ada3f2269665").ArraySet;
+var MappingList = require("2ae94379d5b0c785").MappingList;
 /**
  * An instance of the SourceMapGenerator represents a source map which is
  * being built incrementally. You may pass an object with the following
@@ -9929,7 +10265,7 @@ SourceMapGenerator.prototype._generateSourcesContent = function SourceMapGenerat
 };
 exports.SourceMapGenerator = SourceMapGenerator;
 
-},{"1f3cd2f38fbd5fa0":"8tI6q","8e53c5a954bb5b32":"tCCrk","5d2f1dbf44542aab":"5GPwW","320a9be841512a07":"6uR3M"}],"8tI6q":[function(require,module,exports) {
+},{"c40e1500640cbc22":"8tI6q","c65fbfec2259bb0f":"tCCrk","fce2ada3f2269665":"5GPwW","2ae94379d5b0c785":"6uR3M"}],"8tI6q":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -9964,7 +10300,7 @@ exports.SourceMapGenerator = SourceMapGenerator;
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ var base64 = require("f4710eb62358e7e6");
+ */ var base64 = require("9fcf0c64c293678d");
 // A single base 64 digit can contain 6 bits of data. For the base 64 variable
 // length quantities we use in the source map spec, the first bit is the sign,
 // the next four bits are the actual value, and the 6th bit is the
@@ -10038,7 +10374,7 @@ var VLQ_CONTINUATION_BIT = VLQ_BASE;
     aOutParam.rest = aIndex;
 };
 
-},{"f4710eb62358e7e6":"1nPpB"}],"1nPpB":[function(require,module,exports) {
+},{"9fcf0c64c293678d":"1nPpB"}],"1nPpB":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10396,7 +10732,7 @@ exports.computeSourceURL = computeSourceURL;
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
  * http://opensource.org/licenses/BSD-3-Clause
- */ var util = require("ba6f0bb360a14b11");
+ */ var util = require("f4001388f67ef757");
 var has = Object.prototype.hasOwnProperty;
 var hasNativeMap = typeof Map !== "undefined";
 /**
@@ -10479,12 +10815,12 @@ var hasNativeMap = typeof Map !== "undefined";
 };
 exports.ArraySet = ArraySet;
 
-},{"ba6f0bb360a14b11":"tCCrk"}],"6uR3M":[function(require,module,exports) {
+},{"f4001388f67ef757":"tCCrk"}],"6uR3M":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2014 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
  * http://opensource.org/licenses/BSD-3-Clause
- */ var util = require("e53f12990b445d4a");
+ */ var util = require("a70191b97ba376d4");
 /**
  * Determine whether mappingB is after mappingA with respect to generated
  * position.
@@ -10547,16 +10883,16 @@ exports.ArraySet = ArraySet;
 };
 exports.MappingList = MappingList;
 
-},{"e53f12990b445d4a":"tCCrk"}],"29bOB":[function(require,module,exports) {
+},{"a70191b97ba376d4":"tCCrk"}],"29bOB":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
  * http://opensource.org/licenses/BSD-3-Clause
- */ var util = require("63c290dea46d4b98");
-var binarySearch = require("85f3a227b4cd935c");
-var ArraySet = require("3454bbc7fa6eb74f").ArraySet;
-var base64VLQ = require("9c8bd1433ca43aee");
-var quickSort = require("8a69444638758b4b").quickSort;
+ */ var util = require("b22324b13f72201b");
+var binarySearch = require("129ba2b16e81db9e");
+var ArraySet = require("832bf56bf6a231e4").ArraySet;
+var base64VLQ = require("95d11d359ee56491");
+var quickSort = require("7076e0beb1aa0cfd").quickSort;
 function SourceMapConsumer(aSourceMap, aSourceMapURL) {
     var sourceMap = aSourceMap;
     if (typeof aSourceMap === "string") sourceMap = util.parseSourceMapInput(aSourceMap);
@@ -11390,7 +11726,7 @@ IndexedSourceMapConsumer.prototype.constructor = SourceMapConsumer;
 };
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"63c290dea46d4b98":"tCCrk","85f3a227b4cd935c":"eBCh2","3454bbc7fa6eb74f":"5GPwW","9c8bd1433ca43aee":"8tI6q","8a69444638758b4b":"ffK7z"}],"eBCh2":[function(require,module,exports) {
+},{"b22324b13f72201b":"tCCrk","129ba2b16e81db9e":"eBCh2","832bf56bf6a231e4":"5GPwW","95d11d359ee56491":"8tI6q","7076e0beb1aa0cfd":"ffK7z"}],"eBCh2":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11572,8 +11908,8 @@ exports.LEAST_UPPER_BOUND = 2;
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
  * http://opensource.org/licenses/BSD-3-Clause
- */ var SourceMapGenerator = require("f2de2a56d60f4").SourceMapGenerator;
-var util = require("2702bc52adb83043");
+ */ var SourceMapGenerator = require("a07d2c2c4b11c39f").SourceMapGenerator;
+var util = require("18d5ff036a08fa06");
 // Matches a Windows-style `\r\n` newline or a `\n` newline used by all other
 // operating systems these days (capturing the result).
 var REGEX_NEWLINE = /(\r?\n)/;
@@ -11881,7 +12217,7 @@ var isSourceNode = "$$$isSourceNode$$$";
 };
 exports.SourceNode = SourceNode;
 
-},{"f2de2a56d60f4":"eAEEU","2702bc52adb83043":"tCCrk"}],"j0OeV":[function(require,module,exports) {
+},{"a07d2c2c4b11c39f":"eAEEU","18d5ff036a08fa06":"tCCrk"}],"j0OeV":[function(require,module,exports) {
 /* eslint-disable new-cap */ "use strict";
 exports.__esModule = true;
 exports.print = print;
@@ -11892,7 +12228,7 @@ function _interopRequireDefault(obj) {
         "default": obj
     };
 }
-var _visitor = require("9a4c9407b7db9e9c");
+var _visitor = require("72b261041fbdcb18");
 var _visitor2 = _interopRequireDefault(_visitor);
 function print(ast) {
     return new PrintVisitor().accept(ast);
@@ -12004,517 +12340,1354 @@ PrintVisitor.prototype.HashPair = function(pair) {
     return pair.key + "=" + this.accept(pair.value);
 }; /* eslint-enable new-cap */ 
 
-},{"9a4c9407b7db9e9c":"fk5sS"}],"jhUEF":[function(require,module,exports) {
+},{"72b261041fbdcb18":"fk5sS"}],"jhUEF":[function(require,module,exports) {
 "use strict";
 
-},{}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"7j52r":[function() {},{}],"7TNE1":[function(require,module,exports) {
+},{}],"gtMo0":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _enterLayout = require("../../layouts/EnterLayout");
-var _enterLayoutDefault = parcelHelpers.interopDefault(_enterLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _enterLayoutDefault.default));
-const logIn = {
+parcelHelpers.export(exports, "logInForm", ()=>logInForm);
+parcelHelpers.export(exports, "signInForm", ()=>signInForm);
+parcelHelpers.export(exports, "profileChangeForm", ()=>profileChangeForm);
+parcelHelpers.export(exports, "profileChangePasswordForm", ()=>profileChangePasswordForm);
+parcelHelpers.export(exports, "messageForm", ()=>messageForm);
+var _form = require("./Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _button = require("../button");
+var _input = require("../input");
+var _validate = require("../../utils/validate");
+const logInForm = new (0, _formDefault.default)({
+    classNames: [
+        "enter__form"
+    ],
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        submit: (event)=>(0, _validate.formValidation)(event)
+    },
     title: "Вход",
-    inputs: {
-        login: "Логин",
-        password: "Пароль"
+    login: (0, _input.logInInputLogin),
+    password: (0, _input.logInInputPassword),
+    mainBtn: (0, _button.logInAuthorizationBtn),
+    secondBtn: (0, _button.logInNoAccountBtn)
+});
+const signInForm = new (0, _formDefault.default)({
+    classNames: [
+        "enter__form"
+    ],
+    settings: {
+        withInternalID: true
     },
-    buttons: {
-        main: "Авторизоваться",
-        secondary: "Нет аккаунта",
-        link: "#/signin"
-    }
-};
-const LogIn = template(logIn);
-exports.default = LogIn;
-
-},{"handlebars":"i0QfX","../../layouts/EnterLayout":"ebJHF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ebJHF":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const enterLayout = `<form onSubmit="document.location='/#/home'" class="enter__form">
-						<div class="enter__title">{{title}}</div>
-						<ul class="inputs">
-							{{#each inputs}}
-							<li class="inputs__item input-wrapper">
-								<label for="{{@key}}" class="inputs__item__label label">{{this}}</label>
-								<input name="{{@key}}" type="text" class="inputs__item__value input">
-							</li>
-							{{/each}}
-						</ul>
-						<div class="enter__btns">
-							<button type="submit" class="enter__btns__autorisation btn">{{buttons.main}}</button>
-							<a href="{{buttons.link}}" class="enter__btns__link btn_flat">{{buttons.secondary}}</a>
-						</div>
-					</form>`;
-exports.default = enterLayout;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dIn3p":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _enterLayout = require("../../layouts/EnterLayout");
-var _enterLayoutDefault = parcelHelpers.interopDefault(_enterLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _enterLayoutDefault.default));
-const signIn = {
+    events: {
+        submit: (event)=>(0, _validate.formValidation)(event)
+    },
     title: "Регистрация",
-    inputs: {
-        email: "Почта",
-        login: "Логин",
-        first_name: "Имя",
-        second_name: "Фамилия",
-        phone: "Телефон",
-        password: "Пароль",
-        second_password: "Пароль (еще раз)"
+    email: (0, _input.signInInputEmail),
+    login: (0, _input.signInInputLogin),
+    first_name: (0, _input.signInInputFirstName),
+    second_name: (0, _input.signInInputSecondName),
+    phone: (0, _input.signInInputPhone),
+    password: (0, _input.signInInputPassword),
+    second_password: (0, _input.signInInputSecondPassword),
+    mainBtn: (0, _button.signInRegBtn),
+    secondBtn: (0, _button.signInEnterBtn)
+});
+const profileChangeForm = new (0, _formDefault.default)({
+    classNames: [
+        "change-profile__form"
+    ],
+    settings: {
+        withInternalID: true
     },
-    buttons: {
-        main: "Зарегистрироваться",
-        secondary: "Войти",
-        link: "#/login"
-    }
-};
-const SignIn = template(signIn);
-exports.default = SignIn;
+    events: {
+        submit: (event)=>(0, _validate.formValidation)(event)
+    },
+    changeable: true,
+    email: (0, _input.changeProfileInputEmail),
+    login: (0, _input.changeProfileInputLogin),
+    first_name: (0, _input.changeProfileInputFirstName),
+    second_name: (0, _input.changeProfileInputSecondName),
+    display_name: (0, _input.changeProfileInputDisplayName),
+    phone: (0, _input.changeProfileInputPhone),
+    saveButton: (0, _button.profileSaveBtn)
+});
+const profileChangePasswordForm = new (0, _formDefault.default)({
+    classNames: [
+        "change-profile__form"
+    ],
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        submit: (event)=>(0, _validate.formValidation)(event)
+    },
+    changeable: true,
+    old_password: (0, _input.changeProfileInputOldPassword),
+    new_password: (0, _input.changeProfileInputNewPassword),
+    new_password_again: (0, _input.changeProfileInputOldPasswordAgain),
+    saveButton: (0, _button.profileChangePasswordSaveBtn)
+});
+const messageForm = new (0, _formDefault.default)({
+    classNames: [
+        "message-bar"
+    ],
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        submit: (event)=>(0, _validate.formValidation)(event)
+    },
+    addBtn: (0, _button.messageBarAddBtn),
+    input: (0, _input.messageBarInput),
+    sendBtn: (0, _button.messageBarSendBtn)
+});
 
-},{"handlebars":"i0QfX","../../layouts/EnterLayout":"ebJHF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"77TWF":[function(require,module,exports) {
+},{"./Form":"lBHfW","../button":"f08eE","../input":"8Cm93","../../utils/validate":"7oegh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lBHfW":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _error404 = require("../../components/errors/Error404");
-var _error404Default = parcelHelpers.interopDefault(_error404);
-var _error500 = require("../../components/errors/Error500");
-var _error500Default = parcelHelpers.interopDefault(_error500);
-var _errorPageScss = require("./errorPage.scss");
-const ErrorPage = {
-    render: (path)=>{
-        return `
-			<section class="error">
-				${path === "/error500" ? (0, _error500Default.default) : (0, _error404Default.default)}
-			</section>
-		`;
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Form extends (0, _blockDefault.default) {
+    constructor(props){
+        super("form", props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = Form;
+
+},{"../../utils/eventBus/Block":"khckK","./tmp":"c9Fa8","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"c9Fa8":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const formTmp = `
+	{{#if title}}
+		<div class="enter__title">{{title}}</div>
+		<ul class="inputs">
+			{{{email}}}
+			{{{login}}}
+			{{{first_name}}}
+			{{{second_name}}}
+			{{{phone}}}
+			{{{password}}}
+			{{{second_password}}}
+		</ul>
+
+		<div class="enter__btns">
+			{{{ mainBtn }}}
+			{{{ secondBtn }}}
+		</div>
+	{{else}}
+		{{#if saveButton}}
+			<ul class="info">
+				{{{ email }}}
+				{{{ login }}}
+				{{{ first_name }}}
+				{{{ second_name }}}
+				{{{ display_name }}}
+				{{{ phone }}}
+				{{{ old_password }}}
+				{{{ new_password }}}
+				{{{ new_password_again }}}
+			</ul>
+			{{{ saveButton }}}
+		{{else}}
+			{{{ sendBtn }}}
+			{{{ input }}}
+			{{{ addBtn }}}
+		{{/if}}
+		
+	{{/if}}
+`;
+exports.default = formTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f08eE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "signInRegBtn", ()=>signInRegBtn);
+parcelHelpers.export(exports, "signInEnterBtn", ()=>signInEnterBtn);
+parcelHelpers.export(exports, "logInAuthorizationBtn", ()=>logInAuthorizationBtn);
+parcelHelpers.export(exports, "logInNoAccountBtn", ()=>logInNoAccountBtn);
+parcelHelpers.export(exports, "chatsListProfileBtn", ()=>chatsListProfileBtn);
+parcelHelpers.export(exports, "messageBarAddBtn", ()=>messageBarAddBtn);
+parcelHelpers.export(exports, "messageBarSendBtn", ()=>messageBarSendBtn);
+parcelHelpers.export(exports, "error404Btn", ()=>error404Btn);
+parcelHelpers.export(exports, "error500Btn", ()=>error500Btn);
+parcelHelpers.export(exports, "profileBackBtn", ()=>profileBackBtn);
+parcelHelpers.export(exports, "profileChangeBackBtn", ()=>profileChangeBackBtn);
+parcelHelpers.export(exports, "profileChangePasswordBackBtn", ()=>profileChangePasswordBackBtn);
+parcelHelpers.export(exports, "profileSaveBtn", ()=>profileSaveBtn);
+parcelHelpers.export(exports, "profileChangePasswordSaveBtn", ()=>profileChangePasswordSaveBtn);
+parcelHelpers.export(exports, "profileChangeDataBtn", ()=>profileChangeDataBtn);
+parcelHelpers.export(exports, "profileChangePasswordBtn", ()=>profileChangePasswordBtn);
+parcelHelpers.export(exports, "profileOutBtn", ()=>profileOutBtn);
+var _button = require("./Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+const signInRegBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "enter__btns__autorisation",
+        "btn"
+    ],
+    text: "Зарегистрироваться",
+    type: "submit",
+    settings: {
+        withInternalID: true
+    }
+});
+const signInEnterBtn = new (0, _buttonDefault.default)({
+    tagName: "a",
+    href: "#/login",
+    classNames: [
+        "enter__btns__link",
+        "btn_flat"
+    ],
+    text: "Войти",
+    settings: {
+        withInternalID: true
+    }
+});
+const logInAuthorizationBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "enter__btns__autorisation",
+        "btn"
+    ],
+    text: "Авторизоваться",
+    type: "submit",
+    settings: {
+        withInternalID: true
+    }
+});
+const logInNoAccountBtn = new (0, _buttonDefault.default)({
+    tagName: "a",
+    href: "#/signin",
+    classNames: [
+        "enter__btns__link",
+        "btn_flat"
+    ],
+    text: "Нет аккаунта",
+    settings: {
+        withInternalID: true
+    }
+});
+const chatsListProfileBtn = new (0, _buttonDefault.default)({
+    tagName: "a",
+    href: "/#/profile",
+    classNames: [
+        "profile-btn",
+        "btn_flat"
+    ],
+    text: "Профиль",
+    settings: {
+        withInternalID: true
+    }
+});
+const messageBarAddBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "btn",
+        "btn_mini"
+    ],
+    settings: {
+        withInternalID: true
+    }
+});
+const messageBarSendBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "btn",
+        "btn_mini"
+    ],
+    settings: {
+        withInternalID: true
+    }
+});
+const error404Btn = new (0, _buttonDefault.default)({
+    tagName: "a",
+    href: "/#/home",
+    classNames: [
+        "error__link",
+        "btn_flat"
+    ],
+    text: "Назад к чатам",
+    settings: {
+        withInternalID: true
+    }
+});
+const error500Btn = new (0, _buttonDefault.default)({
+    tagName: "a",
+    href: "/#/home",
+    classNames: [
+        "error__link",
+        "btn_flat"
+    ],
+    text: "Назад к чатам",
+    settings: {
+        withInternalID: true
+    }
+});
+const profileBackBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "back-btn",
+        "btn"
+    ],
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        click: (event)=>{
+            event.preventDefault();
+            document.location = "/#/home";
+        }
+    }
+});
+const profileChangeBackBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "back-btn",
+        "btn"
+    ],
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        click: (event)=>{
+            event.preventDefault();
+            document.location = "/#/profile";
+        }
+    }
+});
+const profileChangePasswordBackBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "back-btn",
+        "btn"
+    ],
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        click: (event)=>{
+            event.preventDefault();
+            document.location = "/#/profile";
+        }
+    }
+});
+const profileSaveBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "actions__btn-save",
+        "btn"
+    ],
+    text: "Сохранить",
+    settings: {
+        withInternalID: true
+    }
+});
+const profileChangePasswordSaveBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "actions__btn-save",
+        "btn"
+    ],
+    text: "Сохранить",
+    settings: {
+        withInternalID: true
+    }
+});
+const profileChangeDataBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "actions__btn",
+        "btn",
+        "btn_flat"
+    ],
+    text: "Изменить данные",
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        click: (event)=>{
+            document.location = "/#/profile/changedata";
+        }
+    }
+});
+const profileChangePasswordBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "actions__btn",
+        "btn",
+        "btn_flat"
+    ],
+    text: "Изменить пароль",
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        click: (event)=>{
+            document.location = "/#/profile/changepass";
+        }
+    }
+});
+const profileOutBtn = new (0, _buttonDefault.default)({
+    tagName: "button",
+    classNames: [
+        "actions__btn",
+        "actions__btn_red",
+        "btn",
+        "btn_flat"
+    ],
+    text: "Выйти",
+    settings: {
+        withInternalID: true
+    },
+    events: {
+        click: (event)=>{
+            document.location = "/#/login";
+        }
+    }
+});
+
+},{"./Button":"9QfVD","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9QfVD":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Button extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props.tagName, props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+        if (this.props.type) this.element.type = this.props.type;
+        if (this.props.href) this.element.href = this.props.href;
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = Button;
+
+},{"../../utils/eventBus/Block":"khckK","./tmp":"6Dyeg","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6Dyeg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const buttonTmp = `
+	{{ text }}
+`;
+exports.default = buttonTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8Cm93":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "logInInputLogin", ()=>logInInputLogin);
+parcelHelpers.export(exports, "logInInputPassword", ()=>logInInputPassword);
+parcelHelpers.export(exports, "signInInputEmail", ()=>signInInputEmail);
+parcelHelpers.export(exports, "signInInputLogin", ()=>signInInputLogin);
+parcelHelpers.export(exports, "signInInputFirstName", ()=>signInInputFirstName);
+parcelHelpers.export(exports, "signInInputSecondName", ()=>signInInputSecondName);
+parcelHelpers.export(exports, "signInInputPhone", ()=>signInInputPhone);
+parcelHelpers.export(exports, "signInInputPassword", ()=>signInInputPassword);
+parcelHelpers.export(exports, "signInInputSecondPassword", ()=>signInInputSecondPassword);
+parcelHelpers.export(exports, "chatsSearchInput", ()=>chatsSearchInput);
+parcelHelpers.export(exports, "messageBarInput", ()=>messageBarInput);
+parcelHelpers.export(exports, "changeProfileInputEmail", ()=>changeProfileInputEmail);
+parcelHelpers.export(exports, "changeProfileInputLogin", ()=>changeProfileInputLogin);
+parcelHelpers.export(exports, "changeProfileInputFirstName", ()=>changeProfileInputFirstName);
+parcelHelpers.export(exports, "changeProfileInputSecondName", ()=>changeProfileInputSecondName);
+parcelHelpers.export(exports, "changeProfileInputDisplayName", ()=>changeProfileInputDisplayName);
+parcelHelpers.export(exports, "changeProfileInputPhone", ()=>changeProfileInputPhone);
+parcelHelpers.export(exports, "changeProfileInputOldPassword", ()=>changeProfileInputOldPassword);
+parcelHelpers.export(exports, "changeProfileInputNewPassword", ()=>changeProfileInputNewPassword);
+parcelHelpers.export(exports, "changeProfileInputOldPasswordAgain", ()=>changeProfileInputOldPasswordAgain);
+var _input = require("./Input");
+const logInInputLogin = new (0, _input.FormInput)({
+    label: {
+        text: "Логин"
+    },
+    input: {
+        name: "login"
+    }
+});
+const logInInputPassword = new (0, _input.FormInput)({
+    label: {
+        text: "Пароль"
+    },
+    input: {
+        name: "password"
+    }
+});
+const signInInputEmail = new (0, _input.FormInput)({
+    label: {
+        text: "Почта"
+    },
+    input: {
+        name: "email"
+    }
+});
+const signInInputLogin = new (0, _input.FormInput)({
+    label: {
+        text: "Логин"
+    },
+    input: {
+        name: "login"
+    }
+});
+const signInInputFirstName = new (0, _input.FormInput)({
+    label: {
+        text: "Имя"
+    },
+    input: {
+        name: "first_name"
+    }
+});
+const signInInputSecondName = new (0, _input.FormInput)({
+    label: {
+        text: "Фамилия"
+    },
+    input: {
+        name: "second_name"
+    }
+});
+const signInInputPhone = new (0, _input.FormInput)({
+    label: {
+        text: "Телефон"
+    },
+    input: {
+        name: "phone"
+    }
+});
+const signInInputPassword = new (0, _input.FormInput)({
+    label: {
+        text: "Пароль"
+    },
+    input: {
+        name: "password"
+    }
+});
+const signInInputSecondPassword = new (0, _input.FormInput)({
+    label: {
+        text: "Пароль (еще раз)"
+    },
+    input: {
+        name: "second_password"
+    }
+});
+const chatsSearchInput = new (0, _input.Input)({
+    tagName: "div",
+    href: "#/login",
+    classNames: [
+        "search"
+    ],
+    input: {
+        name: "search",
+        placeholder: "Поиск",
+        type: "text"
+    },
+    settings: {
+        withInternalID: true
+    }
+});
+const messageBarInput = new (0, _input.Input)({
+    classNames: [
+        "message-bar__message-wrapper"
+    ],
+    input: {
+        classNames: [
+            "message-bar__message"
+        ],
+        name: "message",
+        placeholder: "Сообщение",
+        type: "text"
+    },
+    settings: {
+        withInternalID: true
+    }
+});
+const changeProfileInputEmail = new (0, _input.ProfileInput)({
+    label: {
+        text: "Почта"
+    },
+    input: {
+        name: "email",
+        placeholder: "some@email.com"
+    }
+});
+const changeProfileInputLogin = new (0, _input.ProfileInput)({
+    label: {
+        text: "Логин"
+    },
+    input: {
+        name: "login",
+        placeholder: "some_login"
+    }
+});
+const changeProfileInputFirstName = new (0, _input.ProfileInput)({
+    label: {
+        text: "Имя"
+    },
+    input: {
+        name: "first_name",
+        placeholder: "Ivan"
+    }
+});
+const changeProfileInputSecondName = new (0, _input.ProfileInput)({
+    label: {
+        text: "Фамилия"
+    },
+    input: {
+        name: "second_name",
+        placeholder: "Ivanov"
+    }
+});
+const changeProfileInputDisplayName = new (0, _input.ProfileInput)({
+    label: {
+        text: "Имя в чате"
+    },
+    input: {
+        name: "display_name",
+        placeholder: "some"
+    }
+});
+const changeProfileInputPhone = new (0, _input.ProfileInput)({
+    label: {
+        text: "Телефон"
+    },
+    input: {
+        name: "phone",
+        placeholder: "8(999)999-99-99"
+    }
+});
+const changeProfileInputOldPassword = new (0, _input.ProfileInput)({
+    label: {
+        text: "Старый пароль"
+    },
+    input: {
+        name: "old_password",
+        placeholder: "•••••••"
+    }
+});
+const changeProfileInputNewPassword = new (0, _input.ProfileInput)({
+    label: {
+        text: "Новый пароль"
+    },
+    input: {
+        name: "new_password",
+        placeholder: "•••••••"
+    }
+});
+const changeProfileInputOldPasswordAgain = new (0, _input.ProfileInput)({
+    label: {
+        text: "Повторите новый пароль"
+    },
+    input: {
+        name: "new_password_again",
+        placeholder: "•••••••"
+    }
+});
+
+},{"./Input":"jHCLW","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jHCLW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Input", ()=>Input);
+parcelHelpers.export(exports, "FormInput", ()=>FormInput);
+parcelHelpers.export(exports, "ProfileInput", ()=>ProfileInput);
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _validate = require("../../utils/validate");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Input extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props.tagName, props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event)
+        };
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+class FormInput extends (0, _blockDefault.default) {
+    constructor(props){
+        super("li", props);
+        this.props.classNames = [
+            "inputs__item",
+            "input-wrapper"
+        ];
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+        this.props.label = {
+            classNames: [
+                "inputs__item__label",
+                "label"
+            ],
+            text: this.props.label.text
+        };
+        this.props.input = {
+            classNames: [
+                "inputs__item__value",
+                "input"
+            ],
+            type: "text",
+            name: this.props.input.name
+        };
+        this.props.settings = {
+            withInternalID: true
+        };
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event)
+        };
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+class ProfileInput extends (0, _blockDefault.default) {
+    constructor(props){
+        super("li", props);
+        this.element.classList.add("input-wrapper_long");
+        this.props.label = {
+            classNames: [
+                "label_long"
+            ],
+            text: this.props.label.text
+        };
+        this.props.input = {
+            classNames: [
+                "input_long"
+            ],
+            type: "text",
+            name: this.props.input.name,
+            placeholder: this.props.input.placeholder
+        };
+        this.props.settings = {
+            withInternalID: true
+        };
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event)
+        };
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+
+},{"../../utils/eventBus/Block":"khckK","../../utils/validate":"7oegh","./tmp":"lCLDi","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7oegh":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "inputValidation", ()=>inputValidation);
+parcelHelpers.export(exports, "formValidation", ()=>formValidation);
+var _validate = require("./validate");
+var _validateDefault = parcelHelpers.interopDefault(_validate);
+//Input
+const inputValidation = (event)=>{
+    let newClassName = " input_validate";
+    if (event.target.name === "message") newClassName = " message-bar__message_validate";
+    if ((0, _validateDefault.default)(event.target)) {
+        if (event.target.className.includes(newClassName)) event.target.className = event.target.className.replace(newClassName, "");
+    } else if (!event.target.className.includes(newClassName)) event.target.className += newClassName;
+};
+//Form
+const formValidation = (event)=>{
+    event.preventDefault();
+    const data = {};
+    let newClassName = " input_validate";
+    for(let i = 0; i < event.target.length; i++)if (event.target[i].nodeName === "INPUT") {
+        if (event.target[i].name === "message") newClassName = " message-bar__message_validate";
+        if ((0, _validateDefault.default)(event.target[i])) {
+            if (event.target[i].className.includes(newClassName)) event.target[i].className = event.target[i].className.replace(newClassName, "");
+            data[event.target[i].name] = event.target[i].value;
+        } else if (!event.target[i].className.includes(newClassName)) event.target[i].className += newClassName;
+    }
+    if (Object.keys(data).length) console.log(data);
+};
+
+},{"./validate":"ihQgK","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ihQgK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const loginRegEx = /^[a-zA-Z0-9](?=.*[a-zA-z])[a-zA-Z0-9-_\.]{2,20}$/;
+const passwordRegEx = /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*()_+=/?><.\.]{3,41}$/;
+const phoneRegEx = /^(\+)?((\d{2,3}) ?\d|\d)(([ -]?\d)|( ?(\d{2,3}) ?)){7,17}\d$/;
+const namesRegEx = /^[A-ZА-Я][A-ZА-Яa-zа-я0-9-\.]{1,40}$/;
+const emailRegEx = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}/;
+function validator(value, regExp) {
+    return value.match(regExp) !== null;
+}
+const validate = (target)=>{
+    const { name, value } = target;
+    switch(name){
+        case "email":
+            return validator(value, emailRegEx);
+        case "login":
+            return validator(value, loginRegEx);
+        case "first_name":
+            return validator(value, namesRegEx);
+        case "second_name":
+            return validator(value, namesRegEx);
+        case "phone":
+            return validator(value, phoneRegEx);
+        case "password":
+        case "old_password":
+        case "new_password":
+        case "new_password_again":
+            return validator(value, passwordRegEx);
+        case "message":
+        case "display_name":
+            return value.length > 1;
+        default:
+            return false;
     }
 };
-exports.default = ErrorPage;
+exports.default = validate;
 
-},{"./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/errors/Error404":"2wglc","../../components/errors/Error500":"ljICK"}],"3kp0d":[function() {},{}],"2wglc":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lCLDi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const inputTmp = `
+	{{#if label}}
+		<label 
+			for={{ input.name }} 
+			class='{{#each label.classNames}} {{ this }}{{/each}}'
+		>{{ label.text }}</label>
+	{{/if}}
+	<input 
+		name={{ input.name }} 
+		{{#if input.placeholder}}
+			placeholder={{ input.placeholder }}
+		{{/if}}
+		{{#if input.classNames}}
+			class='{{#each input.classNames}} {{ this }}{{/each}}'
+		{{/if}}
+		type={{ input.type }}
+	>	
+`;
+exports.default = inputTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bT9hR":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _errorLayout = require("../../layouts/ErrorLayout");
-var _errorLayoutDefault = parcelHelpers.interopDefault(_errorLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _errorLayoutDefault.default));
-const error404 = {
-    errorNumber: "404",
-    subtitle: "Не туда попали",
-    button: "Назад к чатам"
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+let template = (0, _handlebarsDefault.default).compile((0, _tmpDefault.default));
+const listItems = {
+    links: {
+        enter: {
+            label: "Вход",
+            value: "/#/login"
+        },
+        registration: {
+            label: "Регистрация",
+            value: "/#/signin"
+        },
+        home: {
+            label: "Домашняя",
+            value: "/#/home"
+        },
+        chat: {
+            label: "Чат",
+            value: "/#/home/chat"
+        },
+        profile: {
+            label: "Профиль",
+            value: "/#/profile"
+        },
+        page404: {
+            label: "Страница 404",
+            value: "/#/error404"
+        },
+        page500: {
+            label: "Страница 500",
+            value: "/#/error500"
+        },
+        changeProfile: {
+            label: "Изменить профиль",
+            value: "/#/profile/changedata"
+        },
+        changePassword: {
+            label: "Изменить пароль",
+            value: "/#/profile/changepass"
+        }
+    }
 };
-const Error404 = template(error404);
-exports.default = Error404;
+const navigation = template(listItems);
+exports.default = navigation;
 
-},{"handlebars":"i0QfX","../../layouts/ErrorLayout":"7HgAR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7HgAR":[function(require,module,exports) {
+},{"handlebars":"i0QfX","./tmp":"bCMYw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bCMYw":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const errorLayout = `<div class="error__title">{{errorNumber}}</div>
-					<div class="error__subtitle">{{subtitle}}</div>
-					<a href="/#/home" class="error__link btn_flat">{{button}}</a>`;
-exports.default = errorLayout;
+const navigationTmp = `
+	<nav class="nav">
+		<ul class="nav__list">
+			{{#each links}}
+			<li class="nav__list__item"><a class="btn" href="{{value}}">{{label}}</a></li>
+			{{/each}}
+		</ul>
+	</nav>
+`;
+exports.default = navigationTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ljICK":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ikSQA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _errorLayout = require("../../layouts/ErrorLayout");
-var _errorLayoutDefault = parcelHelpers.interopDefault(_errorLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _errorLayoutDefault.default));
-const error500 = {
-    errorNumber: "500",
-    subtitle: "Мы уже фиксим",
-    button: "Назад к чатам"
-};
-const Error500 = template(error500);
-exports.default = Error500;
+const enterTmp = `
+	{{{ form }}}
+	{{#if navigation}}
+		{{{ navigation }}}
+	{{/if}}
+`;
+exports.default = enterTmp;
 
-},{"handlebars":"i0QfX","../../layouts/ErrorLayout":"7HgAR","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iL2O4":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"iL2O4":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _chatsList = require("../../components/chatsList/ChatsList");
+var _page = require("../Page");
+var _pageDefault = parcelHelpers.interopDefault(_page);
+var _chatsList = require("../../components/chatsList");
 var _chatsListDefault = parcelHelpers.interopDefault(_chatsList);
-var _chat = require("../../components/chat/Chat");
-var _chatDefault = parcelHelpers.interopDefault(_chat);
-var _emptyChatLayout = require("../../layouts/home/EmptyChatLayout");
-var _emptyChatLayoutDefault = parcelHelpers.interopDefault(_emptyChatLayout);
+var _chat = require("../../components/chat");
+var _button = require("../../components/button");
+var _input = require("../../components/input");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _homePageScss = require("./homePage.scss");
-const HomePage = {
-    render: (path)=>{
-        return `
-		<section class="home">
-			<div class="left">
-				<a href="/#/profile" class="profile-btn btn_flat">Профиль</a>
-				<div class="search">
-					<input name="search" placeholder="Поиск" type="text">
-				</div>
-				${0, _chatsListDefault.default}
-			</div>
-
-			<div class="right">
-				${path === "/home/chat" ? (0, _chatDefault.default) : (0, _emptyChatLayoutDefault.default)}
-			</div>
-		</section>`;
-    }
-};
+const HomePage = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "home"
+    ],
+    profileBtn: (0, _button.chatsListProfileBtn),
+    search: (0, _input.chatsSearchInput),
+    chatsList: (0, _chatsListDefault.default),
+    chat: (0, _chat.chat),
+    emptyChat: (0, _chat.emptyChat)
+});
 exports.default = HomePage;
 
-},{"../../components/chatsList/ChatsList":"204dg","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/chat/Chat":"8WaPN","../../layouts/home/EmptyChatLayout":"itg8K"}],"204dg":[function(require,module,exports) {
+},{"../Page":"ahuV5","../../components/chatsList":"a6TBE","../../components/chat":"bcKxD","../../components/button":"f08eE","../../components/input":"8Cm93","./tmp":"5raXH","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"a6TBE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _chatListLayout = require("../../layouts/home/ChatListLayout");
-var _chatListLayoutDefault = parcelHelpers.interopDefault(_chatListLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _chatListLayoutDefault.default));
-let chats = {
-    id: {
-        1: {
-            name: "Андрей",
-            last_msg: "Друзья, у меня для вас выпуск новостей!...",
-            time: "12:40",
-            new_msg: "chat__info__new-msg_active",
-            active: false
-        },
-        2: {
-            name: "Сергей",
-            last_msg: "Друзья,не для вас у меня выпуск новостей!...",
-            time: "06:30",
-            new_msg: "",
-            active: true
-        },
-        3: {
-            name: "Петр",
-            last_msg: "Выпуск новостей, у меня для вас, друзья!...",
-            time: "13:40",
-            new_msg: "",
-            active: false
-        }
+var _chatsList = require("./ChatsList");
+var _chatsListDefault = parcelHelpers.interopDefault(_chatsList);
+var _chatItem = require("../chatItem");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+const chatsList = new (0, _chatsListDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "chats"
+    ],
+    chats: (0, _chatItem.chatItem)
+});
+exports.default = chatsList;
+
+},{"./ChatsList":"204dg","../chatItem":"2no7k","./tmp":"aWqTz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"204dg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+class ChatsList extends (0, _blockDefault.default) {
+    constructor(props){
+        super("div", props);
+        this.element.classList.add(this.props.classNames);
     }
-};
-const ChatsList = template(chats);
+    render() {
+        return this.compile(this.props.layout, this.props);
+    }
+}
 exports.default = ChatsList;
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/home/ChatListLayout":"57l52"}],"57l52":[function(require,module,exports) {
+},{"../../utils/eventBus/Block":"khckK","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2no7k":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const chatsInner = `<div class="chat__photo"></div>
-					<div class="chat__info">
-						<div class="chat__info__message">
-							<div class="chat__info__name">{{name}}</div>
-							<div class="chat__info__last-msg">{{last_msg}}</div>
-						</div>
-						<div class="chat__info__stat">
-							<div class="chat__info__time">{{time}}</div>
-							<div class="chat__info__new-msg {{new_msg}}"></div>
-						</div>
-					</div>`;
-const ChatListLayout = `<div class="chats">
-							{{#each id}}
-								{{#if active}}
-								<div class="chat chat_active">
-									${chatsInner}
-								</div>
-								{{else}}
-								<div class="chat">
-									${chatsInner}
-								</div>
-								{{/if}}
-							{{/each}}
-						</div>`;
-exports.default = ChatListLayout;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jkT4w":[function() {},{}],"8WaPN":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _chatLayout = require("../../layouts/home/ChatLayout");
-var _chatLayoutDefault = parcelHelpers.interopDefault(_chatLayout);
-const template = (0, _handlebarsDefault.default).compile((0, _chatLayoutDefault.default));
-const chat = {
-    name: "Андрей",
+parcelHelpers.export(exports, "chatItem", ()=>chatItem);
+var _chatItem = require("./ChatItem");
+var _chatItemDefault = parcelHelpers.interopDefault(_chatItem);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+const chatItem = new (0, _chatItemDefault.default)({
+    layout: (0, _tmpDefault.default),
+    isActive: true,
+    classNames: [
+        "chat"
+    ],
+    photo: "",
     message: {
-        message_friend: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!",
-        message_user: "Lorem?"
+        name: "Андрей",
+        message: "Друзья, у меня для вас выпуск новостей!..."
+    },
+    statistics: {
+        time: "12:40",
+        newMassage: "chat__info__new-msg_active"
     }
-};
-const Chat = template(chat);
+});
+
+},{"./ChatItem":"ci2qe","./tmp":"8vJ5R","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ci2qe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class ChatItem extends (0, _blockDefault.default) {
+    constructor(props){
+        super("div", props);
+        if (this.props.isActive) this.props.classNames.push("chat_active");
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = ChatItem;
+
+},{"../../utils/eventBus/Block":"khckK","./tmp":"8vJ5R","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8vJ5R":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const chatItemTmp = `
+	<div class="chat__photo">{{ photo }}</div>
+	<div class="chat__info">
+		<div class="chat__info__message">
+			<div class="chat__info__name">{{ message.name }}</div>
+			<div class="chat__info__last-msg">{{ message.message }}</div>
+		</div>
+		<div class="chat__info__stat">
+			<div class="chat__info__time">{{ statistics.time  }}</div>
+			<div class="chat__info__new-msg {{ statistics.newMassage }}"></div>
+		</div>
+	</div>
+`;
+exports.default = chatItemTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aWqTz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const chatsListTmp = `
+	{{{ chats }}}
+`;
+exports.default = chatsListTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bcKxD":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "chat", ()=>chat);
+parcelHelpers.export(exports, "emptyChat", ()=>emptyChat);
+var _chat = require("./Chat");
+var _chatDefault = parcelHelpers.interopDefault(_chat);
+var _message = require("../message");
+var _form = require("../form");
+const chat = new (0, _chatDefault.default)({
+    name: "Андрей",
+    friendMessage: (0, _message.friendMessage),
+    userMessage: (0, _message.userMessage),
+    form: (0, _form.messageForm)
+});
+const emptyChat = `<div class="message-history__empty">Выберите чат чтобы отправить сообщение</div>`;
+
+},{"./Chat":"8WaPN","../message":"aQKxb","../form":"gtMo0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8WaPN":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Chat extends (0, _blockDefault.default) {
+    constructor(props){
+        super("div", props);
+        this.element.classList.add("right");
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
 exports.default = Chat;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","handlebars":"i0QfX","../../layouts/home/ChatLayout":"7FmyE"}],"7FmyE":[function(require,module,exports) {
+},{"../../utils/eventBus/Block":"khckK","./tmp":"hmad9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hmad9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const ChatLayout = `<div class="user-bar">
-						<div class="user-bar__user">
-							<div class="user-bar__photo"></div>
-							<div class="user-bar__name">{{name}}</div>
-						</div>
-						<div class="user-bar__menu">
-							<span></span>
-							<span></span>
-							<span></span>
-						</div>
-					</div>
-					<div class="message-history">
-						{{#each message}}
-						<div class="message-history__message {{@key}}">{{this}}</div>
-						{{/each}}
-					</div>
-					<div class="message-bar">
-						<button class="btn btn_mini"></button>
-						<input name="message" placeholder="Сообщение" class="message-bar__message">
-						<button class="btn btn_mini"></button>
-					</div>`;
-exports.default = ChatLayout;
+const chatTmp = `
+	<div class="user-bar">
+		<div class="user-bar__user">
+			<div class="user-bar__photo"></div>
+			<div class="user-bar__name">{{name}}</div>
+		</div>
+		<div class="user-bar__menu">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+	</div>
+	<div class="message-history">
+		{{{ friendMessage }}}
+		{{{ userMessage }}}
+	</div>
+	{{{ form }}}
+					
+`;
+exports.default = chatTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"itg8K":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aQKxb":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const EmptyChatLayout = `<div class="message-history__empty">Выберите чат чтобы отправить сообщение</div>`;
-exports.default = EmptyChatLayout;
+parcelHelpers.export(exports, "friendMessage", ()=>friendMessage);
+parcelHelpers.export(exports, "userMessage", ()=>userMessage);
+var _message = require("./Message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+const friendMessage = new (0, _messageDefault.default)({
+    classNames: [
+        "message-history__message",
+        "message_friend"
+    ],
+    text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!"
+});
+const userMessage = new (0, _messageDefault.default)({
+    classNames: [
+        "message-history__message",
+        "message_user"
+    ],
+    text: "Lorem ipsum? Ad!"
+});
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lpbML":[function(require,module,exports) {
+},{"./Message":"7BNwL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7BNwL":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _profileInfo = require("../../components/profileInfo/ProfileInfo");
-var _profileInfoDefault = parcelHelpers.interopDefault(_profileInfo);
-var _profileChange = require("../../components/profileChange/ProfileChange");
-var _profileChangeDefault = parcelHelpers.interopDefault(_profileChange);
-var _profilePassword = require("../../components/profilePassword/ProfilePassword");
-var _profilePasswordDefault = parcelHelpers.interopDefault(_profilePassword);
-var _profileButtons = require("../../layouts/profile/ProfileButtons");
-var _profileButtonsDefault = parcelHelpers.interopDefault(_profileButtons);
-var _profileSaveButton = require("../../layouts/profile/ProfileSaveButton");
-var _profileSaveButtonDefault = parcelHelpers.interopDefault(_profileSaveButton);
+var _block = require("../../utils/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Message extends (0, _blockDefault.default) {
+    constructor(props){
+        super("div", props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = Message;
+
+},{"../../utils/eventBus/Block":"khckK","./tmp":"1XH68","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1XH68":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const messageTmp = `
+	{{text}}
+`;
+exports.default = messageTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5raXH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const homePageTmp = `
+	<div class="left">
+		{{{ profileBtn }}}
+		{{{ search }}}
+		{{{ chatsList }}}
+	</div>
+
+	{{#if chat}}
+		{{{ chat }}}
+	{{else}}
+		<div class='right'>
+			{{{ emptyChat }}}
+		</div>
+	{{/if}}
+`;
+exports.default = homePageTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jkT4w":[function() {},{}],"lpbML":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ProfilePage", ()=>ProfilePage);
+parcelHelpers.export(exports, "ChangeProfilePage", ()=>ChangeProfilePage);
+parcelHelpers.export(exports, "ChangeProfilePasswordPage", ()=>ChangeProfilePasswordPage);
+var _page = require("../Page");
+var _pageDefault = parcelHelpers.interopDefault(_page);
+var _button = require("../../components/button");
+var _form = require("../../components/form");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _profilePageScss = require("./profilePage.scss");
-const ProfilePage = {
-    render: (path)=>{
-        return `
-			<section class="profile">
-				<button onclick="document.location='/#/home'" class="back-btn btn"><-</button>
-				<div class="user">
-					<div name="avatar" class="user__avatar"></div>
-					<div class="user__name">Иван</div>
-				</div>
-				${path == "/profile" ? (0, _profileInfoDefault.default) : path == "/profile/changedata" ? (0, _profileChangeDefault.default) : (0, _profilePasswordDefault.default)}
-				${path == "/profile" ? (0, _profileButtonsDefault.default) : (0, _profileSaveButtonDefault.default)}	
-			</section>
-		`;
-    }
-};
-exports.default = ProfilePage;
-
-},{"../../components/profileInfo/ProfileInfo":"ioFyA","../../components/profileChange/ProfileChange":"kTKcA","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../components/profilePassword/ProfilePassword":"iL2jX","../../layouts/profile/ProfileButtons":"kaPbh","../../layouts/profile/ProfileSaveButton":"dUlyo"}],"ioFyA":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _profileInfoLayout = require("../../layouts/profile/ProfileInfoLayout");
-var _profileInfoLayoutDefault = parcelHelpers.interopDefault(_profileInfoLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _profileInfoLayoutDefault.default));
-const profileData = {
-    fields: {
+const ProfilePage = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "profile"
+    ],
+    backButton: (0, _button.profileBackBtn),
+    changeable: false,
+    inputs: {
         email: {
             label: "Почта",
-            value: "lorem@ipsum.com",
-            changeable: false
+            input: "some@email.com"
         },
         login: {
             label: "Логин",
-            value: "ivanivanov",
-            changeable: false
+            input: "some"
         },
         first_name: {
             label: "Имя",
-            value: "Иван",
-            changeable: false
+            input: "Ivan"
         },
         second_name: {
             label: "Фамилия",
-            value: "Иванов",
-            changeable: false
+            input: "Ivanov"
         },
         display_name: {
             label: "Имя в чате",
-            value: "Иван",
-            changeable: false
+            input: "some"
         },
         phone: {
             label: "Телефон",
-            value: "+7 (909) 967 30 30",
-            changeable: false
+            input: "8(999)999-99-99"
         }
-    }
-};
-const ProfileInfo = template(profileData);
-exports.default = ProfileInfo;
+    },
+    changeDataButton: (0, _button.profileChangeDataBtn),
+    changePasswordButton: (0, _button.profileChangePasswordBtn),
+    outButton: (0, _button.profileOutBtn)
+});
+const ChangeProfilePage = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "profile"
+    ],
+    backButton: (0, _button.profileChangeBackBtn),
+    changeable: true,
+    form: (0, _form.profileChangeForm)
+});
+const ChangeProfilePasswordPage = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "profile"
+    ],
+    backButton: (0, _button.profileChangePasswordBackBtn),
+    changeable: true,
+    form: (0, _form.profileChangePasswordForm)
+});
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileInfoLayout":"2j05I"}],"2j05I":[function(require,module,exports) {
+},{"../Page":"ahuV5","../../components/button":"f08eE","../../components/form":"gtMo0","./tmp":"2IQIZ","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2IQIZ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const ProfileInfoLayout = `<ul class="info">
-							{{#each fields}}
-							<li class="input-wrapper_long">
-								{{#if changeable}}
-									<label for="{{@key}}" class="label_long">{{label}}</label>
-									<input name="{{@key}}" placeholder="{{value}}" class="input_long">
-								{{else}}
-									<div class="label_long">{{label}}</div>
-									<div class="info__value">{{value}}</div>
-								{{/if}}
-							</li>
-							{{/each}}
-						</ul>`;
-exports.default = ProfileInfoLayout;
+const profilePageTmp = `
+	{{{ backButton }}}
+	
+	<div class="user">
+		<div name="avatar" class="user__avatar"></div>
+		<div class="user__name">Иван</div>
+	</div>
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kTKcA":[function(require,module,exports) {
+
+	{{#if form}}
+		<div class="info">
+			{{{ form }}}
+		</div>
+	{{else}}
+		<ul class="info">
+			{{#each inputs}}
+				<li class="input-wrapper_long">
+					<div class="label_long">{{this.label}}</div>
+					<div class="info__value">{{this.input}}</div>
+				</li>
+			{{/each}}
+		</ul>
+		<div class="actions">
+			{{{ changeDataButton }}}
+			{{{ changePasswordButton }}}
+			{{{ outButton }}}	
+		</div>
+	{{/if}}
+`;
+exports.default = profilePageTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f2frq":[function() {},{}],"77TWF":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _profileInfoLayout = require("../../layouts/profile/ProfileInfoLayout");
-var _profileInfoLayoutDefault = parcelHelpers.interopDefault(_profileInfoLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _profileInfoLayoutDefault.default));
-const profileDataChangeable = {
-    fields: {
-        email: {
-            label: "Почта",
-            value: "lorem@ipsum.com",
-            changeable: true
-        },
-        login: {
-            label: "Логин",
-            value: "ivanivanov",
-            changeable: true
-        },
-        first_name: {
-            label: "Имя",
-            value: "Иван",
-            changeable: true
-        },
-        second_name: {
-            label: "Фамилия",
-            value: "Иванов",
-            changeable: true
-        },
-        display_name: {
-            label: "Имя в чате",
-            value: "Иван",
-            changeable: true
-        },
-        phone: {
-            label: "Телефон",
-            value: "+7 (909) 967 30 30",
-            changeable: true
-        }
-    }
-};
-const ProfileChange = template(profileDataChangeable);
-exports.default = ProfileChange;
+parcelHelpers.export(exports, "Error404Page", ()=>Error404Page);
+parcelHelpers.export(exports, "Error500Page", ()=>Error500Page);
+var _page = require("../Page");
+var _pageDefault = parcelHelpers.interopDefault(_page);
+var _button = require("../../components/button");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _errorPageScss = require("./errorPage.scss");
+const Error404Page = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "error"
+    ],
+    errorNumber: "404",
+    subtitle: "Не туда попали",
+    button: (0, _button.error404Btn)
+});
+const Error500Page = new (0, _pageDefault.default)({
+    layout: (0, _tmpDefault.default),
+    classNames: [
+        "error"
+    ],
+    errorNumber: "500",
+    subtitle: "Мы уже фиксим",
+    button: (0, _button.error500Btn)
+});
 
-},{"handlebars":"i0QfX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../layouts/profile/ProfileInfoLayout":"2j05I"}],"f2frq":[function() {},{}],"iL2jX":[function(require,module,exports) {
+},{"../Page":"ahuV5","../../components/button":"f08eE","./tmp":"hScSR","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hScSR":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _profileInfoLayout = require("../../layouts/profile/ProfileInfoLayout");
-var _profileInfoLayoutDefault = parcelHelpers.interopDefault(_profileInfoLayout);
-let template = (0, _handlebarsDefault.default).compile((0, _profileInfoLayoutDefault.default));
-const profilePasswordChangeable = {
-    fields: {
-        oldPassword: {
-            label: "Старый пароль",
-            value: "•••••••",
-            changeable: true
-        },
-        newPassword: {
-            label: "Новый пароль",
-            value: "•••••••••••",
-            changeable: true
-        },
-        repeatNewPassword: {
-            label: "Повторите новый пароль",
-            value: "•••••••••••",
-            changeable: true
-        }
-    }
-};
-const ProfilePasswod = template(profilePasswordChangeable);
-exports.default = ProfilePasswod;
+const errorTmp = `
+	<div class="error__title">{{ errorNumber }}</div>
+	<div class="error__subtitle">{{ subtitle }}</div>
+	{{{ button }}}
+`;
+exports.default = errorTmp;
 
-},{"handlebars":"i0QfX","../../layouts/profile/ProfileInfoLayout":"2j05I","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kaPbh":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const ProfileButtons = `<div class="actions">
-							<button onclick="document.location='/#/profile/changeData'" class="actions__btn btn btn_flat">Изменить данные</button>
-							<button onclick="document.location='/#/profile/changePass'" class="actions__btn btn btn_flat">Изменить пароль</button>
-							<button onclick="document.location='/#/home'" class="actions__btn actions__btn_red btn btn_flat">Выйти</button>
-						</div>`;
-exports.default = ProfileButtons;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dUlyo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const SaveButton = `<button onclick="document.location='/#/profile'" class="actions__btn-save btn">Сохранить</button>`;
-exports.default = SaveButton;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1bNbF":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}],"1bNbF":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _errorPage = require("../pages/errorPage/ErrorPage");
 var _errorPageDefault = parcelHelpers.interopDefault(_errorPage);
+var _renderDOM = require("./eventBus/renderDOM");
+var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
 const router = (routes)=>{
     const parseLocation = ()=>location.hash.slice(1).toLowerCase() || "/";
     const findComponentByPath = (path, routes)=>routes.find((r)=>r.path.match(new RegExp(`^\\${path}$`, "gm"))) || undefined;
     const router = ()=>{
         const path = parseLocation();
-        const { component =(0, _errorPageDefault.default)  } = findComponentByPath(path, routes) || {};
-        document.querySelector("#root").innerHTML = component.render(path);
+        const { component = (0, _errorPageDefault.default) } = findComponentByPath(path, routes) || {};
+        document.querySelector("#root").innerHTML = "";
+        (0, _renderDOMDefault.default)("#root", component);
     };
     window.addEventListener("hashchange", router);
     window.addEventListener("load", router);
 };
 exports.default = router;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../pages/errorPage/ErrorPage":"77TWF"}]},["e11Rl","gLLPy"], "gLLPy", "parcelRequirefc40")
+},{"../pages/errorPage/ErrorPage":"77TWF","./eventBus/renderDOM":"j1J1b","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j1J1b":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function renderDOM(query, block) {
+    const root = document.querySelector(query);
+    if (!root) return;
+    root.appendChild(block.getContent());
+    return root;
+}
+exports.default = renderDOM;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f3BSW","gLLPy"], "gLLPy", "parcelRequirefc40")
 
 //# sourceMappingURL=index.4d6bcbeb.js.map
