@@ -15,7 +15,7 @@ class Form extends Block<TForm> {
 		this.props.events = {
 			submit: (event: Event) => {
 				event.preventDefault();
-				formValidation(event);
+				formValidation(event.target);
 			},
 		};
 	}
