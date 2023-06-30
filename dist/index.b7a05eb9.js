@@ -12421,7 +12421,7 @@ class Form extends (0, _blockDefault.default) {
         this.props.events = {
             submit: (event)=>{
                 event.preventDefault();
-                (0, _validate.formValidation)(event);
+                (0, _validate.formValidation)(event.target);
             }
         };
     }
@@ -12439,67 +12439,90 @@ parcelHelpers.export(exports, "formValidation", ()=>formValidation);
 var _validate = require("./validate");
 var _validateDefault = parcelHelpers.interopDefault(_validate);
 // Input
-const inputValidation = (event)=>{
+const inputValidation = (target, data)=>{
     let newClassName = " input_validate";
-    const target = event.target;
-    if (target.name === "message") newClassName = " message-bar__message_validate";
-    if ((0, _validateDefault.default)(target)) {
-        if (target.className.includes(newClassName)) target.className = target.className.replace(newClassName, "");
-    } else if (!target.className.includes(newClassName)) target.className += newClassName;
+    const input = target;
+    if (input.name === "message") newClassName = " message-bar__message_validate";
+    if ((0, _validateDefault.default)(input) === true) {
+        if (input.className.includes(newClassName)) {
+            input.className = input.className.replace(newClassName, "");
+            const element = document.querySelector("p");
+            input.parentElement?.removeChild(element);
+        }
+        if (data) data[input.name] = input.value;
+    } else if (!input.className.includes(newClassName)) {
+        input.className += newClassName;
+        input.parentElement?.append((0, _validateDefault.default)(input));
+    }
 };
 // Form
-const formValidation = (event)=>{
+const formValidation = (target)=>{
     const data = {};
-    let newClassName = " input_validate";
-    const target = event.target;
-    for(let i = 0; i < target.length; i++)if (target[i].nodeName === "INPUT") {
-        const inputElement = target[i];
-        if (inputElement.name === "message") newClassName = " message-bar__message_validate";
-        if ((0, _validateDefault.default)(inputElement)) {
-            if (target[i].className.includes(newClassName)) target[i].className = target[i].className.replace(newClassName, "");
-            data[inputElement.name] = inputElement.value;
-        } else if (!target[i].className.includes(newClassName)) target[i].className += newClassName;
-    }
+    const form = target;
+    for(let i = 0; i < form.length; i++)if (form[i].nodeName === "INPUT") inputValidation(form[i], data);
     if (Object.keys(data).length) console.log(data);
 };
 
 },{"./validate":"k4Zkp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k4Zkp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _errorMessage = require("./ErrorMessage");
 const loginRegEx = /^[a-zA-Z0-9](?=.*[a-zA-z])[a-zA-Z0-9-_\.]{2,20}$/;
 const passwordRegEx = /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*()_+=/?><.\.]{3,41}$/;
 const phoneRegEx = /^(\+)?((\d{2,3}) ?\d|\d)(([ -]?\d)|( ?(\d{2,3}) ?)){7,17}\d$/;
 const namesRegEx = /^[A-ZА-Я][A-ZА-Яa-zа-я0-9-\.]{1,40}$/;
 const emailRegEx = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}/;
-function validator(value, regEx) {
+function matcher(value, regEx) {
     return value.match(regEx) !== null;
 }
+const createError = (errorMessage)=>{
+    let error = document.createElement("p");
+    error.classList.add("input__validation-error");
+    error.innerHTML = errorMessage;
+    return error;
+};
 const validate = (target)=>{
     const { name, value } = target;
     switch(name){
         case "email":
-            return validator(value, emailRegEx);
+            return matcher(value, emailRegEx) || createError((0, _errorMessage.emailErrorMessage));
         case "login":
-            return validator(value, loginRegEx);
+            return matcher(value, loginRegEx) || createError((0, _errorMessage.loginErrorMessage));
         case "first_name":
-            return validator(value, namesRegEx);
         case "second_name":
-            return validator(value, namesRegEx);
+            return matcher(value, namesRegEx) || createError((0, _errorMessage.nameErrorMessage));
         case "phone":
-            return validator(value, phoneRegEx);
+            return matcher(value, phoneRegEx) || createError((0, _errorMessage.phoneErrorMessage));
         case "password":
+        case "second_password":
         case "old_password":
         case "new_password":
         case "new_password_again":
-            return validator(value, passwordRegEx);
+            return matcher(value, passwordRegEx) || createError((0, _errorMessage.passwordErrorMessage));
         case "message":
         case "display_name":
-            return value.length > 1;
+            return value.length > 1 || createError((0, _errorMessage.messageErrorMessage));
         default:
             return false;
     }
 };
 exports.default = validate;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ErrorMessage":"562Bc"}],"562Bc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "nameErrorMessage", ()=>nameErrorMessage);
+parcelHelpers.export(exports, "loginErrorMessage", ()=>loginErrorMessage);
+parcelHelpers.export(exports, "emailErrorMessage", ()=>emailErrorMessage);
+parcelHelpers.export(exports, "passwordErrorMessage", ()=>passwordErrorMessage);
+parcelHelpers.export(exports, "phoneErrorMessage", ()=>phoneErrorMessage);
+parcelHelpers.export(exports, "messageErrorMessage", ()=>messageErrorMessage);
+const nameErrorMessage = "Поле должно быть на латинице или кириллице, без пробелов, цифр и спецсимволов. Первая буква должна быть заглавной.";
+const loginErrorMessage = "Поле должно содержать от 3 до 20 символов латиницы. Может содержать цифры, но не состоять из них. Без пробелов, без спецсимволов.";
+const emailErrorMessage = "Поле должно быть на латинице, может включать цифры и спецсимволы, обязательно должна быть \xabсобака\xbb (@).";
+const passwordErrorMessage = "Поле должно содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.";
+const phoneErrorMessage = "Поле должно содержать от 10 до 15 символов, состоит из цифр, может начинается с плюса.";
+const messageErrorMessage = "Поле не должно быть пустым.";
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dvMyO":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13051,7 +13074,7 @@ class Input extends (0, _blockDefault.default) {
             withInternalID: true
         };
         this.props.events = {
-            focusout: (event)=>(0, _validate.inputValidation)(event)
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
         };
     }
     render() {
@@ -13087,7 +13110,7 @@ class FormInput extends (0, _blockDefault.default) {
             withInternalID: true
         };
         this.props.events = {
-            focusout: (event)=>(0, _validate.inputValidation)(event)
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
         };
     }
     render() {
@@ -13116,7 +13139,7 @@ class ProfileInput extends (0, _blockDefault.default) {
             withInternalID: true
         };
         this.props.events = {
-            focusout: (event)=>(0, _validate.inputValidation)(event)
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
         };
     }
     render() {
