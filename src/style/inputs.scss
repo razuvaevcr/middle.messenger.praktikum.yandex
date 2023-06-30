@@ -11,6 +11,7 @@
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
+		flex-wrap: wrap;
 	}
 }
 
@@ -20,6 +21,8 @@
 	text-align: left;
 	&_long {
 		color: $text;
+		width: 50%;
+		text-align: left;
 	}
 }
 
@@ -35,6 +38,8 @@
 		}
 	&_long {
 		text-align: right;
+		width: 50%;
+		text-align: right;
 		color: $text-shadow;
 		border: none;
 			&:focus {
@@ -43,5 +48,11 @@
 	}
 	&_validate {
 		border-bottom: 1px solid red;
+	}
+	&__validation-error {
+		margin: 7px 0;
+		color: red;
+		text-align: left;
+		font-size: 80%;
 	}
 }

@@ -29,7 +29,7 @@
 }
 
 .input-wrapper_long {
-  flex-direction: row;
+  flex-flow: wrap;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -45,6 +45,8 @@
 
 .label_long {
   color: #1e1e1e;
+  text-align: left;
+  width: 50%;
 }
 
 .input {
@@ -62,8 +64,10 @@
 
 .input_long {
   text-align: right;
+  text-align: right;
   color: #999;
   border: none;
+  width: 50%;
 }
 
 .input_long:focus {
@@ -72,6 +76,13 @@
 
 .input_validate {
   border-bottom: 1px solid red;
+}
+
+.input__validation-error {
+  color: red;
+  text-align: left;
+  margin: 7px 0;
+  font-size: 80%;
 }
 
 * {

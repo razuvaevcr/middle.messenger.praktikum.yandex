@@ -1,5 +1,5 @@
 import queryStringify from './queryStringify';
-import { TRequestOptions } from '../../types/types';
+import { TRequestOptions, THTTPMethod } from '../../types/types';
 
 
 const METHODS = {
@@ -10,13 +10,13 @@ const METHODS = {
 };
 
 class HTTPTransport {
-	public get = (url: string, options: TRequestOptions = {}) => this.request(url, { ...options, method: METHODS.GET }, options.timeout);
+	public get: THTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.GET }, options.timeout);
 
-	public post = (url: string, options: TRequestOptions = {}) => this.request(url, { ...options, method: METHODS.POST }, options.timeout);
+	public post: THTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.POST }, options.timeout);
 
-	public put = (url: string, options: TRequestOptions = {}) => this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
+	public put: THTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
 
-	public delete = (url: string, options: TRequestOptions = {}) => this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
+	public delete: THTTPMethod = (url, options = {}) => this.request(url, { ...options, method: METHODS.DELETE }, options.timeout);
 
 	request = (url: string, options: TRequestOptions, timeout = 5000) => {
 		const { headers = {}, method, data } = options;

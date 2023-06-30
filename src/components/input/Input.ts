@@ -15,7 +15,7 @@ class Input extends Block<TInput> {
 		this.props.settings = { withInternalID: true };
 
 		this.props.events = {
-			focusout: (event: Event) => inputValidation(event),
+			focusout: (event: Event) => inputValidation(event.target),
 		};
 	}
 
@@ -57,7 +57,7 @@ class FormInput extends Block<TInput> {
 		this.props.settings = { withInternalID: true };
 
 		this.props.events = {
-			focusout: (event: Event) => inputValidation(event),
+			focusout: (event: Event) => inputValidation(event.target),
 		};
 	}
 
@@ -91,7 +91,7 @@ class ProfileInput extends Block<TInput> {
 		this.props.settings = { withInternalID: true };
 
 		this.props.events = {
-			focusout: (event: Event) => inputValidation(event),
+			focusout: (event: Event) => inputValidation(event.target),
 		};
 	}
 

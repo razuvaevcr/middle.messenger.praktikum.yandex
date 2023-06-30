@@ -132,6 +132,8 @@ type TRequestOptions = {
     data?: any,
 };
 
+type THTTPMethod = (url: string, options?: TRequestOptions) => Promise<unknown>
+
 
 export {
 	TButton,
@@ -144,4 +146,5 @@ export {
 	TPage,
 	TRoutes,
 	TRequestOptions,
+	THTTPMethod,
 };
