@@ -575,112 +575,297 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"jeorp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _enterPage = require("./pages/enterPage/EnterPage");
+var _router = require("./core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
+var _logInPage = require("./pages/enterPage/LogInPage");
+var _logInPageDefault = parcelHelpers.interopDefault(_logInPage);
+var _signUpPage = require("./pages/enterPage/SignUpPage");
+var _signUpPageDefault = parcelHelpers.interopDefault(_signUpPage);
 var _homePage = require("./pages/homePage/HomePage");
 var _homePageDefault = parcelHelpers.interopDefault(_homePage);
 var _profilePage = require("./pages/profilePage/ProfilePage");
-var _errorPage = require("./pages/errorPage/ErrorPage");
-var _router = require("./utils/router/router");
-var _routerDefault = parcelHelpers.interopDefault(_router);
-const routes = [
-    {
-        path: "/",
-        component: (0, _enterPage.LogInPage)
-    },
-    {
-        path: "/login",
-        component: (0, _enterPage.LogInPage)
-    },
-    {
-        path: "/signin",
-        component: (0, _enterPage.SignInPage)
-    },
-    {
-        path: "/home",
-        component: (0, _homePageDefault.default)
-    },
-    {
-        path: "/home/chat",
-        component: (0, _homePageDefault.default)
-    },
-    {
-        path: "/error500",
-        component: (0, _errorPage.Error500Page)
-    },
-    {
-        path: "/error404",
-        component: (0, _errorPage.Error404Page)
-    },
-    {
-        path: "/profile",
-        component: (0, _profilePage.ProfilePage)
-    },
-    {
-        path: "/profile/changedata",
-        component: (0, _profilePage.ChangeProfilePage)
-    },
-    {
-        path: "/profile/changepass",
-        component: (0, _profilePage.ChangeProfilePasswordPage)
+var _profilePageDefault = parcelHelpers.interopDefault(_profilePage);
+var _changeProfilePage = require("./pages/profilePage/ChangeProfilePage");
+var _changeProfilePageDefault = parcelHelpers.interopDefault(_changeProfilePage);
+var _changePasswordPage = require("./pages/profilePage/ChangePasswordPage");
+var _changePasswordPageDefault = parcelHelpers.interopDefault(_changePasswordPage);
+var _error404Page = require("./pages/errorPage/Error404Page");
+var _error404PageDefault = parcelHelpers.interopDefault(_error404Page);
+var _error500Page = require("./pages/errorPage/Error500page");
+var _error500PageDefault = parcelHelpers.interopDefault(_error500Page);
+var _authController = require("./core/controllers/AuthController");
+var _authControllerDefault = parcelHelpers.interopDefault(_authController);
+var Routes;
+(function(Routes) {
+    Routes["index"] = "/";
+    Routes["login"] = "/login";
+    Routes["signup"] = "/signup";
+    Routes["home"] = "/home";
+    Routes["chat"] = "/home/chat";
+    Routes["error500"] = "/error500";
+    Routes["error404"] = "/error404";
+    Routes["profile"] = "/profile";
+    Routes["changedata"] = "/profile/changedata";
+    Routes["changepass"] = "/profile/changepass";
+})(Routes || (Routes = {}));
+window.addEventListener("DOMContentLoaded", async ()=>{
+    (0, _routerDefault.default).use(Routes.index, (0, _logInPageDefault.default)).use(Routes.login, (0, _logInPageDefault.default)).use(Routes.signup, (0, _signUpPageDefault.default)).use(Routes.home, (0, _homePageDefault.default)).use(Routes.chat, (0, _homePageDefault.default)).use(Routes.error500, (0, _error500PageDefault.default)).use(Routes.error404, (0, _error404PageDefault.default)).use(Routes.profile, (0, _profilePageDefault.default)).use(Routes.changedata, (0, _changeProfilePageDefault.default)).use(Routes.changepass, (0, _changePasswordPageDefault.default));
+    let isProtectedRoute = true;
+    switch(window.location.pathname){
+        case Routes.index:
+        case Routes.login:
+        case Routes.signup:
+            isProtectedRoute = false;
+            break;
     }
-];
-(0, _routerDefault.default)(routes);
+    try {
+        await (0, _authControllerDefault.default).fetchUser();
+        (0, _routerDefault.default).start();
+        if (!isProtectedRoute) (0, _routerDefault.default).go("/");
+    } catch (e) {
+        console.log(e);
+        (0, _routerDefault.default).start();
+        if (isProtectedRoute) (0, _routerDefault.default).go("/");
+    }
+});
 
-},{"./pages/enterPage/EnterPage":"g37EE","./pages/homePage/HomePage":"m8YrX","./pages/profilePage/ProfilePage":"042Wj","./pages/errorPage/ErrorPage":"55oR1","./utils/router/router":"8M1dZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"g37EE":[function(require,module,exports) {
+},{"./core/router/router":"8L95r","./pages/enterPage/LogInPage":"oeMJf","./pages/enterPage/SignUpPage":"iy3eE","./pages/homePage/HomePage":"m8YrX","./pages/profilePage/ProfilePage":"042Wj","./pages/profilePage/ChangeProfilePage":"5wl6t","./pages/profilePage/ChangePasswordPage":"3Ivop","./pages/errorPage/Error404Page":"7dwr4","./pages/errorPage/Error500page":"aNgAt","./core/controllers/AuthController":"5uAVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8L95r":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "LogInPage", ()=>LogInPage);
-parcelHelpers.export(exports, "SignInPage", ()=>SignInPage);
-var _page = require("../Page");
-var _pageDefault = parcelHelpers.interopDefault(_page);
-var _form = require("../../components/form");
+var _route = require("./route");
+var _routeDefault = parcelHelpers.interopDefault(_route);
+class Router {
+    constructor(rootQuery){
+        if (Router.__instance) return Router.__instance;
+        this.routes = [];
+        this.history = window.history;
+        this._currentRoute = null;
+        this._rootQuery = rootQuery;
+        Router.__instance = this;
+    }
+    use(pathname, block) {
+        const route = new (0, _routeDefault.default)(pathname, block, {
+            rootQuery: this._rootQuery
+        });
+        this.routes.push(route);
+        return this;
+    }
+    start() {
+        window.onpopstate = (()=>{
+            this._onRoute(window.location.pathname);
+        }).bind(this);
+        this._onRoute(window.location.pathname);
+    }
+    _onRoute(pathname) {
+        const route = this.getRoute(pathname);
+        if (!route) return;
+        if (this._currentRoute && this._currentRoute !== route) this._currentRoute.leave();
+        this._currentRoute = route;
+        route.render();
+    }
+    go(pathname) {
+        this.history.pushState({}, "", pathname);
+        this._onRoute(pathname);
+    }
+    back() {
+        this.history.back();
+    }
+    forward() {
+        this.history.forward();
+    }
+    getRoute(pathname) {
+        return this.routes.find((route)=>route.match(pathname));
+    }
+}
+const router = new Router("#root");
+exports.default = router;
+
+},{"./route":"bC8oP","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bC8oP":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _renderDOM = require("./renderDOM");
+var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
+class Route {
+    constructor(pathname, view, props){
+        this.pathname = pathname;
+        this._blockClass = view;
+        this._block = null;
+        this._props = props;
+    }
+    navigate(pathname) {
+        if (this.match(pathname)) {
+            this.pathname = pathname;
+            this.render();
+        }
+    }
+    leave() {
+        if (this._block) this._block.hide();
+    }
+    match(pathname) {
+        return isEqual(pathname, this.pathname);
+    }
+    render() {
+        if (!this._block) {
+            this._block = new this._blockClass();
+            (0, _renderDOMDefault.default)(this._props.rootQuery, this._block);
+            return;
+        }
+        this._block.show();
+    }
+    getPathname() {
+        return this.pathname;
+    }
+}
+function isEqual(lhs, rhs) {
+    return lhs === rhs;
+}
+exports.default = Route;
+
+},{"./renderDOM":"grvkj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"grvkj":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function renderDOM(query, block) {
+    const root = document.querySelector(query);
+    block.dispatchComponentDidMount();
+    if (!root) return;
+    root.appendChild(block.getContent());
+}
+exports.default = renderDOM;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"oeMJf":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _enterInput = require("../../components/input/EnterInput");
+var _enterInputDefault = parcelHelpers.interopDefault(_enterInput);
+var _form = require("../../components/form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _validate = require("../../utils/validate");
+var _authController = require("../../core/controllers/AuthController");
+var _authControllerDefault = parcelHelpers.interopDefault(_authController);
+var _store = require("../../core/store/Store");
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
 var _navigation = require("../../components/navigation/navigation");
 var _navigationDefault = parcelHelpers.interopDefault(_navigation);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _enterPageScss = require("./enterPage.scss");
-const LogInPage = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "enter"
-    ],
-    form: (0, _form.logInForm),
-    navigation: (0, _navigationDefault.default)
-});
-const SignInPage = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "enter"
-    ],
-    form: (0, _form.signInForm)
-});
-
-},{"../Page":"leFJS","../../components/form":"2s5qC","../../components/navigation/navigation":"6oDGN","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"leFJS":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _block = require("../utils/eventBus/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-class Page extends (0, _blockDefault.default) {
-    constructor(props){
-        super("section", props);
+class BaseLogInPage extends (0, _blockDefault.default) {
+    constructor(){
+        super("section", {
+            classNames: [
+                "enter"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "enter__form"
+                ],
+                title: "Вход",
+                login: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Логин"
+                    },
+                    input: {
+                        name: "login"
+                    }
+                }),
+                password: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Пароль"
+                    },
+                    input: {
+                        name: "password"
+                    }
+                }),
+                mainBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    classNames: [
+                        "enter__btns__autorisation",
+                        "btn"
+                    ],
+                    text: "Авторизоваться",
+                    type: "submit",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                secondBtn: new (0, _buttonDefault.default)({
+                    tagName: "a",
+                    href: "/signup",
+                    classNames: [
+                        "enter__btns__link",
+                        "btn_flat"
+                    ],
+                    text: "Нет аккаунта",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = (0, _validate.formValidation)(event.target);
+                        if (data) (0, _authControllerDefault.default).signin(data);
+                    }
+                }
+            }),
+            navigation: (0, _navigationDefault.default)
+        });
         this.props.classNames.forEach((className)=>{
             this.element.classList.add(className);
         });
     }
     render() {
-        return this.compile(this.props.layout, this.props);
+        return this.compile((0, _tmpDefault.default), this.props);
     }
 }
-exports.default = Page;
+const LogInPage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseLogInPage);
+exports.default = LogInPage;
 
-},{"../utils/eventBus/Block":"i8Ayu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i8Ayu":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/EnterInput":"1fCZE","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../components/navigation/navigation":"6oDGN","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h0Aox":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _uuid = require("uuid");
 var _eventBus = require("./EventBus");
 var _eventBusDefault = parcelHelpers.interopDefault(_eventBus);
-var _compiler = require("../compiler/compiler");
+var _compiler = require("../../utils/compiler/compiler");
 var _compilerDefault = parcelHelpers.interopDefault(_compiler);
+var _isEqual = require("../../utils/isEqual/isEqual");
+var _isEqualDefault = parcelHelpers.interopDefault(_isEqual);
 class Block {
     static #_ = (()=>{
         this.EVENTS = {
@@ -693,7 +878,10 @@ class Block {
     constructor(tagName = "div", propsAndChildren){
         this.setProps = (nextProps)=>{
             if (!nextProps) return;
-            Object.assign(this.props, nextProps);
+            const { children, props } = this._getChildren(nextProps);
+            Object.assign(this.children, children);
+            Object.assign(this.props, props);
+        // Object.assign(this.props, nextProps);
         };
         const { children, props } = this._getChildren(propsAndChildren);
         this.children = children;
@@ -715,7 +903,24 @@ class Block {
         const children = {};
         const props = {};
         Object.entries(propsAndChildren).forEach(([key, value])=>{
-            if (value instanceof Block) children[key] = value;
+            if (Array.isArray(value)) value.forEach((elem)=>{
+                if (elem instanceof Block) {
+                    if (children[key]) children[key] = [
+                        ...children[key],
+                        elem
+                    ];
+                    else children[key] = [
+                        elem
+                    ];
+                } else if (props[key]) props[key] = [
+                    ...props[key],
+                    elem
+                ];
+                else props[key] = [
+                    elem
+                ];
+            });
+            else if (value instanceof Block) children[key] = value;
             else props[key] = value;
         });
         return {
@@ -742,21 +947,35 @@ class Block {
             ...props
         };
         Object.entries(this.children).forEach(([key, child])=>{
-            propsAndStubs[key] = `<div data-id="${child._id}"></div>`;
+            if (Array.isArray(child)) child.forEach((elem)=>{
+                if (propsAndStubs[key]) propsAndStubs[key] = propsAndStubs[key] + `<div data-id="id-${elem._id}"></div>`;
+                else propsAndStubs[key] = `<div data-id="id-${elem._id}"></div>`;
+            });
+            else propsAndStubs[key] = `<div data-id="id-${child._id}"></div>`;
         });
         const fragment = this._createDocumentElement("template");
         fragment.innerHTML = (0, _compilerDefault.default)(template, propsAndStubs);
         Object.values(this.children).forEach((child)=>{
-            const stub = fragment.content.querySelector(`[data-id="${child._id}"]`);
-            if (!stub) return;
-            stub.replaceWith(child.getContent());
+            if (Array.isArray(child)) child.forEach((elem)=>{
+                const stub = fragment.content.querySelector(`[data-id="id-${elem._id}"]`);
+                if (!stub) return;
+                stub.replaceWith(elem.getContent());
+            });
+            else {
+                const stub = fragment.content.querySelector(`[data-id="id-${child._id}"]`);
+                if (!stub) return;
+                stub.replaceWith(child.getContent());
+            }
         });
         return fragment.content;
     }
     _componentDidMount() {
         this.componentDidMount();
         Object.values(this.children).forEach((child)=>{
-            child.dispatchComponentDidMount();
+            if (Array.isArray(child)) child.forEach((elem)=>{
+                elem.dispatchComponentDidMount();
+            });
+            else child.dispatchComponentDidMount();
         });
     }
     componentDidMount() {}
@@ -766,10 +985,10 @@ class Block {
     _componentDidUpdate(oldProps, newProps) {
         const response = this.componentDidUpdate(oldProps, newProps);
         if (!response) return;
-        this._render();
+        this.eventBus().emit(Block.EVENTS.FLOW_RENDER);
     }
     componentDidUpdate(oldProps, newProps) {
-        return oldProps !== newProps;
+        return (0, _isEqualDefault.default)(oldProps, newProps);
     }
     get element() {
         return this._element;
@@ -822,7 +1041,7 @@ class Block {
         return element;
     }
     show() {
-        this.getContent().style.display = "block";
+        this.getContent().style.display = "flex";
     }
     hide() {
         this.getContent().style.display = "none";
@@ -830,7 +1049,7 @@ class Block {
 }
 exports.default = Block;
 
-},{"uuid":"j4KJi","./EventBus":"brLRz","../compiler/compiler":"jf6ba","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j4KJi":[function(require,module,exports) {
+},{"uuid":"j4KJi","./EventBus":"8vbDs","../../utils/compiler/compiler":"jf6ba","../../utils/isEqual/isEqual":"9t78g","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j4KJi":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "v1", ()=>(0, _v1JsDefault.default));
@@ -892,37 +1111,7 @@ exports.default = {
     randomUUID
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"2psyE":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"2psyE":[function(require,module,exports) {
 // Unique ID creation requires a high quality random # generator. In the browser we therefore
 // require the crypto API and do not support built-in fallback to lower quality random number
 // generators (like Math.random()).
@@ -983,7 +1172,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 exports.default = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"brLRz":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8vbDs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class EventBus {
@@ -999,7 +1188,7 @@ class EventBus {
         this.listeners[event] = this.listeners[event].filter((listener)=>listener !== callback);
     }
     emit(event, ...args) {
-        if (!this.listeners[event]) throw new Error(`Нет события: ${event}`);
+        if (!this.listeners[event]) return;
         this.listeners[event].forEach((listener)=>{
             listener(...args);
         });
@@ -12335,495 +12524,36 @@ PrintVisitor.prototype.HashPair = function(pair) {
 },{"72b261041fbdcb18":"fk5sS"}],"jhUEF":[function(require,module,exports) {
 "use strict";
 
-},{}],"2s5qC":[function(require,module,exports) {
+},{}],"9t78g":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "logInForm", ()=>logInForm);
-parcelHelpers.export(exports, "signInForm", ()=>signInForm);
-parcelHelpers.export(exports, "profileChangeForm", ()=>profileChangeForm);
-parcelHelpers.export(exports, "profileChangePasswordForm", ()=>profileChangePasswordForm);
-parcelHelpers.export(exports, "messageForm", ()=>messageForm);
-var _form = require("./Form");
-var _formDefault = parcelHelpers.interopDefault(_form);
-var _button = require("../button");
-var _input = require("../input");
-const logInForm = new (0, _formDefault.default)({
-    classNames: [
-        "enter__form"
-    ],
-    title: "Вход",
-    login: (0, _input.logInInputLogin),
-    password: (0, _input.logInInputPassword),
-    mainBtn: (0, _button.logInAuthorizationBtn),
-    secondBtn: (0, _button.logInNoAccountBtn)
-});
-const signInForm = new (0, _formDefault.default)({
-    classNames: [
-        "enter__form"
-    ],
-    title: "Регистрация",
-    email: (0, _input.signInInputEmail),
-    login: (0, _input.signInInputLogin),
-    first_name: (0, _input.signInInputFirstName),
-    second_name: (0, _input.signInInputSecondName),
-    phone: (0, _input.signInInputPhone),
-    password: (0, _input.signInInputPassword),
-    second_password: (0, _input.signInInputSecondPassword),
-    mainBtn: (0, _button.signInRegBtn),
-    secondBtn: (0, _button.signInEnterBtn)
-});
-const profileChangeForm = new (0, _formDefault.default)({
-    classNames: [
-        "change-profile__form"
-    ],
-    changeable: true,
-    email: (0, _input.changeProfileInputEmail),
-    login: (0, _input.changeProfileInputLogin),
-    first_name: (0, _input.changeProfileInputFirstName),
-    second_name: (0, _input.changeProfileInputSecondName),
-    display_name: (0, _input.changeProfileInputDisplayName),
-    phone: (0, _input.changeProfileInputPhone),
-    saveButton: (0, _button.profileSaveBtn)
-});
-const profileChangePasswordForm = new (0, _formDefault.default)({
-    classNames: [
-        "change-profile__form"
-    ],
-    changeable: true,
-    old_password: (0, _input.changeProfileInputOldPassword),
-    new_password: (0, _input.changeProfileInputNewPassword),
-    new_password_again: (0, _input.changeProfileInputOldPasswordAgain),
-    saveButton: (0, _button.profileChangePasswordSaveBtn)
-});
-const messageForm = new (0, _formDefault.default)({
-    classNames: [
-        "message-bar"
-    ],
-    addBtn: (0, _button.messageBarAddBtn),
-    input: (0, _input.messageBarInput),
-    sendBtn: (0, _button.messageBarSendBtn)
-});
-
-},{"./Form":"9jm2L","../button":"dZaQH","../input":"haspD","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9jm2L":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _block = require("../../utils/eventBus/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _validate = require("../../utils/validate");
-var _tmp = require("./tmp");
-var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-class Form extends (0, _blockDefault.default) {
-    constructor(props){
-        super("form", props);
-        this.props.classNames.forEach((className)=>{
-            this.element.classList.add(className);
-        });
-        this.props.events = {
-            submit: (event)=>{
-                event.preventDefault();
-                (0, _validate.formValidation)(event.target);
-            }
-        };
-    }
-    render() {
-        return this.compile((0, _tmpDefault.default), this.props);
-    }
+function isPlainObject(value) {
+    return typeof value === "object" && value !== null && value.constructor === Object && Object.prototype.toString.call(value) === "[object Object]";
 }
-exports.default = Form;
-
-},{"../../utils/eventBus/Block":"i8Ayu","../../utils/validate":"24nAO","./tmp":"dvMyO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"24nAO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "inputValidation", ()=>inputValidation);
-parcelHelpers.export(exports, "formValidation", ()=>formValidation);
-var _validate = require("./validate");
-var _validateDefault = parcelHelpers.interopDefault(_validate);
-// Input
-const inputValidation = (target, data)=>{
-    let newClassName = " input_validate";
-    const input = target;
-    if (input.name === "message") newClassName = " message-bar__message_validate";
-    if ((0, _validateDefault.default)(input) === true) {
-        if (input.className.includes(newClassName)) {
-            input.className = input.className.replace(newClassName, "");
-            const element = document.querySelector("p");
-            input.parentElement?.removeChild(element);
-        }
-        if (data) data[input.name] = input.value;
-    } else if (!input.className.includes(newClassName)) {
-        input.className += newClassName;
-        input.parentElement?.append((0, _validateDefault.default)(input));
-    }
-};
-// Form
-const formValidation = (target)=>{
-    const data = {};
-    const form = target;
-    for(let i = 0; i < form.length; i++)if (form[i].nodeName === "INPUT") inputValidation(form[i], data);
-    if (Object.keys(data).length) console.log(data);
-};
-
-},{"./validate":"k4Zkp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k4Zkp":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _errorMessage = require("./ErrorMessage");
-const loginRegEx = /^[a-zA-Z0-9](?=.*[a-zA-z])[a-zA-Z0-9-_\.]{2,20}$/;
-const passwordRegEx = /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*()_+=/?><.\.]{3,41}$/;
-const phoneRegEx = /^(\+)?((\d{2,3}) ?\d|\d)(([ -]?\d)|( ?(\d{2,3}) ?)){7,17}\d$/;
-const namesRegEx = /^[A-ZА-Я][A-ZА-Яa-zа-я0-9-\.]{1,40}$/;
-const emailRegEx = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}/;
-function matcher(value, regEx) {
-    return value.match(regEx) !== null;
+function isArray(value) {
+    return Array.isArray(value);
 }
-const createError = (errorMessage)=>{
-    let error = document.createElement("p");
-    error.classList.add("input__validation-error");
-    error.innerHTML = errorMessage;
-    return error;
-};
-const validate = (target)=>{
-    const { name, value } = target;
-    switch(name){
-        case "email":
-            return matcher(value, emailRegEx) || createError((0, _errorMessage.emailErrorMessage));
-        case "login":
-            return matcher(value, loginRegEx) || createError((0, _errorMessage.loginErrorMessage));
-        case "first_name":
-        case "second_name":
-            return matcher(value, namesRegEx) || createError((0, _errorMessage.nameErrorMessage));
-        case "phone":
-            return matcher(value, phoneRegEx) || createError((0, _errorMessage.phoneErrorMessage));
-        case "password":
-        case "second_password":
-        case "old_password":
-        case "new_password":
-        case "new_password_again":
-            return matcher(value, passwordRegEx) || createError((0, _errorMessage.passwordErrorMessage));
-        case "message":
-        case "display_name":
-            return value.length > 1 || createError((0, _errorMessage.messageErrorMessage));
-        default:
+function isArrayOrObject(value) {
+    return isPlainObject(value) || isArray(value);
+}
+function isEqual(lhs, rhs) {
+    if (Object.keys(lhs).length !== Object.keys(rhs).length) return false;
+    for (const [key, value] of Object.entries(lhs)){
+        const rightValue = rhs[key];
+        if (isArrayOrObject(value) && isArrayOrObject(rightValue)) {
+            if (isEqual(value, rightValue)) continue;
             return false;
+        }
+        if (value !== rightValue) return false;
     }
-};
-exports.default = validate;
+    return true;
+}
+exports.default = isEqual;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./ErrorMessage":"562Bc"}],"562Bc":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6D5CV":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "nameErrorMessage", ()=>nameErrorMessage);
-parcelHelpers.export(exports, "loginErrorMessage", ()=>loginErrorMessage);
-parcelHelpers.export(exports, "emailErrorMessage", ()=>emailErrorMessage);
-parcelHelpers.export(exports, "passwordErrorMessage", ()=>passwordErrorMessage);
-parcelHelpers.export(exports, "phoneErrorMessage", ()=>phoneErrorMessage);
-parcelHelpers.export(exports, "messageErrorMessage", ()=>messageErrorMessage);
-const nameErrorMessage = "Поле должно быть на латинице или кириллице, без пробелов, цифр и спецсимволов. Первая буква должна быть заглавной.";
-const loginErrorMessage = "Поле должно содержать от 3 до 20 символов латиницы. Может содержать цифры, но не состоять из них. Без пробелов, без спецсимволов.";
-const emailErrorMessage = "Поле должно быть на латинице, может включать цифры и спецсимволы, обязательно должна быть \xabсобака\xbb (@).";
-const passwordErrorMessage = "Поле должно содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.";
-const phoneErrorMessage = "Поле должно содержать от 10 до 15 символов, состоит из цифр, может начинается с плюса.";
-const messageErrorMessage = "Поле не должно быть пустым.";
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dvMyO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const formTmp = `
-	{{#if title}}
-		<div class="enter__title">{{title}}</div>
-		<ul class="inputs">
-			{{{email}}}
-			{{{login}}}
-			{{{first_name}}}
-			{{{second_name}}}
-			{{{phone}}}
-			{{{password}}}
-			{{{second_password}}}
-		</ul>
-
-		<div class="enter__btns">
-			{{{ mainBtn }}}
-			{{{ secondBtn }}}
-		</div>
-	{{else}}
-		{{#if saveButton}}
-			<ul class="info">
-				{{{ email }}}
-				{{{ login }}}
-				{{{ first_name }}}
-				{{{ second_name }}}
-				{{{ display_name }}}
-				{{{ phone }}}
-				{{{ old_password }}}
-				{{{ new_password }}}
-				{{{ new_password_again }}}
-			</ul>
-			{{{ saveButton }}}
-		{{else}}
-			{{{ sendBtn }}}
-			{{{ input }}}
-			{{{ addBtn }}}
-		{{/if}}
-		
-	{{/if}}
-`;
-exports.default = formTmp;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dZaQH":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "signInRegBtn", ()=>signInRegBtn);
-parcelHelpers.export(exports, "signInEnterBtn", ()=>signInEnterBtn);
-parcelHelpers.export(exports, "logInAuthorizationBtn", ()=>logInAuthorizationBtn);
-parcelHelpers.export(exports, "logInNoAccountBtn", ()=>logInNoAccountBtn);
-parcelHelpers.export(exports, "chatsListProfileBtn", ()=>chatsListProfileBtn);
-parcelHelpers.export(exports, "messageBarAddBtn", ()=>messageBarAddBtn);
-parcelHelpers.export(exports, "messageBarSendBtn", ()=>messageBarSendBtn);
-parcelHelpers.export(exports, "error404Btn", ()=>error404Btn);
-parcelHelpers.export(exports, "error500Btn", ()=>error500Btn);
-parcelHelpers.export(exports, "profileBackBtn", ()=>profileBackBtn);
-parcelHelpers.export(exports, "profileChangeBackBtn", ()=>profileChangeBackBtn);
-parcelHelpers.export(exports, "profileChangePasswordBackBtn", ()=>profileChangePasswordBackBtn);
-parcelHelpers.export(exports, "profileSaveBtn", ()=>profileSaveBtn);
-parcelHelpers.export(exports, "profileChangePasswordSaveBtn", ()=>profileChangePasswordSaveBtn);
-parcelHelpers.export(exports, "profileChangeDataBtn", ()=>profileChangeDataBtn);
-parcelHelpers.export(exports, "profileChangePasswordBtn", ()=>profileChangePasswordBtn);
-parcelHelpers.export(exports, "profileOutBtn", ()=>profileOutBtn);
-var _button = require("./Button");
-var _buttonDefault = parcelHelpers.interopDefault(_button);
-const signInRegBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "enter__btns__autorisation",
-        "btn"
-    ],
-    text: "Зарегистрироваться",
-    type: "submit",
-    settings: {
-        withInternalID: true
-    }
-});
-const signInEnterBtn = new (0, _buttonDefault.default)({
-    tagName: "a",
-    href: "#/login",
-    classNames: [
-        "enter__btns__link",
-        "btn_flat"
-    ],
-    text: "Войти",
-    settings: {
-        withInternalID: true
-    }
-});
-const logInAuthorizationBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "enter__btns__autorisation",
-        "btn"
-    ],
-    text: "Авторизоваться",
-    type: "submit",
-    settings: {
-        withInternalID: true
-    }
-});
-const logInNoAccountBtn = new (0, _buttonDefault.default)({
-    tagName: "a",
-    href: "#/signin",
-    classNames: [
-        "enter__btns__link",
-        "btn_flat"
-    ],
-    text: "Нет аккаунта",
-    settings: {
-        withInternalID: true
-    }
-});
-const chatsListProfileBtn = new (0, _buttonDefault.default)({
-    tagName: "a",
-    href: "/#/profile",
-    classNames: [
-        "profile-btn",
-        "btn_flat"
-    ],
-    text: "Профиль",
-    settings: {
-        withInternalID: true
-    }
-});
-const messageBarAddBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "btn",
-        "btn_mini"
-    ],
-    settings: {
-        withInternalID: true
-    }
-});
-const messageBarSendBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "btn",
-        "btn_mini"
-    ],
-    settings: {
-        withInternalID: true
-    }
-});
-const error404Btn = new (0, _buttonDefault.default)({
-    tagName: "a",
-    href: "/#/home",
-    classNames: [
-        "error__link",
-        "btn_flat"
-    ],
-    text: "Назад к чатам",
-    settings: {
-        withInternalID: true
-    }
-});
-const error500Btn = new (0, _buttonDefault.default)({
-    tagName: "a",
-    href: "/#/home",
-    classNames: [
-        "error__link",
-        "btn_flat"
-    ],
-    text: "Назад к чатам",
-    settings: {
-        withInternalID: true
-    }
-});
-const profileBackBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "back-btn",
-        "btn"
-    ],
-    settings: {
-        withInternalID: true
-    },
-    events: {
-        click: (event)=>{
-            event.preventDefault();
-            document.location = "/#/home";
-        }
-    }
-});
-const profileChangeBackBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "back-btn",
-        "btn"
-    ],
-    settings: {
-        withInternalID: true
-    },
-    events: {
-        click: (event)=>{
-            event.preventDefault();
-            document.location = "/#/profile";
-        }
-    }
-});
-const profileChangePasswordBackBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "back-btn",
-        "btn"
-    ],
-    settings: {
-        withInternalID: true
-    },
-    events: {
-        click: (event)=>{
-            event.preventDefault();
-            document.location = "/#/profile";
-        }
-    }
-});
-const profileSaveBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "actions__btn-save",
-        "btn"
-    ],
-    text: "Сохранить",
-    settings: {
-        withInternalID: true
-    }
-});
-const profileChangePasswordSaveBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "actions__btn-save",
-        "btn"
-    ],
-    text: "Сохранить",
-    settings: {
-        withInternalID: true
-    }
-});
-const profileChangeDataBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "actions__btn",
-        "btn",
-        "btn_flat"
-    ],
-    text: "Изменить данные",
-    settings: {
-        withInternalID: true
-    },
-    events: {
-        click: (event)=>{
-            event.preventDefault();
-            document.location = "/#/profile/changedata";
-        }
-    }
-});
-const profileChangePasswordBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "actions__btn",
-        "btn",
-        "btn_flat"
-    ],
-    text: "Изменить пароль",
-    settings: {
-        withInternalID: true
-    },
-    events: {
-        click: (event)=>{
-            event.preventDefault();
-            document.location = "/#/profile/changepass";
-        }
-    }
-});
-const profileOutBtn = new (0, _buttonDefault.default)({
-    tagName: "button",
-    classNames: [
-        "actions__btn",
-        "actions__btn_red",
-        "btn",
-        "btn_flat"
-    ],
-    text: "Выйти",
-    settings: {
-        withInternalID: true
-    },
-    events: {
-        click: (event)=>{
-            event.preventDefault();
-            document.location = "/#/login";
-        }
-    }
-});
-
-},{"./Button":"6D5CV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6D5CV":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _block = require("../../utils/eventBus/Block");
+var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
@@ -12842,7 +12572,7 @@ class Button extends (0, _blockDefault.default) {
 }
 exports.default = Button;
 
-},{"../../utils/eventBus/Block":"i8Ayu","./tmp":"Eklau","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"Eklau":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","./tmp":"Eklau","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"Eklau":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const buttonTmp = `
@@ -12850,238 +12580,15 @@ const buttonTmp = `
 `;
 exports.default = buttonTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"haspD":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1fCZE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "logInInputLogin", ()=>logInInputLogin);
-parcelHelpers.export(exports, "logInInputPassword", ()=>logInInputPassword);
-parcelHelpers.export(exports, "signInInputEmail", ()=>signInInputEmail);
-parcelHelpers.export(exports, "signInInputLogin", ()=>signInInputLogin);
-parcelHelpers.export(exports, "signInInputFirstName", ()=>signInInputFirstName);
-parcelHelpers.export(exports, "signInInputSecondName", ()=>signInInputSecondName);
-parcelHelpers.export(exports, "signInInputPhone", ()=>signInInputPhone);
-parcelHelpers.export(exports, "signInInputPassword", ()=>signInInputPassword);
-parcelHelpers.export(exports, "signInInputSecondPassword", ()=>signInInputSecondPassword);
-parcelHelpers.export(exports, "chatsSearchInput", ()=>chatsSearchInput);
-parcelHelpers.export(exports, "messageBarInput", ()=>messageBarInput);
-parcelHelpers.export(exports, "changeProfileInputEmail", ()=>changeProfileInputEmail);
-parcelHelpers.export(exports, "changeProfileInputLogin", ()=>changeProfileInputLogin);
-parcelHelpers.export(exports, "changeProfileInputFirstName", ()=>changeProfileInputFirstName);
-parcelHelpers.export(exports, "changeProfileInputSecondName", ()=>changeProfileInputSecondName);
-parcelHelpers.export(exports, "changeProfileInputDisplayName", ()=>changeProfileInputDisplayName);
-parcelHelpers.export(exports, "changeProfileInputPhone", ()=>changeProfileInputPhone);
-parcelHelpers.export(exports, "changeProfileInputOldPassword", ()=>changeProfileInputOldPassword);
-parcelHelpers.export(exports, "changeProfileInputNewPassword", ()=>changeProfileInputNewPassword);
-parcelHelpers.export(exports, "changeProfileInputOldPasswordAgain", ()=>changeProfileInputOldPasswordAgain);
-var _input = require("./Input");
-const logInInputLogin = new (0, _input.FormInput)({
-    label: {
-        text: "Логин"
-    },
-    input: {
-        name: "login"
-    }
-});
-const logInInputPassword = new (0, _input.FormInput)({
-    label: {
-        text: "Пароль"
-    },
-    input: {
-        name: "password"
-    }
-});
-const signInInputEmail = new (0, _input.FormInput)({
-    label: {
-        text: "Почта"
-    },
-    input: {
-        name: "email"
-    }
-});
-const signInInputLogin = new (0, _input.FormInput)({
-    label: {
-        text: "Логин"
-    },
-    input: {
-        name: "login"
-    }
-});
-const signInInputFirstName = new (0, _input.FormInput)({
-    label: {
-        text: "Имя"
-    },
-    input: {
-        name: "first_name"
-    }
-});
-const signInInputSecondName = new (0, _input.FormInput)({
-    label: {
-        text: "Фамилия"
-    },
-    input: {
-        name: "second_name"
-    }
-});
-const signInInputPhone = new (0, _input.FormInput)({
-    label: {
-        text: "Телефон"
-    },
-    input: {
-        name: "phone"
-    }
-});
-const signInInputPassword = new (0, _input.FormInput)({
-    label: {
-        text: "Пароль"
-    },
-    input: {
-        name: "password"
-    }
-});
-const signInInputSecondPassword = new (0, _input.FormInput)({
-    label: {
-        text: "Пароль (еще раз)"
-    },
-    input: {
-        name: "second_password"
-    }
-});
-const chatsSearchInput = new (0, _input.Input)({
-    tagName: "div",
-    href: "#/login",
-    classNames: [
-        "search"
-    ],
-    input: {
-        name: "search",
-        placeholder: "Поиск",
-        type: "text"
-    }
-});
-const messageBarInput = new (0, _input.Input)({
-    classNames: [
-        "message-bar__message-wrapper"
-    ],
-    input: {
-        classNames: [
-            "message-bar__message"
-        ],
-        name: "message",
-        placeholder: "Сообщение",
-        type: "text"
-    }
-});
-const changeProfileInputEmail = new (0, _input.ProfileInput)({
-    label: {
-        text: "Почта"
-    },
-    input: {
-        name: "email",
-        placeholder: "some@email.com"
-    }
-});
-const changeProfileInputLogin = new (0, _input.ProfileInput)({
-    label: {
-        text: "Логин"
-    },
-    input: {
-        name: "login",
-        placeholder: "some_login"
-    }
-});
-const changeProfileInputFirstName = new (0, _input.ProfileInput)({
-    label: {
-        text: "Имя"
-    },
-    input: {
-        name: "first_name",
-        placeholder: "Ivan"
-    }
-});
-const changeProfileInputSecondName = new (0, _input.ProfileInput)({
-    label: {
-        text: "Фамилия"
-    },
-    input: {
-        name: "second_name",
-        placeholder: "Ivanov"
-    }
-});
-const changeProfileInputDisplayName = new (0, _input.ProfileInput)({
-    label: {
-        text: "Имя в чате"
-    },
-    input: {
-        name: "display_name",
-        placeholder: "some"
-    }
-});
-const changeProfileInputPhone = new (0, _input.ProfileInput)({
-    label: {
-        text: "Телефон"
-    },
-    input: {
-        name: "phone",
-        placeholder: "8(999)999-99-99"
-    }
-});
-const changeProfileInputOldPassword = new (0, _input.ProfileInput)({
-    label: {
-        text: "Старый пароль"
-    },
-    input: {
-        name: "old_password",
-        placeholder: "•••••••"
-    }
-});
-const changeProfileInputNewPassword = new (0, _input.ProfileInput)({
-    label: {
-        text: "Новый пароль"
-    },
-    input: {
-        name: "new_password",
-        placeholder: "•••••••"
-    }
-});
-const changeProfileInputOldPasswordAgain = new (0, _input.ProfileInput)({
-    label: {
-        text: "Повторите новый пароль"
-    },
-    input: {
-        name: "new_password_again",
-        placeholder: "•••••••"
-    }
-});
-
-},{"./Input":"flgYO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"flgYO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Input", ()=>Input);
-parcelHelpers.export(exports, "FormInput", ()=>FormInput);
-parcelHelpers.export(exports, "ProfileInput", ()=>ProfileInput);
-var _block = require("../../utils/eventBus/Block");
+var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _validate = require("../../utils/validate");
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-class Input extends (0, _blockDefault.default) {
-    constructor(props){
-        super(props.tagName, props);
-        this.props.classNames.forEach((className)=>{
-            this.element.classList.add(className);
-        });
-        this.props.settings = {
-            withInternalID: true
-        };
-        this.props.events = {
-            focusout: (event)=>(0, _validate.inputValidation)(event.target)
-        };
-    }
-    render() {
-        return this.compile((0, _tmpDefault.default), this.props);
-    }
-}
-class FormInput extends (0, _blockDefault.default) {
+class EnterInput extends (0, _blockDefault.default) {
     constructor(props){
         super("li", props);
         this.props.classNames = [
@@ -13117,37 +12624,107 @@ class FormInput extends (0, _blockDefault.default) {
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
-class ProfileInput extends (0, _blockDefault.default) {
-    constructor(props){
-        super("li", props);
-        this.element.classList.add("input-wrapper_long");
-        this.props.label = {
-            classNames: [
-                "label_long"
-            ],
-            text: this.props.label.text
-        };
-        this.props.input = {
-            classNames: [
-                "input_long"
-            ],
-            type: "text",
-            name: this.props.input.name,
-            placeholder: this.props.input.placeholder
-        };
-        this.props.settings = {
-            withInternalID: true
-        };
-        this.props.events = {
-            focusout: (event)=>(0, _validate.inputValidation)(event.target)
-        };
-    }
-    render() {
-        return this.compile((0, _tmpDefault.default), this.props);
-    }
-}
+exports.default = EnterInput;
 
-},{"../../utils/eventBus/Block":"i8Ayu","../../utils/validate":"24nAO","./tmp":"4H9yh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4H9yh":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../utils/validate":"24nAO","./tmp":"4H9yh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"24nAO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "inputValidation", ()=>inputValidation);
+parcelHelpers.export(exports, "formValidation", ()=>formValidation);
+var _validate = require("./validate");
+var _validateDefault = parcelHelpers.interopDefault(_validate);
+// Input
+const inputValidation = (target, data)=>{
+    let newClassName = " input_validate";
+    const input = target;
+    if (input.name === "message") newClassName = " message-bar__message_validate";
+    if ((0, _validateDefault.default)(input) === true) {
+        if (input.className.includes(newClassName)) {
+            input.className = input.className.replace(newClassName, "");
+            const element = document.querySelector("p");
+            input.parentElement?.removeChild(element);
+        }
+        if (data) data[input.name] = input.value;
+    } else if (!input.className.includes(newClassName)) {
+        input.className += newClassName;
+        input.parentElement?.append((0, _validateDefault.default)(input));
+    }
+};
+// Form
+const formValidation = (target)=>{
+    const data = {};
+    let inputsCount = 0;
+    const form = target;
+    for(let i = 0; i < form.length; i++)if (form[i].nodeName === "INPUT") {
+        inputsCount++;
+        inputValidation(form[i], data);
+    }
+    if (Object.keys(data).length == inputsCount) return data;
+    else return undefined;
+};
+
+},{"./validate":"k4Zkp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k4Zkp":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _errorMessage = require("./ErrorMessage");
+const loginRegEx = /^[a-zA-Z0-9](?=.*[a-zA-z])[a-zA-Z0-9-_\.]{2,20}$/;
+const passwordRegEx = /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9!@#$%^&*()_+=/?><.\.]{3,41}$/;
+const phoneRegEx = /^(\+)?((\d{2,3}) ?\d|\d)(([ -]?\d)|( ?(\d{2,3}) ?)){7,17}\d$/;
+const namesRegEx = /^[A-ZА-Я][A-ZА-Яa-zа-я0-9-\.]{1,40}$/;
+const emailRegEx = /[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}/;
+function matcher(value, regEx) {
+    return value.match(regEx) !== null;
+}
+const createError = (errorMessage)=>{
+    let error = document.createElement("p");
+    error.classList.add("input__validation-error");
+    error.innerHTML = errorMessage;
+    return error;
+};
+const validate = (target)=>{
+    const { name, value } = target;
+    switch(name){
+        case "email":
+            return matcher(value, emailRegEx) || createError((0, _errorMessage.emailErrorMessage));
+        case "login":
+            return matcher(value, loginRegEx) || createError((0, _errorMessage.loginErrorMessage));
+        case "first_name":
+        case "second_name":
+            return matcher(value, namesRegEx) || createError((0, _errorMessage.nameErrorMessage));
+        case "phone":
+            return matcher(value, phoneRegEx) || createError((0, _errorMessage.phoneErrorMessage));
+        case "password":
+        case "second_password":
+        case "oldPassword":
+        case "newPassword":
+        case "newPasswordAgain":
+            return matcher(value, passwordRegEx) || createError((0, _errorMessage.passwordErrorMessage));
+        case "message":
+        case "display_name":
+            return value.length > 1 || createError((0, _errorMessage.messageErrorMessage));
+        default:
+            return value.length > 1 || createError((0, _errorMessage.messageErrorMessage));
+    }
+};
+exports.default = validate;
+
+},{"./ErrorMessage":"562Bc","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"562Bc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "nameErrorMessage", ()=>nameErrorMessage);
+parcelHelpers.export(exports, "loginErrorMessage", ()=>loginErrorMessage);
+parcelHelpers.export(exports, "emailErrorMessage", ()=>emailErrorMessage);
+parcelHelpers.export(exports, "passwordErrorMessage", ()=>passwordErrorMessage);
+parcelHelpers.export(exports, "phoneErrorMessage", ()=>phoneErrorMessage);
+parcelHelpers.export(exports, "messageErrorMessage", ()=>messageErrorMessage);
+const nameErrorMessage = "Поле должно быть на латинице или кириллице, без пробелов, цифр и спецсимволов. Первая буква должна быть заглавной.";
+const loginErrorMessage = "Поле должно содержать от 3 до 20 символов латиницы. Может содержать цифры, но не состоять из них. Без пробелов, без спецсимволов.";
+const emailErrorMessage = "Поле должно быть на латинице, может включать цифры и спецсимволы, обязательно должна быть \xabсобака\xbb (@).";
+const passwordErrorMessage = "Поле должно содержать от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра.";
+const phoneErrorMessage = "Поле должно содержать от 10 до 15 символов, состоит из цифр, может начинается с плюса.";
+const messageErrorMessage = "Поле не должно быть пустым.";
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"4H9yh":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const inputTmp = `
@@ -13159,16 +12736,354 @@ const inputTmp = `
 	{{/if}}
 	<input 
 		name={{ input.name }} 
+		{{#if input.value}}
+			value={{ input.value }}
+		{{/if}}
 		{{#if input.placeholder}}
 			placeholder={{ input.placeholder }}
 		{{/if}}
 		{{#if input.classNames}}
 			class='{{#each input.classNames}} {{ this }}{{/each}}'
 		{{/if}}
+		{{#if input.autofocus}}
+			autofocus
+		{{/if}}
 		type={{ input.type }}
 	>	
 `;
 exports.default = inputTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9jm2L":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Form extends (0, _blockDefault.default) {
+    constructor(props){
+        super("form", props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = Form;
+
+},{"../../core/eventBus/Block":"h0Aox","./tmp":"dvMyO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dvMyO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const formTmp = `
+	{{#if title}}
+		{{#if login}}
+			<div class="enter__title">{{title}}</div>
+			<ul class="inputs">
+				{{{email}}}
+				{{{login}}}
+				{{{first_name}}}
+				{{{second_name}}}
+				{{{phone}}}
+				{{{password}}}
+				{{{second_password}}}
+			</ul>
+
+			<div class="enter__btns">
+				{{{ mainBtn }}}
+				{{{ secondBtn }}}
+			</div>
+		{{else}}
+			<div class="modal__title">{{title}}</div>
+			{{{input}}}
+			{{{submitBtn}}}
+		{{/if}}
+	{{else}}
+		{{#if saveButton}}
+			<ul class="info">
+				{{{ email }}}
+				{{{ login }}}
+				{{{ first_name }}}
+				{{{ second_name }}}
+				{{{ display_name }}}
+				{{{ phone }}}
+				{{{ oldPassword }}}
+				{{{ newPassword }}}
+				{{{ newPasswordAgain }}}
+			</ul>
+			{{{ saveButton }}}
+		{{else}}
+			{{{ optionsBtn }}}
+			{{{ input }}}
+			{{{ sendBtn }}}
+		{{/if}}
+		
+	{{/if}}
+`;
+exports.default = formTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5uAVV":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _authAPI = require("../api/AuthAPI");
+var _authAPIDefault = parcelHelpers.interopDefault(_authAPI);
+var _store = require("../store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _router = require("../router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
+class AuthController {
+    async signin(data) {
+        try {
+            await this.api.signin(data);
+            await this.fetchUser();
+            (0, _routerDefault.default).go("/profile");
+            console.log("loged in");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async signup(data) {
+        try {
+            await this.api.signup(data);
+            (0, _routerDefault.default).go("/profile");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async logout() {
+        try {
+            await this.api.logout();
+            (0, _storeDefault.default).set("user", undefined);
+            console.log("store: undef");
+            (0, _routerDefault.default).go("/");
+            console.log("loged out");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async fetchUser() {
+        try {
+            const request = await this.api.getUser();
+            if (request.status !== 200) throw new Error(`Ошибка: ${request.status} ${request.statusText || request.responseText}`);
+            const user = JSON.parse(request.response);
+            (0, _storeDefault.default).set("user", user);
+        } catch (error) {
+            throw error;
+        }
+    }
+    constructor(){
+        this.api = new (0, _authAPIDefault.default)();
+    }
+}
+exports.default = new AuthController();
+
+},{"../api/AuthAPI":"f9GnE","../store/Store":"fM7h4","../router/router":"8L95r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f9GnE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _api = require("./api");
+var _apiDefault = parcelHelpers.interopDefault(_api);
+class AuthAPI extends (0, _apiDefault.default) {
+    constructor(){
+        super("/auth");
+    }
+    signin(data) {
+        return this.http.post("/signin", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    signup(data) {
+        return this.http.post("/signup", {
+            data: JSON.stringify(data)
+        });
+    }
+    logout() {
+        return this.http.post("/logout", {
+            withCredentials: true
+        });
+    }
+    getUser() {
+        return this.http.get("/user", {
+            withCredentials: true
+        });
+    }
+}
+exports.default = AuthAPI;
+
+},{"./api":"8YvXE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8YvXE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _httptransport = require("../../utils/HTTPTransport/HTTPTransport");
+var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+class BaseAPI {
+    constructor(endpoint){
+        this.http = new (0, _httptransportDefault.default)(endpoint);
+    }
+}
+exports.default = BaseAPI;
+
+},{"../../utils/HTTPTransport/HTTPTransport":"lTKtE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lTKtE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _queryStringify = require("./queryStringify");
+var _queryStringifyDefault = parcelHelpers.interopDefault(_queryStringify);
+const METHODS = {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE"
+};
+class HTTPTransport {
+    static #_ = (()=>{
+        this.API_URL = "https://ya-praktikum.tech/api/v2";
+    })();
+    constructor(baseURL){
+        this.get = (url, options = {})=>this.request(url, {
+                ...options,
+                method: METHODS.GET
+            }, options.timeout);
+        this.post = (url, options = {})=>this.request(url, {
+                ...options,
+                method: METHODS.POST
+            }, options.timeout);
+        this.put = (url, options = {})=>this.request(url, {
+                ...options,
+                method: METHODS.PUT
+            }, options.timeout);
+        this.delete = (url, options = {})=>this.request(url, {
+                ...options,
+                method: METHODS.DELETE
+            }, options.timeout);
+        this.request = (url, options, timeout = 5000)=>{
+            const { headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }, method, data } = options;
+            //   console.log(options);
+            return new Promise((resolve, reject)=>{
+                if (!method) {
+                    // eslint-disable-next-line prefer-promise-reject-errors
+                    reject("No method");
+                    return;
+                }
+                const xhr = new XMLHttpRequest();
+                const isGet = method === METHODS.GET;
+                xhr.open(method, isGet && !!data ? `${this.baseURL}${url}${(0, _queryStringifyDefault.default)(data)}` : `${this.baseURL}${url}`);
+                if (options.withCredentials) xhr.withCredentials = true;
+                Object.keys(headers).forEach((key)=>{
+                    xhr.setRequestHeader(key, headers[key]);
+                });
+                xhr.onload = ()=>{
+                    resolve(xhr);
+                };
+                xhr.onabort = reject;
+                xhr.onerror = reject;
+                xhr.timeout = timeout;
+                xhr.ontimeout = reject;
+                if (isGet || !data) xhr.send();
+                else xhr.send(data);
+            });
+        };
+        this.baseURL = `${HTTPTransport.API_URL}${baseURL}`;
+    }
+}
+exports.default = HTTPTransport;
+
+},{"./queryStringify":"cYe2c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cYe2c":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function queryStringify(data) {
+    if (typeof data !== "object") throw new Error("Data must be object");
+    const keys = Object.keys(data);
+    return keys.reduce((result, key, index)=>`${result}${key}=${data[key]}${index < keys.length - 1 ? "&" : ""}`, "?");
+}
+exports.default = queryStringify;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fM7h4":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "withStore", ()=>withStore);
+var _eventBus = require("../eventBus/EventBus");
+var _eventBusDefault = parcelHelpers.interopDefault(_eventBus);
+var _set = require("../../utils/set/set");
+var _setDefault = parcelHelpers.interopDefault(_set);
+var StoreEvents;
+(function(StoreEvents) {
+    StoreEvents["Updated"] = "updated";
+})(StoreEvents || (StoreEvents = {}));
+class Store extends (0, _eventBusDefault.default) {
+    getState() {
+        return this.state;
+    }
+    set(path, value) {
+        (0, _setDefault.default)(this.state, path, value);
+        this.emit(StoreEvents.Updated, this.state);
+    }
+    constructor(...args){
+        super(...args);
+        this.state = {};
+    }
+}
+const store = new Store();
+const withStore = (mapStateToProps)=>(Component)=>class extends Component {
+            constructor(props){
+                super({
+                    ...props,
+                    ...mapStateToProps(store.getState())
+                }, {});
+                store.on(StoreEvents.Updated, ()=>{
+                    this.setProps({
+                        ...mapStateToProps(store.getState())
+                    });
+                });
+            }
+        };
+exports.default = store;
+
+},{"../eventBus/EventBus":"8vbDs","../../utils/set/set":"7OOHG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7OOHG":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _merge = require("../merge/merge");
+var _mergeDefault = parcelHelpers.interopDefault(_merge);
+function set(object, path, value) {
+    if (typeof object !== "object" || object === null) return object;
+    if (typeof path !== "string") throw new Error("path must be string");
+    const result = path.split(".").reduceRight((acc, key)=>({
+            [key]: acc
+        }), value);
+    return (0, _mergeDefault.default)(object, result);
+}
+exports.default = set;
+
+},{"../merge/merge":"gkvuZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkvuZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function merge(lhs, rhs) {
+    for(let p in rhs){
+        if (!rhs.hasOwnProperty(p)) continue;
+        try {
+            if (rhs[p].constructor === Object) rhs[p] = merge(lhs[p], rhs[p]);
+            else lhs[p] = rhs[p];
+        } catch (e) {
+            lhs[p] = rhs[p];
+        }
+    }
+    return lhs;
+}
+exports.default = merge;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kqM99":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function mapStateToProps(state) {
+    return {
+        ...state.user,
+        chats: state.chats,
+        messages: state.messages
+    };
+}
+exports.default = mapStateToProps;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6oDGN":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13182,39 +13097,39 @@ const listItems = {
     links: {
         enter: {
             label: "Вход",
-            value: "/#/login"
+            value: "/login"
         },
         registration: {
             label: "Регистрация",
-            value: "/#/signin"
+            value: "/signup"
         },
         home: {
             label: "Домашняя",
-            value: "/#/home"
+            value: "/home"
         },
         chat: {
             label: "Чат",
-            value: "/#/home/chat"
+            value: "/home/chat"
         },
         profile: {
             label: "Профиль",
-            value: "/#/profile"
+            value: "/profile"
         },
         page404: {
             label: "Страница 404",
-            value: "/#/error404"
+            value: "/error404"
         },
         page500: {
             label: "Страница 500",
-            value: "/#/error500"
+            value: "/error500"
         },
         changeProfile: {
             label: "Изменить профиль",
-            value: "/#/profile/changedata"
+            value: "/profile/changedata"
         },
         changePassword: {
             label: "Изменить пароль",
-            value: "/#/profile/changepass"
+            value: "/profile/changepass"
         }
     }
 };
@@ -13246,102 +13161,126 @@ const enterTmp = `
 `;
 exports.default = enterTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"m8YrX":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"iy3eE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _page = require("../Page");
-var _pageDefault = parcelHelpers.interopDefault(_page);
-var _chatsList = require("../../components/chatsList");
-var _chatsListDefault = parcelHelpers.interopDefault(_chatsList);
-var _chat = require("../../components/chat");
-var _button = require("../../components/button");
-var _input = require("../../components/input");
-var _tmp = require("./tmp");
-var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-var _homePageScss = require("./homePage.scss");
-const HomePage = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "home"
-    ],
-    profileBtn: (0, _button.chatsListProfileBtn),
-    search: (0, _input.chatsSearchInput),
-    chatsList: (0, _chatsListDefault.default),
-    chat: (0, _chat.chat),
-    emptyChat: (0, _chat.emptyChat)
-});
-exports.default = HomePage;
-
-},{"../Page":"leFJS","../../components/chatsList":"bXlsn","../../components/chat":"FQbLp","../../components/button":"dZaQH","../../components/input":"haspD","./tmp":"6dTgg","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bXlsn":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _chatsList = require("./ChatsList");
-var _chatsListDefault = parcelHelpers.interopDefault(_chatsList);
-var _chatItem = require("../chatItem");
-var _chatItemDefault = parcelHelpers.interopDefault(_chatItem);
-var _tmp = require("./tmp");
-var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-const chatsList = new (0, _chatsListDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "chats"
-    ],
-    chats: (0, _chatItemDefault.default)
-});
-exports.default = chatsList;
-
-},{"./ChatsList":"aJCK1","../chatItem":"hlHTf","./tmp":"ecGBC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aJCK1":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _block = require("../../utils/eventBus/Block");
+var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
-class ChatsList extends (0, _blockDefault.default) {
-    constructor(props){
-        super("div", props);
-        this.element.classList.add(this.props.classNames);
-    }
-    render() {
-        return this.compile(this.props.layout, this.props);
-    }
-}
-exports.default = ChatsList;
-
-},{"../../utils/eventBus/Block":"i8Ayu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hlHTf":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _chatItem = require("./ChatItem");
-var _chatItemDefault = parcelHelpers.interopDefault(_chatItem);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _enterInput = require("../../components/input/EnterInput");
+var _enterInputDefault = parcelHelpers.interopDefault(_enterInput);
+var _form = require("../../components/form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _validate = require("../../utils/validate");
+var _authController = require("../../core/controllers/AuthController");
+var _authControllerDefault = parcelHelpers.interopDefault(_authController);
+var _store = require("../../core/store/Store");
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-const chatItem = new (0, _chatItemDefault.default)({
-    layout: (0, _tmpDefault.default),
-    isActive: true,
-    classNames: [
-        "chat"
-    ],
-    photo: "",
-    message: {
-        name: "Андрей",
-        message: "Друзья, у меня для вас выпуск новостей!..."
-    },
-    statistics: {
-        time: "12:40",
-        newMassage: "chat__info__new-msg_active"
-    }
-});
-exports.default = chatItem;
-
-},{"./ChatItem":"3BnN4","./tmp":"3NIYn","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3BnN4":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _block = require("../../utils/eventBus/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _tmp = require("./tmp");
-var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-class ChatItem extends (0, _blockDefault.default) {
-    constructor(props){
-        super("div", props);
-        if (this.props.isActive) this.props.classNames.push("chat_active");
+var _enterPageScss = require("./enterPage.scss");
+class BaseSignUpPage extends (0, _blockDefault.default) {
+    constructor(){
+        super("section", {
+            classNames: [
+                "enter"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "enter__form"
+                ],
+                title: "Регистрация",
+                email: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Почта"
+                    },
+                    input: {
+                        name: "email"
+                    }
+                }),
+                login: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Логин"
+                    },
+                    input: {
+                        name: "login"
+                    }
+                }),
+                first_name: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Имя"
+                    },
+                    input: {
+                        name: "first_name"
+                    }
+                }),
+                second_name: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Фамилия"
+                    },
+                    input: {
+                        name: "second_name"
+                    }
+                }),
+                phone: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Телефон"
+                    },
+                    input: {
+                        name: "phone"
+                    }
+                }),
+                password: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Пароль"
+                    },
+                    input: {
+                        name: "password"
+                    }
+                }),
+                second_password: new (0, _enterInputDefault.default)({
+                    label: {
+                        text: "Пароль (еще раз)"
+                    },
+                    input: {
+                        name: "second_password"
+                    }
+                }),
+                mainBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    classNames: [
+                        "enter__btns__autorisation",
+                        "btn"
+                    ],
+                    text: "Зарегистрироваться",
+                    type: "submit",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                secondBtn: new (0, _buttonDefault.default)({
+                    tagName: "a",
+                    href: "/login",
+                    classNames: [
+                        "enter__btns__link",
+                        "btn_flat"
+                    ],
+                    text: "Войти",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = (0, _validate.formValidation)(event.target);
+                        if (data) (0, _authControllerDefault.default).signup(data);
+                    }
+                }
+            })
+        });
         this.props.classNames.forEach((className)=>{
             this.element.classList.add(className);
         });
@@ -13350,125 +13289,455 @@ class ChatItem extends (0, _blockDefault.default) {
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
-exports.default = ChatItem;
+const SignUpPage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseSignUpPage);
+exports.default = SignUpPage;
 
-},{"../../utils/eventBus/Block":"i8Ayu","./tmp":"3NIYn","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3NIYn":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/EnterInput":"1fCZE","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"m8YrX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-const chatItemTmp = `
-	<div class="chat__photo">{{ photo }}</div>
-	<div class="chat__info">
-		<div class="chat__info__message">
-			<div class="chat__info__name">{{ message.name }}</div>
-			<div class="chat__info__last-msg">{{ message.message }}</div>
-		</div>
-		<div class="chat__info__stat">
-			<div class="chat__info__time">{{ statistics.time  }}</div>
-			<div class="chat__info__new-msg {{ statistics.newMassage }}"></div>
-		</div>
-	</div>
-`;
-exports.default = chatItemTmp;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ecGBC":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const chatsListTmp = `
-	{{{ chats }}}
-`;
-exports.default = chatsListTmp;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"FQbLp":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "chat", ()=>chat);
-parcelHelpers.export(exports, "emptyChat", ()=>emptyChat);
-var _chat = require("./Chat");
-var _chatDefault = parcelHelpers.interopDefault(_chat);
-var _message = require("../message");
-var _form = require("../form");
-const chat = new (0, _chatDefault.default)({
-    name: "Андрей",
-    friendMessage: (0, _message.friendMessage),
-    userMessage: (0, _message.userMessage),
-    form: (0, _form.messageForm)
-});
-const emptyChat = '<div class="message-history__empty">Выберите чат чтобы отправить сообщение</div>';
-
-},{"./Chat":"6pJRz","../message":"wPnja","../form":"2s5qC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6pJRz":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _block = require("../../utils/eventBus/Block");
+var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _searchInput = require("../../components/input/SearchInput");
+var _searchInputDefault = parcelHelpers.interopDefault(_searchInput);
+var _chat = require("../../components/chat/Chat");
+var _chatDefault = parcelHelpers.interopDefault(_chat);
+var _store = require("../../core/store/Store");
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-class Chat extends (0, _blockDefault.default) {
+var _addChatModal = require("../../components/modals/AddChatModal");
+var _addChatModalDefault = parcelHelpers.interopDefault(_addChatModal);
+var _addUserModal = require("../../components/modals/AddUserModal");
+var _addUserModalDefault = parcelHelpers.interopDefault(_addUserModal);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _deleteUserModal = require("../../components/modals/DeleteUserModal");
+var _deleteUserModalDefault = parcelHelpers.interopDefault(_deleteUserModal);
+var _addPhotoModal = require("../../components/modals/AddPhotoModal");
+var _addPhotoModalDefault = parcelHelpers.interopDefault(_addPhotoModal);
+var _addFileModal = require("../../components/modals/AddFileModal");
+var _addFileModalDefault = parcelHelpers.interopDefault(_addFileModal);
+var _addLocationModal = require("../../components/modals/AddLocationModal");
+var _addLocationModalDefault = parcelHelpers.interopDefault(_addLocationModal);
+var _homePageScss = require("./homePage.scss");
+class BaseHomePage extends (0, _blockDefault.default) {
     constructor(props){
-        super("div", props);
-        this.element.classList.add("right");
+        super("section", {
+            classNames: [
+                "home"
+            ],
+            profileBtn: new (0, _buttonDefault.default)({
+                tagName: "a",
+                href: "/profile",
+                classNames: [
+                    "profile-btn",
+                    "btn_flat"
+                ],
+                text: "Профиль",
+                settings: {
+                    withInternalID: true
+                }
+            }),
+            search: new (0, _searchInputDefault.default)({
+                tagName: "div",
+                classNames: [
+                    "search"
+                ],
+                input: {
+                    name: "search",
+                    placeholder: "Поиск",
+                    type: "text"
+                }
+            }),
+            addChatBtn: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "add-chat-btn",
+                    "btn_mini"
+                ],
+                text: "+",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__add-chat");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
+            chat: new (0, _chatDefault.default)({}),
+            addChatModal: new (0, _addChatModalDefault.default)(),
+            addUserModal: new (0, _addUserModalDefault.default)(),
+            deleteUserModal: new (0, _deleteUserModalDefault.default)(),
+            addPhotoModal: new (0, _addPhotoModalDefault.default)(),
+            addFileModal: new (0, _addFileModalDefault.default)(),
+            addLocationModal: new (0, _addLocationModalDefault.default)(),
+            // emptyChat: { //для заглушки при невыбранном чате
+            // 	className: 'empty-chat',
+            // 	text: 'Выберите чат чтобы отправить сообщение',
+            // },
+            ...props
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    async componentDidMount() {
+        await (0, _chatControllerDefault.default).getChats();
+    }
+    render() {
+        if (!(0, _storeDefault.default).getState().activeChat) this.children.chat.hide();
+        else this.children.chat.show();
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+const HomePage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseHomePage);
+exports.default = HomePage;
+
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/SearchInput":"7v1rT","../../components/chat/Chat":"6pJRz","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","./tmp":"6dTgg","../../components/modals/AddChatModal":"8EIKf","../../components/modals/AddUserModal":"gvBCC","../../core/controllers/ChatController":"7XzYw","../../components/modals/DeleteUserModal":"9qUUM","../../components/modals/AddPhotoModal":"9Y1az","../../components/modals/AddFileModal":"MOYGv","../../components/modals/AddLocationModal":"luIWk","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7v1rT":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _validate = require("../../utils/validate");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class SearchInput extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props.tagName, props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+        this.props.settings = {
+            withInternalID: true
+        };
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
+        };
     }
     render() {
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
+exports.default = SearchInput;
+
+},{"../../core/eventBus/Block":"h0Aox","../../utils/validate":"24nAO","./tmp":"4H9yh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6pJRz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _messageInput = require("../input/MessageInput");
+var _messageInputDefault = parcelHelpers.interopDefault(_messageInput);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _validate = require("../../utils/validate");
+var _messageController = require("../../core/controllers/MessageController");
+var _messageControllerDefault = parcelHelpers.interopDefault(_messageController);
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _burgerMenu = require("../burger/BurgerMenu");
+var _burgerMenuDefault = parcelHelpers.interopDefault(_burgerMenu);
+var _messageBurgerMenu = require("../burger/MessageBurgerMenu");
+var _messageBurgerMenuDefault = parcelHelpers.interopDefault(_messageBurgerMenu);
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
+class BaseChat extends (0, _blockDefault.default) {
+    constructor(props){
+        super("div", {
+            ...props,
+            classNames: [
+                "right"
+            ],
+            chatName: "Chat",
+            optionsBtn: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "user-bar__menu"
+                ],
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const burgersClasses = document.querySelector(".burger__chat").classList;
+                        burgersClasses.contains("burger_hide") ? burgersClasses.remove("burger_hide") : burgersClasses.add("burger_hide");
+                    }
+                }
+            }),
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "message-bar"
+                ],
+                optionsBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    classNames: [
+                        "btn",
+                        "btn_mini"
+                    ],
+                    type: "button",
+                    settings: {
+                        withInternalID: true
+                    },
+                    events: {
+                        click: (event)=>{
+                            event.preventDefault();
+                            const burgersClasses = document.querySelector(".burger__message").classList;
+                            burgersClasses.contains("burger_hide") ? burgersClasses.remove("burger_hide") : burgersClasses.add("burger_hide");
+                        }
+                    }
+                }),
+                input: new (0, _messageInputDefault.default)({
+                    classNames: [
+                        "message-bar__message-wrapper"
+                    ],
+                    input: {
+                        classNames: [
+                            "message-bar__message"
+                        ],
+                        name: "message",
+                        placeholder: "Сообщение",
+                        type: "text"
+                    }
+                }),
+                sendBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "btn_mini"
+                    ],
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: async (event)=>{
+                        event.preventDefault();
+                        (0, _validate.formValidation)(event.target);
+                        const currentChatId = await (0, _storeDefault.default).getState().activeChat;
+                        if (currentChatId) {
+                            const formData = new FormData(event.target);
+                            const data = {
+                                message: String(formData.get("message"))
+                            };
+                            this.setProps({
+                                value: ""
+                            });
+                            await (0, _messageControllerDefault.default).handleOpen(data.message);
+                        } else console.log("Чат не выбран");
+                        event.target[1].value = "";
+                    }
+                }
+            }),
+            optionsMenu: new (0, _burgerMenuDefault.default)(),
+            messageOptionsMenu: new (0, _messageBurgerMenuDefault.default)()
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+const Chat = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseChat);
 exports.default = Chat;
 
-},{"../../utils/eventBus/Block":"i8Ayu","./tmp":"h7hlH","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h7hlH":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","./tmp":"h7hlH","../button/Button":"6D5CV","../input/MessageInput":"cTDG3","../form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/MessageController":"hWCIY","../../core/store/Store":"fM7h4","../burger/BurgerMenu":"l1Odu","../burger/MessageBurgerMenu":"7gDGF","../../utils/mapStateToProps/mapStateToProps":"kqM99","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h7hlH":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const chatTmp = `
 	<div class="user-bar">
 		<div class="user-bar__user">
 			<div class="user-bar__photo"></div>
-			<div class="user-bar__name">{{name}}</div>
+			<div class="user-bar__name">{{chatName}}</div>
 		</div>
-		<div class="user-bar__menu">
-			<span></span>
-			<span></span>
-			<span></span>
-		</div>
+		{{{ optionsBtn }}}
 	</div>
+
+	{{{ optionsMenu }}}
+	
 	<div class="message-history">
-		{{{ friendMessage }}}
-		{{{ userMessage }}}
+		{{{ messages }}}
 	</div>
-	{{{ form }}}
-					
+	
+	{{{ messageOptionsMenu }}}
+	
+	{{{ form }}}				
 `;
-exports.default = chatTmp;
+exports.default = chatTmp; // <div class="user-bar__menu">
+ // 			<span></span>
+ // 			<span></span>
+ // 			<span></span>
+ // 		</div>
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"wPnja":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cTDG3":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "friendMessage", ()=>friendMessage);
-parcelHelpers.export(exports, "userMessage", ()=>userMessage);
-var _message = require("./Message");
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _validate = require("../../utils/validate");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class MessageInput extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props.tagName, props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+        this.props.autofocus = true;
+        this.props.settings = {
+            withInternalID: true
+        };
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
+        };
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = MessageInput;
+
+},{"../../core/eventBus/Block":"h0Aox","../../utils/validate":"24nAO","./tmp":"4H9yh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hWCIY":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _store = require("../store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _message = require("../../components/message/Message");
 var _messageDefault = parcelHelpers.interopDefault(_message);
-const friendMessage = new (0, _messageDefault.default)({
-    classNames: [
-        "message-history__message",
-        "message_friend"
-    ],
-    text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquam explicabo recusandae omnis eum eligendi dignissimos laboriosam, quis a quo molestiae tenetur nostrum necessitatibus provident eius repellat, voluptates, soluta et? Ad!"
-});
-const userMessage = new (0, _messageDefault.default)({
-    classNames: [
-        "message-history__message",
-        "message_user"
-    ],
-    text: "Lorem ipsum? Ad!"
-});
+class MessageController {
+    constructor(baseUrl){
+        this.baseUrl = baseUrl;
+    }
+    async addEvents() {
+        await this.socket.addEventListener("open", ()=>this.handleOpen);
+        await this.socket.addEventListener("close", this.handleClose.bind(this));
+        await this.socket.addEventListener("message", this.handleMessage);
+        await this.socket.addEventListener("error", this.handleError);
+    }
+    async init(userId, chatId, token) {
+        this.userId = userId;
+        this.chatId = chatId;
+        this.token = token;
+        this.socket = await new WebSocket(`${this.baseUrl}/${userId}/${chatId}/${token}`);
+        await this.addEvents();
+        console.log("соединение установлено");
+        return;
+    }
+    sleep(ms) {
+        return new Promise((resolve)=>setTimeout(resolve, ms));
+    }
+    async handleOpen(message) {
+        console.log("отправка данных");
+        if (message && this.socket.readyState === 1) {
+            await this.socket.send(JSON.stringify({
+                content: message,
+                type: "message"
+            }));
+            await this.getMessages();
+        } else {
+            await this.sleep(1000);
+            await this.handleOpen(message);
+        }
+    }
+    async handleClose(event) {
+        if (event.wasClean) console.log("Соединение закрыто чисто");
+        else console.log("Обрыв соединения");
+        if ((0, _storeDefault.default).getState().user) {
+            console.log("восстановление соединения...");
+            await this.init(this.userId, this.chatId, this.token);
+        }
+    }
+    async handleMessage(event) {
+        console.log("получено сообщение");
+        const state = (0, _storeDefault.default).getState();
+        const data = Array.isArray(JSON.parse(event.data)) ? JSON.parse(event.data) : [
+            JSON.parse(event.data)
+        ];
+        const messagesArr = data.map((item)=>{
+            const date = new Date(item.time);
+            return new (0, _messageDefault.default)({
+                time: `${date.getHours()}:${date.getMinutes()}`,
+                content: item.content,
+                is_read: item.is_read,
+                id: item.id,
+                isUserMessage: state.user.id === item.user_id
+            });
+        });
+        const newMessages = JSON.parse(event.data);
+        if (Array.isArray(newMessages) && newMessages.length <= 0) (0, _storeDefault.default).set("messages", [
+            new (0, _messageDefault.default)({
+                classNames: [
+                    "chat__message-container_type-nomessage"
+                ],
+                time: "",
+                content: "Сообщений пока нет",
+                is_read: "",
+                id: "",
+                isUserMessage: false
+            })
+        ]);
+        else if (Array.isArray(newMessages)) (0, _storeDefault.default).set("messages", [
+            ...messagesArr.reverse()
+        ]);
+        else (0, _storeDefault.default).set("messages", [
+            ...messagesArr.reverse(),
+            ...state.messages
+        ]);
+    }
+    async handleError(event) {
+        console.log("Ошибка", event.message);
+    }
+    async getMessages(offset = "0") {
+        if (this.socket.readyState === 1) {
+            await this.socket.send(JSON.stringify({
+                content: "0",
+                type: "get old"
+            }));
+            console.log("запрос сообщений");
+        } else {
+            await this.sleep(1000);
+            await this.getMessages(offset);
+        }
+    }
+}
+exports.default = new MessageController("wss://ya-praktikum.tech/ws/chats");
 
-},{"./Message":"387nq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"387nq":[function(require,module,exports) {
+},{"../store/Store":"fM7h4","../../components/message/Message":"387nq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"387nq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _block = require("../../utils/eventBus/Block");
+var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 class Message extends (0, _blockDefault.default) {
     constructor(props){
-        super("div", props);
+        super("div", {
+            classNames: [
+                "message-history__message"
+            ],
+            text: "",
+            time: "",
+            content: "",
+            is_read: "",
+            id: "",
+            isUserMessage: false,
+            ...props
+        });
+        if (this.props.isUserMessage) this.props.classNames.push("message_user");
+        else this.props.classNames.push("message_friend");
         this.props.classNames.forEach((className)=>{
             this.element.classList.add(className);
         });
@@ -13479,112 +13748,1083 @@ class Message extends (0, _blockDefault.default) {
 }
 exports.default = Message;
 
-},{"../../utils/eventBus/Block":"i8Ayu","./tmp":"7ejqQ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ejqQ":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","./tmp":"7ejqQ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7ejqQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const messageTmp = `
-	{{text}}
+	{{content}}
 `;
 exports.default = messageTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6dTgg":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"l1Odu":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _burgerScss = require("./burger.scss");
+class ChatBurgerMenu extends (0, _blockDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "burger",
+                "burger__chat",
+                "burger_hide"
+            ],
+            addUser: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "burger__item"
+                ],
+                text: "Добавить пользователя",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__add-user");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
+            removeUser: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "burger__item"
+                ],
+                text: "Удалить пользователя",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__delete-user");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
+            removeChat: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "btn_red",
+                    "burger__item"
+                ],
+                text: "Удалить чат",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        if ((0, _storeDefault.default).getState().activeChat) (0, _chatControllerDefault.default).deleteChat({
+                            chatId: (0, _storeDefault.default).getState().activeChat
+                        });
+                        else throw new Error("Чат не выбран");
+                        console.log();
+                    }
+                }
+            })
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = ChatBurgerMenu;
+
+},{"./tmp":"dTGxi","../../core/eventBus/Block":"h0Aox","../button/Button":"6D5CV","../../core/controllers/ChatController":"7XzYw","../../core/store/Store":"fM7h4","./burger.scss":"1Mmov","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dTGxi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const burgerTmp = `
+	{{{ addUser }}}
+	{{{ removeUser }}}
+	{{{ removeChat }}}
+`;
+exports.default = burgerTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7XzYw":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _chatAPI = require("../api/ChatAPI");
+var _chatAPIDefault = parcelHelpers.interopDefault(_chatAPI);
+var _store = require("../store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _chatListItem = require("../../components/chatListItem/ChatListItem");
+var _chatListItemDefault = parcelHelpers.interopDefault(_chatListItem);
+class ChatController {
+    async createChat(data) {
+        try {
+            const result = await this.api.createChat(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            await this.getChats();
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async deleteChat(data) {
+        try {
+            const result = await this.api.deleteChatById(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            await this.getChats();
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async getChats() {
+        try {
+            const result = await this.api.getChats();
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            const chatsArr = JSON.parse(result.response).map((item)=>{
+                let date = null;
+                if (item?.last_message?.time) date = new Date(item.last_message.time);
+                return new (0, _chatListItemDefault.default)({
+                    isActive: false,
+                    avatar: item.avatar ? item.avatar && "https://ya-praktikum.tech/api/v2/resources" + item.avatar : "",
+                    title: item.title,
+                    lastMessage: item.last_message ? item.last_message && item.last_message.content : "",
+                    lastMessageTime: date ? `${date.getHours()}:${date.getMinutes()}` : "",
+                    newMessage: item.unread_count,
+                    chatId: item.id
+                });
+            });
+            (0, _storeDefault.default).set("chats", chatsArr);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async addUserToChat(data) {
+        try {
+            const result = await this.api.addUserToChat(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async deleteUserFromChat(data) {
+        try {
+            const result = await this.api.deleteUserFromChat(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async getToken(chatId) {
+        try {
+            const result = await this.api.getToken(chatId);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            return JSON.parse(result.response);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    constructor(){
+        this.api = new (0, _chatAPIDefault.default)();
+    }
+}
+exports.default = new ChatController();
+
+},{"../api/ChatAPI":"bRvNl","../store/Store":"fM7h4","../../components/chatListItem/ChatListItem":"hfgbe","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bRvNl":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _api = require("./api");
+var _apiDefault = parcelHelpers.interopDefault(_api);
+class ChatAPI extends (0, _apiDefault.default) {
+    constructor(){
+        super("/chats");
+    }
+    getChats() {
+        return this.http.get("/", {
+            withCredentials: true
+        });
+    }
+    createChat(data) {
+        return this.http.post("/", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    deleteChatById(data) {
+        return this.http.delete("/", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    getChatUsers(id) {
+        return this.http.get(`/${id}/users`, {
+            withCredentials: true
+        });
+    }
+    addUserToChat(data) {
+        return this.http.put("/users", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    deleteUserFromChat(data) {
+        return this.http.delete("/users", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    uploadChatAvatar(chatId, avatar) {
+        return this.http.put("/avatar", {
+            headers: {},
+            withCredentials: true,
+            data: {
+                chatId,
+                avatar
+            }
+        });
+    }
+    getToken(id) {
+        return this.http.post(`/token/${id}`, {
+            withCredentials: true
+        });
+    }
+}
+exports.default = ChatAPI;
+
+},{"./api":"8YvXE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hfgbe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _messageController = require("../../core/controllers/MessageController");
+var _messageControllerDefault = parcelHelpers.interopDefault(_messageController);
+class ChatListItem extends (0, _blockDefault.default) {
+    constructor(props){
+        super("div", {
+            ...props,
+            classNames: [
+                "chat"
+            ],
+            events: {
+                click: async ()=>{
+                    const chats = document.querySelectorAll(".chat");
+                    if (chats && chats.length > 0) chats.forEach((elem)=>{
+                        elem.classList.remove("chat_active");
+                    });
+                    (0, _storeDefault.default).set("activeChat", this.props.chatId);
+                    this.setProps({
+                        isActive: "true"
+                    });
+                    if (this.props.isActive) this.element.classList.add("chat_active");
+                    const { user, activeChat } = await (0, _storeDefault.default).getState();
+                    const token = await (0, _chatControllerDefault.default).getToken(activeChat);
+                    await (0, _messageControllerDefault.default).init(user.id, activeChat, token.token);
+                    await (0, _messageControllerDefault.default).getMessages();
+                }
+            }
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = ChatListItem;
+
+},{"../../core/controllers/ChatController":"7XzYw","../../core/eventBus/Block":"h0Aox","../../core/store/Store":"fM7h4","./tmp":"8zm9W","../../core/controllers/MessageController":"hWCIY","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8zm9W":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const chatItemTmp = `
+	<div class="chat__avatar">{{ avatar }}</div>
+	<div class="chat__info">
+		<div class="chat__info__message">
+			<div class="chat__info__title">{{ title }}</div>
+			<div class="chat__info__last-msg">{{ lastMessage }}</div>
+		</div>
+		<div class="chat__info__stat">
+			<div class="chat__info__time">{{ lastMessageTime  }}</div>
+			<div class="chat__info__new-msg {{ newMessage }}"></div>
+		</div>
+	</div>
+`;
+exports.default = chatItemTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1Mmov":[function() {},{}],"7gDGF":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _burgerScss = require("./burger.scss");
+class MessageBurgerMenu extends (0, _blockDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "burger",
+                "burger__message",
+                "burger_hide"
+            ],
+            addUser: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "burger__item"
+                ],
+                text: "Добавить фото",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__add-photo");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
+            removeUser: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "burger__item"
+                ],
+                text: "Добавить файл",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__add-file");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
+            removeChat: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "burger__item"
+                ],
+                text: "Добавить локацию",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__add-location");
+                        addModal.style.display = "block";
+                    }
+                }
+            })
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = MessageBurgerMenu;
+
+},{"./tmp":"dTGxi","../../core/eventBus/Block":"h0Aox","../button/Button":"6D5CV","./burger.scss":"1Mmov","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1Mmov":[function() {},{}],"6dTgg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const homePageTmp = `
-	<div class="left">
+	<div class='left'>
 		{{{ profileBtn }}}
 		{{{ search }}}
-		{{{ chatsList }}}
+		{{{ addChatBtn }}}
+		{{{ chats }}}
 	</div>
 
-	{{#if chat}}
-		{{{ chat }}}
-	{{else}}
-		<div class='right'>
-			{{{ emptyChat }}}
-		</div>
-	{{/if}}
+	{{{ chat }}}
+	<div class="{{{ emptyChat.className }}}">{{{ emptyChat.text }}}</div>
+	
+	
+
+	{{{ addChatModal }}}
+	{{{ addUserModal }}}
+	{{{ deleteUserModal }}}
+	{{{ addPhotoModal }}}
+	{{{ addFileModal }}}
+	{{{ addLocationModal }}}
 `;
 exports.default = homePageTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jkT4w":[function() {},{}],"042Wj":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8EIKf":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ProfilePage", ()=>ProfilePage);
-parcelHelpers.export(exports, "ChangeProfilePage", ()=>ChangeProfilePage);
-parcelHelpers.export(exports, "ChangeProfilePasswordPage", ()=>ChangeProfilePasswordPage);
-var _page = require("../Page");
-var _pageDefault = parcelHelpers.interopDefault(_page);
-var _button = require("../../components/button");
-var _form = require("../../components/form");
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _validate = require("../../utils/validate");
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _modalsScss = require("./modals.scss");
+class AddChatModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__add-chat"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Добавить чат",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "addChatModalInput",
+                        placeholder: "Название чата",
+                        type: "text"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Добавить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = {
+                            title: (0, _validate.formValidation)(event.target).addChatModalInput
+                        };
+                        console.log(data);
+                        if (data) {
+                            (0, _chatControllerDefault.default).createChat(data);
+                            this.hide();
+                        }
+                        console.log("submit");
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = AddChatModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","../../core/controllers/ChatController":"7XzYw","../../utils/validate":"24nAO","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cXWPg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _validate = require("../../utils/validate");
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-var _profilePageScss = require("./profilePage.scss");
-const ProfilePage = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "profile"
-    ],
-    backButton: (0, _button.profileBackBtn),
-    changeable: false,
-    inputs: {
-        email: {
-            label: "Почта",
-            input: "some@email.com"
-        },
-        login: {
-            label: "Логин",
-            input: "some"
-        },
-        first_name: {
-            label: "Имя",
-            input: "Ivan"
-        },
-        second_name: {
-            label: "Фамилия",
-            input: "Ivanov"
-        },
-        display_name: {
-            label: "Имя в чате",
-            input: "some"
-        },
-        phone: {
-            label: "Телефон",
-            input: "8(999)999-99-99"
-        }
-    },
-    changeDataButton: (0, _button.profileChangeDataBtn),
-    changePasswordButton: (0, _button.profileChangePasswordBtn),
-    outButton: (0, _button.profileOutBtn)
-});
-const ChangeProfilePage = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "profile"
-    ],
-    backButton: (0, _button.profileChangeBackBtn),
-    changeable: true,
-    form: (0, _form.profileChangeForm)
-});
-const ChangeProfilePasswordPage = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "profile"
-    ],
-    backButton: (0, _button.profileChangePasswordBackBtn),
-    changeable: true,
-    form: (0, _form.profileChangePasswordForm)
-});
+class ModalInput extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props.tagName, props);
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+        this.props.settings = {
+            withInternalID: true
+        };
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
+        };
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = ModalInput;
 
-},{"../Page":"leFJS","../../components/button":"dZaQH","../../components/form":"2s5qC","./tmp":"b779O","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"b779O":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../utils/validate":"24nAO","./tmp":"4H9yh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"i7OuK":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class Modal extends (0, _blockDefault.default) {
+    constructor(tagName, props){
+        super(tagName, props);
+        this.props.classNames.push("modal");
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    hideModal(event) {
+        if (event.target.className.includes("modal-overlay")) this.hide();
+        else return;
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = Modal;
+
+},{"../../core/eventBus/Block":"h0Aox","./tmp":"fySe9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fySe9":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const modalTmp = `
+	{{{ form }}}
+`;
+exports.default = modalTmp;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"gvBCC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _validate = require("../../utils/validate");
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _modalsScss = require("./modals.scss");
+class AddUserModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__add-user"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Добавить пользователя",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "addUserModalInput",
+                        placeholder: "id пользователя",
+                        type: "text"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Добавить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = {
+                            users: [
+                                Number((0, _validate.formValidation)(event.target).addUserModalInput)
+                            ],
+                            chatId: Number((0, _storeDefault.default).getState().activeChat)
+                        };
+                        if (data) {
+                            (0, _chatControllerDefault.default).addUserToChat(data);
+                            this.hide();
+                            console.log(`Пользователь ${Number((0, _validate.formValidation)(event.target).addUserModalInput)} добавлен`);
+                        }
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = AddUserModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","../../core/controllers/ChatController":"7XzYw","../../utils/validate":"24nAO","./Modal":"i7OuK","../../core/store/Store":"fM7h4","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"9qUUM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _validate = require("../../utils/validate");
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _modalsScss = require("./modals.scss");
+class DeleteUserModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__delete-user"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Удалить пользователя",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "deleteUserModalInput",
+                        placeholder: "id пользователя",
+                        type: "text"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "btn_red",
+                        "actions__btn-save"
+                    ],
+                    text: "Удалить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = {
+                            users: [
+                                Number((0, _validate.formValidation)(event.target).deleteUserModalInput)
+                            ],
+                            chatId: Number((0, _storeDefault.default).getState().activeChat)
+                        };
+                        if (data) {
+                            (0, _chatControllerDefault.default).deleteUserFromChat(data);
+                            this.hide();
+                            console.log(`Пользователь ${Number((0, _validate.formValidation)(event.target).deleteUserModalInput)} удален`);
+                        }
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = DeleteUserModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","../../core/controllers/ChatController":"7XzYw","../../utils/validate":"24nAO","./Modal":"i7OuK","../../core/store/Store":"fM7h4","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"9Y1az":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+// import ChatController from '../../core/controllers/ChatController';
+// import { formValidation } from '../../utils/validate';
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _modalsScss = require("./modals.scss");
+class AddPhotoModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__add-photo"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Добавить чат",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "addChatModalInput",
+                        placeholder: "Название чата",
+                        type: "file"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Добавить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                    // const data = { title: formValidation(event.target).addChatModalInput };
+                    // console.log(data);
+                    // if (data) {
+                    // 	ChatController.createChat(data);
+                    // 	this.hide();
+                    // }
+                    // console.log('submit');
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = AddPhotoModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"MOYGv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _modalsScss = require("./modals.scss");
+class AddFileModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__add-file"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Добавить файл",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "addChatModalInput",
+                        type: "file"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Добавить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                    // const data = { title: formValidation(event.target).addChatModalInput };
+                    // console.log(data);
+                    // if (data) {
+                    // 	ChatController.createChat(data);
+                    // 	this.hide();
+                    // }
+                    // console.log('submit');
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = AddFileModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"luIWk":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _modalsScss = require("./modals.scss");
+class AddLocationModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__add-location"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Добавить чат",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "addChatModalInput",
+                        placeholder: "Название чата",
+                        type: "text"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Добавить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                    // const data = { title: formValidation(event.target).addChatModalInput };
+                    // console.log(data);
+                    // if (data) {
+                    // 	ChatController.createChat(data);
+                    // 	this.hide();
+                    // }
+                    // console.log('submit');
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = AddLocationModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"jkT4w":[function() {},{}],"042Wj":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
+var _authController = require("../../core/controllers/AuthController");
+var _authControllerDefault = parcelHelpers.interopDefault(_authController);
+var _store = require("../../core/store/Store");
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _profilePageScss = require("./profilePage.scss");
+class BaseProfilePage extends (0, _blockDefault.default) {
+    constructor(props){
+        super("section", {
+            classNames: [
+                "profile"
+            ],
+            backButton: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "back-btn",
+                    "btn"
+                ],
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: (event)=>{
+                        event.preventDefault();
+                        (0, _routerDefault.default).go("/home");
+                    }
+                }
+            }),
+            changeable: false,
+            userAvatar: (0, _storeDefault.default).getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${(0, _storeDefault.default).getState().user?.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            userName: (0, _storeDefault.default).getState().user?.first_name,
+            changeDataButton: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "actions__btn",
+                    "btn",
+                    "btn_flat"
+                ],
+                text: "Изменить данные",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: (event)=>{
+                        event.preventDefault();
+                        (0, _routerDefault.default).go("/profile/changedata");
+                    }
+                }
+            }),
+            changePasswordButton: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "actions__btn",
+                    "btn",
+                    "btn_flat"
+                ],
+                text: "Изменить пароль",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: (event)=>{
+                        event.preventDefault();
+                        (0, _routerDefault.default).go("/profile/changepass");
+                    }
+                }
+            }),
+            outButton: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "actions__btn",
+                    "actions__btn_red",
+                    "btn",
+                    "btn_flat"
+                ],
+                text: "Выйти",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: (event)=>{
+                        event.preventDefault();
+                        (0, _authControllerDefault.default).logout();
+                        (0, _routerDefault.default).go("/");
+                    }
+                }
+            }),
+            ...props
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+const ProfilePage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseProfilePage);
+exports.default = ProfilePage;
+
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../core/router/router":"8L95r","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","./tmp":"b779O","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"b779O":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const profilePageTmp = `
 	{{{ backButton }}}
 	
 	<div class="user">
-		<div name="avatar" class="user__avatar"></div>
-		<div class="user__name">Иван</div>
+		<div name="avatar" class="user__avatar">
+			<img class="user__avatar__img" src="{{{userAvatar}}}" alt="Аватар"></img>
+			{{{ userAvatarBtn }}}
+		</div>
+		<div class="user__name">{{{ userName }}}</div>
+		{{{ changeAvatarModal }}}
 	</div>
 
 
@@ -13594,12 +14834,30 @@ const profilePageTmp = `
 		</div>
 	{{else}}
 		<ul class="info">
-			{{#each inputs}}
-				<li class="input-wrapper_long">
-					<div class="label_long">{{this.label}}</div>
-					<div class="info__value">{{this.input}}</div>
-				</li>
-			{{/each}}
+			<li class="input-wrapper_long">
+				<div class="label_long">Почта</div>
+				<div class="info__value">Email</div>
+			</li>
+			<li class="input-wrapper_long">
+				<div class="label_long">Логин</div>
+				<div class="info__value">{{login}}</div>
+			</li>
+			<li class="input-wrapper_long">
+				<div class="label_long">Имя</div>
+				<div class="info__value">{{first_name}}</div>
+			</li>
+			<li class="input-wrapper_long">
+				<div class="label_long">Фамилия</div>
+				<div class="info__value">{{second_name}}</div>
+			</li>
+			<li class="input-wrapper_long">
+				<div class="label_long">Имя в чате</div>
+				<div class="info__value">{{display_name}}</div>
+			</li>
+			<li class="input-wrapper_long">
+				<div class="label_long">Телефон</div>
+				<div class="info__value">Phone number</div>
+			</li>
 		</ul>
 		<div class="actions">
 			{{{ changeDataButton }}}
@@ -13610,37 +14868,531 @@ const profilePageTmp = `
 `;
 exports.default = profilePageTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f2frq":[function() {},{}],"55oR1":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f2frq":[function() {},{}],"5wl6t":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Error404Page", ()=>Error404Page);
-parcelHelpers.export(exports, "Error500Page", ()=>Error500Page);
-var _page = require("../Page");
-var _pageDefault = parcelHelpers.interopDefault(_page);
-var _button = require("../../components/button");
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../../components/form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _profileInput = require("../../components/input/ProfileInput");
+var _profileInputDefault = parcelHelpers.interopDefault(_profileInput);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
+var _validate = require("../../utils/validate");
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _userController = require("../../core/controllers/UserController");
+var _userControllerDefault = parcelHelpers.interopDefault(_userController);
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
+var _changeUserAvatarModal = require("../../components/modals/ChangeUserAvatarModal");
+var _changeUserAvatarModalDefault = parcelHelpers.interopDefault(_changeUserAvatarModal);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _profilePageScss = require("./profilePage.scss");
+class BaseChangeProfilePage extends (0, _blockDefault.default) {
+    constructor(props){
+        super("section", {
+            classNames: [
+                "profile"
+            ],
+            backButton: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "back-btn",
+                    "btn"
+                ],
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: (event)=>{
+                        event.preventDefault();
+                        (0, _routerDefault.default).go("/profile");
+                    }
+                }
+            }),
+            changeable: true,
+            userAvatar: (0, _storeDefault.default).getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${(0, _storeDefault.default).getState().user?.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            userAvatarBtn: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "user__avatar__btn"
+                ],
+                text: "Поменять аватар",
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__change-avatar-modal");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
+            userName: (0, _storeDefault.default).getState().user?.first_name,
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "change-profile__form"
+                ],
+                changeable: true,
+                email: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Почта"
+                    },
+                    input: {
+                        name: "email",
+                        value: "Email"
+                    }
+                }),
+                login: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Логин"
+                    },
+                    input: {
+                        name: "login",
+                        value: props.login
+                    }
+                }),
+                first_name: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Имя"
+                    },
+                    input: {
+                        name: "first_name",
+                        value: props.first_name
+                    }
+                }),
+                second_name: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Фамилия"
+                    },
+                    input: {
+                        name: "second_name",
+                        value: props.second_name
+                    }
+                }),
+                display_name: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Имя в чате"
+                    },
+                    input: {
+                        name: "display_name",
+                        value: props.display_name
+                    }
+                }),
+                phone: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Телефон"
+                    },
+                    input: {
+                        name: "phone",
+                        value: "Phone"
+                    }
+                }),
+                saveButton: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    classNames: [
+                        "actions__btn-save",
+                        "btn"
+                    ],
+                    text: "Сохранить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = (0, _validate.formValidation)(event.target);
+                        if (data) {
+                            (0, _userControllerDefault.default).changeUserProfile(data);
+                            (0, _routerDefault.default).go("/profile");
+                        }
+                    }
+                }
+            }),
+            changeAvatarModal: new (0, _changeUserAvatarModalDefault.default)()
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+const ChangeProfilePage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseChangeProfilePage);
+exports.default = ChangeProfilePage;
+
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/form/Form":"9jm2L","../../components/input/ProfileInput":"lxrx6","../../core/router/router":"8L95r","../../utils/validate":"24nAO","../../core/store/Store":"fM7h4","../../core/controllers/UserController":"dNi2S","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../components/modals/ChangeUserAvatarModal":"iIzoz","./tmp":"b779O","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lxrx6":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _validate = require("../../utils/validate");
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+class ProfileInput extends (0, _blockDefault.default) {
+    constructor(props){
+        super("li", props);
+        this.element.classList.add("input-wrapper_long");
+        this.props.label = {
+            classNames: [
+                "label_long"
+            ],
+            text: this.props.label.text
+        };
+        this.props.input = {
+            classNames: [
+                "input_long"
+            ],
+            type: "text",
+            name: this.props.input.name,
+            value: this.props.input.value,
+            placeholder: this.props.input.placeholder
+        };
+        this.props.settings = {
+            withInternalID: true
+        };
+        this.props.events = {
+            focusout: (event)=>(0, _validate.inputValidation)(event.target)
+        };
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = ProfileInput;
+
+},{"../../core/eventBus/Block":"h0Aox","../../utils/validate":"24nAO","./tmp":"4H9yh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dNi2S":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _userAPI = require("../api/UserAPI");
+var _userAPIDefault = parcelHelpers.interopDefault(_userAPI);
+var _store = require("../store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+class UserController {
+    async changeUserProfile(data) {
+        try {
+            const result = await this.api.changeUserProfile(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            const newUserInfo = JSON.parse(result.response);
+            (0, _storeDefault.default).set("user", {
+                ...newUserInfo,
+                avatar: "https://ya-praktikum.tech/api/v2/resources" + newUserInfo.avatar
+            });
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async changeUserPassword(data) {
+        try {
+            const result = await this.api.changeUserPassword(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async changeUserAvatar(data) {
+        try {
+            const result = await this.api.changeUserAvatar(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            const newUserInfo = JSON.parse(result.response);
+            (0, _storeDefault.default).set("user", {
+                ...newUserInfo,
+                avatar: "https://ya-praktikum.tech/api/v2/resources" + newUserInfo.avatar
+            });
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    constructor(){
+        this.api = new (0, _userAPIDefault.default)();
+    }
+}
+exports.default = new UserController();
+
+},{"../api/UserAPI":"jMPIq","../store/Store":"fM7h4","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jMPIq":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _api = require("./api");
+var _apiDefault = parcelHelpers.interopDefault(_api);
+class UserAPI extends (0, _apiDefault.default) {
+    constructor(){
+        super("/user");
+    }
+    async changeUserProfile(data) {
+        return this.http.put("/profile", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    async changeUserAvatar(data) {
+        return await this.http.put("/profile/avatar", {
+            headers: {},
+            withCredentials: true,
+            data
+        });
+    }
+    async changeUserPassword(data) {
+        return await this.http.put("/password", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+    async getUserById(id) {
+        return await this.http.get(`/${id}`, {
+            withCredentials: true
+        });
+    }
+    async searchUserByLogin(data) {
+        return await this.http.post("/search", {
+            withCredentials: true,
+            data: JSON.stringify(data)
+        });
+    }
+}
+exports.default = UserAPI;
+
+},{"./api":"8YvXE","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iIzoz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _modalsScss = require("./modals.scss");
+var _userController = require("../../core/controllers/UserController");
+var _userControllerDefault = parcelHelpers.interopDefault(_userController);
+class ChangeUserAvatarModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__change-avatar-modal"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Изменить Аватар",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "cahngeAvatarModalInput",
+                        type: "file"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Изменить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const file = event.target[0].files[0];
+                        if (file) {
+                            const formData = new FormData();
+                            formData.append("avatar", file);
+                            (0, _userControllerDefault.default).changeUserAvatar(formData);
+                            this.hide();
+                        }
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+exports.default = ChangeUserAvatarModal;
+
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","./Modal":"i7OuK","./modals.scss":"lorVV","../../core/controllers/UserController":"dNi2S","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"f2frq":[function() {},{}],"3Ivop":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../../components/form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _validate = require("../../utils/validate");
+var _profileInput = require("../../components/input/ProfileInput");
+var _profileInputDefault = parcelHelpers.interopDefault(_profileInput);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
+var _store = require("../../core/store/Store");
+var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
+var _userController = require("../../core/controllers/UserController");
+var _userControllerDefault = parcelHelpers.interopDefault(_userController);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _profilePageScss = require("./profilePage.scss");
+class BaseChangePasswordPage extends (0, _blockDefault.default) {
+    constructor(props){
+        super("section", {
+            classNames: [
+                "profile"
+            ],
+            backButton: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "back-btn",
+                    "btn"
+                ],
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: (event)=>{
+                        event.preventDefault();
+                        (0, _routerDefault.default).go("/profile");
+                    }
+                }
+            }),
+            changeable: true,
+            userAvatar: (0, _storeDefault.default).getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${(0, _storeDefault.default).getState().user?.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            userName: (0, _storeDefault.default).getState().user?.first_name,
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "change-profile__form"
+                ],
+                changeable: true,
+                oldPassword: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Старый пароль"
+                    },
+                    input: {
+                        name: "oldPassword",
+                        placeholder: "•••••••"
+                    }
+                }),
+                newPassword: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Новый пароль"
+                    },
+                    input: {
+                        name: "newPassword",
+                        placeholder: "•••••••"
+                    }
+                }),
+                newPasswordAgain: new (0, _profileInputDefault.default)({
+                    label: {
+                        text: "Повторите новый пароль"
+                    },
+                    input: {
+                        name: "newPasswordAgain",
+                        placeholder: "•••••••"
+                    }
+                }),
+                saveButton: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    classNames: [
+                        "actions__btn-save",
+                        "btn"
+                    ],
+                    text: "Сохранить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const data = (0, _validate.formValidation)(event.target);
+                        if (data) {
+                            (0, _userControllerDefault.default).changeUserPassword(data);
+                            (0, _routerDefault.default).go("/profile");
+                        }
+                    }
+                }
+            }),
+            ...props
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+const ChangePasswordPage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseChangePasswordPage);
+exports.default = ChangePasswordPage;
+
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../components/input/ProfileInput":"lxrx6","../../core/router/router":"8L95r","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../core/controllers/UserController":"dNi2S","./tmp":"b779O","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f2frq":[function() {},{}],"7dwr4":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _errorPageScss = require("./errorPage.scss");
-const Error404Page = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "error"
-    ],
-    errorNumber: "404",
-    subtitle: "Не туда попали",
-    button: (0, _button.error404Btn)
-});
-const Error500Page = new (0, _pageDefault.default)({
-    layout: (0, _tmpDefault.default),
-    classNames: [
-        "error"
-    ],
-    errorNumber: "500",
-    subtitle: "Мы уже фиксим",
-    button: (0, _button.error500Btn)
-});
+class Error404Page extends (0, _blockDefault.default) {
+    constructor(){
+        super("section", {
+            classNames: [
+                "error"
+            ],
+            errorNumber: "404",
+            subtitle: "Не туда попали",
+            button: new (0, _buttonDefault.default)({
+                tagName: "a",
+                href: "/home",
+                classNames: [
+                    "error__link",
+                    "btn_flat"
+                ],
+                text: "Назад к чатам",
+                settings: {
+                    withInternalID: true
+                }
+            })
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
+}
+exports.default = Error404Page;
 
-},{"../Page":"leFJS","../../components/button":"dZaQH","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7kuGo":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7kuGo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const errorTmp = `
@@ -13650,37 +15402,47 @@ const errorTmp = `
 `;
 exports.default = errorTmp;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}],"8M1dZ":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}],"aNgAt":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _errorPage = require("../../pages/errorPage/ErrorPage");
-var _renderDOM = require("./renderDOM");
-var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
-const router = (routes)=>{
-    const parseLocation = ()=>location.hash.slice(1).toLowerCase() || "/";
-    // eslint-disable-next-line no-shadow
-    const findComponentByPath = (path, routes)=>routes.find((r)=>r.path.match(new RegExp(`^\\${path}$`, "gm"))) || undefined;
-    const routerRender = ()=>{
-        const path = parseLocation();
-        const { component = (0, _errorPage.Error404Page) } = findComponentByPath(path, routes) || {};
-        document.querySelector("#root").innerHTML = "";
-        (0, _renderDOMDefault.default)("#root", component);
-    };
-    window.addEventListener("hashchange", routerRender);
-    window.addEventListener("load", routerRender);
-};
-exports.default = router;
-
-},{"../../pages/errorPage/ErrorPage":"55oR1","./renderDOM":"6i06W","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6i06W":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function renderDOM(query, block) {
-    const root = document.querySelector(query);
-    if (!root) return;
-    root.appendChild(block.getContent());
+var _block = require("../../core/eventBus/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _button = require("../../components/button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _tmp = require("./tmp");
+var _tmpDefault = parcelHelpers.interopDefault(_tmp);
+var _errorPageScss = require("./errorPage.scss");
+class Error500Page extends (0, _blockDefault.default) {
+    constructor(){
+        super("section", {
+            classNames: [
+                "error"
+            ],
+            errorNumber: "500",
+            subtitle: "Мы уже фиксим",
+            button: new (0, _buttonDefault.default)({
+                tagName: "a",
+                href: "/home",
+                classNames: [
+                    "error__link",
+                    "btn_flat"
+                ],
+                text: "Назад к чатам",
+                settings: {
+                    withInternalID: true
+                }
+            })
+        });
+        this.props.classNames.forEach((className)=>{
+            this.element.classList.add(className);
+        });
+    }
+    render() {
+        return this.compile((0, _tmpDefault.default), this.props);
+    }
 }
-exports.default = renderDOM;
+exports.default = Error500Page;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fUTXd","jeorp"], "jeorp", "parcelRequirefc40")
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}]},["fUTXd","jeorp"], "jeorp", "parcelRequirefc40")
 
 //# sourceMappingURL=index.b7a05eb9.js.map
