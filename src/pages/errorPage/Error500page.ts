@@ -1,0 +1,40 @@
+import Block from '../../core/eventBus/Block';
+import { TErrorPage } from '../../types/types';
+import Button from '../../components/button/Button';
+import errorTmp from './tmp';
+
+import './errorPage.scss';
+
+
+class Error500Page extends Block<TErrorPage> {
+	constructor() {
+		super('section', {
+			classNames: [
+				'error',
+			],
+			errorNumber: '500',
+			subtitle: 'Мы уже фиксим',
+			button: new Button({
+				tagName: 'a',
+				href: '/home',
+				classNames: [
+					'error__link',
+					'btn_flat',
+				],
+				text: 'Назад к чатам',
+				settings: { withInternalID: true },
+			}),
+		});
+
+		this.props.classNames.forEach((className: string) => {
+			this.element.classList.add(className);
+		});
+	}
+
+	render() {
+		return this.compile(errorTmp, this.props);
+	}
+}
+
+
+export default Error500Page;
