@@ -7,7 +7,6 @@
 	&_long {
 		margin-bottom: 25px;
 		width: 100%;
-		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
@@ -39,7 +38,6 @@
 	&_long {
 		text-align: right;
 		width: 50%;
-		text-align: right;
 		color: $text-shadow;
 		border: none;
 			&:focus {
