@@ -1,30 +1,66 @@
-import { LogInPage, SignInPage } from './pages/enterPage/EnterPage';
+import router from './core/router/router';
+import LogInPage from './pages/enterPage/LogInPage';
+import SignUpPage from './pages/enterPage/SignUpPage';
 import HomePage from './pages/homePage/HomePage';
-import {
-	ProfilePage,
-	ChangeProfilePage,
-	ChangeProfilePasswordPage,
-} from './pages/profilePage/ProfilePage';
-import {
-	Error404Page,
-	Error500Page,
-} from './pages/errorPage/ErrorPage';
-import router from './utils/router/router';
-
-import { TRoutes } from './types/types';
+import ProfilePage from './pages/profilePage/ProfilePage';
+import ChangeProfilePage from './pages/profilePage/ChangeProfilePage';
+import ChangePasswordPage from './pages/profilePage/ChangePasswordPage';
+import Error404Page from './pages/errorPage/Error404Page';
+import Error500Page from './pages/errorPage/Error500page';
+import AuthController from './core/controllers/AuthController';
 
 
-const routes: TRoutes = [
-	{ path: '/', component: LogInPage },
-	{ path: '/login', component: LogInPage },
-	{ path: '/signin', component: SignInPage },
-	{ path: '/home', component: HomePage },
-	{ path: '/home/chat', component: HomePage },
-	{ path: '/error500', component: Error500Page },
-	{ path: '/error404', component: Error404Page },
-	{ path: '/profile', component: ProfilePage },
-	{ path: '/profile/changedata', component: ChangeProfilePage },
-	{ path: '/profile/changepass', component: ChangeProfilePasswordPage },
-];
+enum Routes {
+	index = '/',
+	login = '/login',
+	signup = '/signup',
+	home = '/home',
+	chat = '/home/chat',
+	error500 = '/error500',
+	error404 = '/error404',
+	profile = '/profile',
+	changedata = '/profile/changedata',
+	changepass = '/profile/changepass',
+}
 
-router(routes);
+window.addEventListener('DOMContentLoaded', async () => {
+	router
+		.use(Routes.index, LogInPage)
+		.use(Routes.login, LogInPage)
+		.use(Routes.signup, SignUpPage)
+		.use(Routes.home, HomePage)
+		.use(Routes.chat, HomePage)
+		.use(Routes.error500, Error500Page)
+		.use(Routes.error404, Error404Page)
+		.use(Routes.profile, ProfilePage)
+		.use(Routes.changedata, ChangeProfilePage)
+		.use(Routes.changepass, ChangePasswordPage);
+
+	let isProtectedRoute = true;
+
+	switch (window.location.pathname) {
+	case Routes.index:
+	case Routes.login:
+	case Routes.signup:
+		isProtectedRoute = false;
+		break;
+	}
+
+	try {
+		await AuthController.fetchUser();
+
+		router.start();
+
+		if (!isProtectedRoute) {
+			router.go('/');
+		}
+	} catch (e) {
+		console.log(e);
+
+		router.start();
+
+		if (isProtectedRoute) {
+			router.go('/');
+		}
+	}
+});

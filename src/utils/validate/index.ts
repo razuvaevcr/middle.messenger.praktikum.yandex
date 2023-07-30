@@ -34,17 +34,23 @@ const inputValidation = (target: EventTarget | null, data?: Record<string, strin
 
 // Form
 const formValidation = (target: EventTarget | null) => {
-	const data: Record<string, string> = {};
+	const data: any = {};
+	let inputsCount = 0;
 
 	const form = target as HTMLFormElement;
 
 	for (let i = 0; i < form.length; i++) {
 		if (form[i].nodeName === 'INPUT') {
+			inputsCount++;
 			inputValidation(form[i], data);
 		}
 	}
 
-	if (Object.keys(data).length) console.log(data);
+	if (Object.keys(data).length == inputsCount) {
+		return data;
+	} else {
+		return undefined;
+	}
 };
 
 
