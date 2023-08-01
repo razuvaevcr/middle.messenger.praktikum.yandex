@@ -1,7 +1,10 @@
 const chatTmp: string = `
 	<div class="user-bar">
 		<div class="user-bar__user">
-			<div class="user-bar__photo"></div>
+			<div class="user-bar__photo">
+				<img class="user__avatar__img" src="{{{ chatAvatar }}}" alt="Аватар"></img>
+				{{{ changeChatAvatarBtn }}}
+			</div>
 			<div class="user-bar__name">{{chatName}}</div>
 		</div>
 		{{{ optionsBtn }}}
@@ -20,9 +23,3 @@ const chatTmp: string = `
 
 export default chatTmp;
 
-
-// <div class="user-bar__menu">
-// 			<span></span>
-// 			<span></span>
-// 			<span></span>
-// 		</div>

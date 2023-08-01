@@ -1,5 +1,5 @@
 const chatItemTmp: string = `
-	<div class="chat__avatar">{{ avatar }}</div>
+	<img class="chat__avatar" src="{{ avatar }}"></img>
 	<div class="chat__info">
 		<div class="chat__info__message">
 			<div class="chat__info__title">{{ title }}</div>

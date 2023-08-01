@@ -597,22 +597,19 @@ var _authController = require("./core/controllers/AuthController");
 var _authControllerDefault = parcelHelpers.interopDefault(_authController);
 var Routes;
 (function(Routes) {
-    Routes["index"] = "/";
-    Routes["login"] = "/login";
-    Routes["signup"] = "/signup";
-    Routes["home"] = "/home";
-    Routes["chat"] = "/home/chat";
+    Routes["login"] = "/";
+    Routes["signup"] = "/sign-up";
+    Routes["home"] = "/messenger";
     Routes["error500"] = "/error500";
     Routes["error404"] = "/error404";
-    Routes["profile"] = "/profile";
-    Routes["changedata"] = "/profile/changedata";
-    Routes["changepass"] = "/profile/changepass";
+    Routes["profile"] = "/settings";
+    Routes["changedata"] = "/settings/changedata";
+    Routes["changepass"] = "/settings/changepass";
 })(Routes || (Routes = {}));
 window.addEventListener("DOMContentLoaded", async ()=>{
-    (0, _routerDefault.default).use(Routes.index, (0, _logInPageDefault.default)).use(Routes.login, (0, _logInPageDefault.default)).use(Routes.signup, (0, _signUpPageDefault.default)).use(Routes.home, (0, _homePageDefault.default)).use(Routes.chat, (0, _homePageDefault.default)).use(Routes.error500, (0, _error500PageDefault.default)).use(Routes.error404, (0, _error404PageDefault.default)).use(Routes.profile, (0, _profilePageDefault.default)).use(Routes.changedata, (0, _changeProfilePageDefault.default)).use(Routes.changepass, (0, _changePasswordPageDefault.default));
+    (0, _routerDefault.default).use(Routes.login, (0, _logInPageDefault.default)).use(Routes.signup, (0, _signUpPageDefault.default)).use(Routes.home, (0, _homePageDefault.default)).use(Routes.error500, (0, _error500PageDefault.default)).use(Routes.error404, (0, _error404PageDefault.default)).use(Routes.profile, (0, _profilePageDefault.default)).use(Routes.changedata, (0, _changeProfilePageDefault.default)).use(Routes.changepass, (0, _changePasswordPageDefault.default));
     let isProtectedRoute = true;
     switch(window.location.pathname){
-        case Routes.index:
         case Routes.login:
         case Routes.signup:
             isProtectedRoute = false;
@@ -621,7 +618,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
     try {
         await (0, _authControllerDefault.default).fetchUser();
         (0, _routerDefault.default).start();
-        if (!isProtectedRoute) (0, _routerDefault.default).go("/");
+        if (!isProtectedRoute) (0, _routerDefault.default).go("/messenger");
     } catch (e) {
         console.log(e);
         (0, _routerDefault.default).start();
@@ -683,8 +680,6 @@ exports.default = router;
 },{"./route":"bC8oP","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bC8oP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-var _renderDOM = require("./renderDOM");
-var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
 class Route {
     constructor(pathname, view, props){
         this.pathname = pathname;
@@ -699,18 +694,20 @@ class Route {
         }
     }
     leave() {
-        if (this._block) this._block.hide();
+        if (this._block) this._block.getContent()?.remove();
+    // if (this._block) {
+    // 	this._block.hide();
+    // }
     }
     match(pathname) {
         return isEqual(pathname, this.pathname);
     }
     render() {
-        if (!this._block) {
-            this._block = new this._blockClass();
-            (0, _renderDOMDefault.default)(this._props.rootQuery, this._block);
-            return;
-        }
-        this._block.show();
+        if (!this._block) this._block = new this._blockClass();
+        const root = document.querySelector(this._props.rootQuery);
+        this._block.dispatchComponentDidMount();
+        root.innerHTML = "";
+        root.append(this._block.getContent());
     }
     getPathname() {
         return this.pathname;
@@ -720,17 +717,6 @@ function isEqual(lhs, rhs) {
     return lhs === rhs;
 }
 exports.default = Route;
-
-},{"./renderDOM":"grvkj","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"grvkj":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function renderDOM(query, block) {
-    const root = document.querySelector(query);
-    block.dispatchComponentDidMount();
-    if (!root) return;
-    root.appendChild(block.getContent());
-}
-exports.default = renderDOM;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -779,8 +765,9 @@ var _authControllerDefault = parcelHelpers.interopDefault(_authController);
 var _store = require("../../core/store/Store");
 var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
 var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
-var _navigation = require("../../components/navigation/navigation");
-var _navigationDefault = parcelHelpers.interopDefault(_navigation);
+// import navigation from '../../components/navigation/navigation';
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _enterPageScss = require("./enterPage.scss");
@@ -824,15 +811,19 @@ class BaseLogInPage extends (0, _blockDefault.default) {
                     }
                 }),
                 secondBtn: new (0, _buttonDefault.default)({
-                    tagName: "a",
-                    href: "/signup",
+                    tagName: "button",
+                    type: "button",
                     classNames: [
                         "enter__btns__link",
-                        "btn_flat"
+                        "btn_flat",
+                        "btn"
                     ],
                     text: "Нет аккаунта",
                     settings: {
                         withInternalID: true
+                    },
+                    events: {
+                        click: ()=>(0, _routerDefault.default).go("/sign-up")
                     }
                 }),
                 events: {
@@ -842,8 +833,7 @@ class BaseLogInPage extends (0, _blockDefault.default) {
                         if (data) (0, _authControllerDefault.default).signin(data);
                     }
                 }
-            }),
-            navigation: (0, _navigationDefault.default)
+            })
         });
         this.props.classNames.forEach((className)=>{
             this.element.classList.add(className);
@@ -856,7 +846,7 @@ class BaseLogInPage extends (0, _blockDefault.default) {
 const LogInPage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseLogInPage);
 exports.default = LogInPage;
 
-},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/EnterInput":"1fCZE","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../components/navigation/navigation":"6oDGN","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h0Aox":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/EnterInput":"1fCZE","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../core/router/router":"8L95r","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"h0Aox":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _uuid = require("uuid");
@@ -12797,6 +12787,9 @@ const formTmp = `
 		{{else}}
 			<div class="modal__title">{{title}}</div>
 			{{{input}}}
+			{{#if fileInput}}
+				{{{fileInput}}}
+			{{/if}}
 			{{{submitBtn}}}
 		{{/if}}
 	{{else}}
@@ -12832,12 +12825,14 @@ var _store = require("../store/Store");
 var _storeDefault = parcelHelpers.interopDefault(_store);
 var _router = require("../router/router");
 var _routerDefault = parcelHelpers.interopDefault(_router);
+var _baseURL = require("./baseURL");
+var _baseURLDefault = parcelHelpers.interopDefault(_baseURL);
 class AuthController {
     async signin(data) {
         try {
             await this.api.signin(data);
             await this.fetchUser();
-            (0, _routerDefault.default).go("/profile");
+            (0, _routerDefault.default).go("/messenger");
             console.log("loged in");
         } catch (error) {
             console.log(error);
@@ -12846,7 +12841,7 @@ class AuthController {
     async signup(data) {
         try {
             await this.api.signup(data);
-            (0, _routerDefault.default).go("/profile");
+            (0, _routerDefault.default).go("/messenger");
         } catch (error) {
             console.log(error);
         }
@@ -12855,7 +12850,6 @@ class AuthController {
         try {
             await this.api.logout();
             (0, _storeDefault.default).set("user", undefined);
-            console.log("store: undef");
             (0, _routerDefault.default).go("/");
             console.log("loged out");
         } catch (error) {
@@ -12867,7 +12861,10 @@ class AuthController {
             const request = await this.api.getUser();
             if (request.status !== 200) throw new Error(`Ошибка: ${request.status} ${request.statusText || request.responseText}`);
             const user = JSON.parse(request.response);
-            (0, _storeDefault.default).set("user", user);
+            (0, _storeDefault.default).set("user", {
+                ...user,
+                avatar: `${(0, _baseURLDefault.default)}${user.avatar}`
+            });
         } catch (error) {
             throw error;
         }
@@ -12878,7 +12875,7 @@ class AuthController {
 }
 exports.default = new AuthController();
 
-},{"../api/AuthAPI":"f9GnE","../store/Store":"fM7h4","../router/router":"8L95r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f9GnE":[function(require,module,exports) {
+},{"../api/AuthAPI":"f9GnE","../store/Store":"fM7h4","../router/router":"8L95r","./baseURL":"1D0FJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f9GnE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _api = require("./api");
@@ -13073,82 +13070,24 @@ function merge(lhs, rhs) {
 }
 exports.default = merge;
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1D0FJ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const BASE_URL_RESOURCES = "https://ya-praktikum.tech/api/v2/resources/";
+exports.default = BASE_URL_RESOURCES;
+
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kqM99":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 function mapStateToProps(state) {
     return {
         ...state.user,
-        chats: state.chats,
-        messages: state.messages
+        /* avatar: state.user!.avatar, */ chats: state.chats,
+        messages: state.messages,
+        activeChat: state.activeChat
     };
 }
 exports.default = mapStateToProps;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6oDGN":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _handlebars = require("handlebars");
-var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _tmp = require("./tmp");
-var _tmpDefault = parcelHelpers.interopDefault(_tmp);
-const template = (0, _handlebarsDefault.default).compile((0, _tmpDefault.default));
-const listItems = {
-    links: {
-        enter: {
-            label: "Вход",
-            value: "/login"
-        },
-        registration: {
-            label: "Регистрация",
-            value: "/signup"
-        },
-        home: {
-            label: "Домашняя",
-            value: "/home"
-        },
-        chat: {
-            label: "Чат",
-            value: "/home/chat"
-        },
-        profile: {
-            label: "Профиль",
-            value: "/profile"
-        },
-        page404: {
-            label: "Страница 404",
-            value: "/error404"
-        },
-        page500: {
-            label: "Страница 500",
-            value: "/error500"
-        },
-        changeProfile: {
-            label: "Изменить профиль",
-            value: "/profile/changedata"
-        },
-        changePassword: {
-            label: "Изменить пароль",
-            value: "/profile/changepass"
-        }
-    }
-};
-const navigation = template(listItems);
-exports.default = navigation;
-
-},{"handlebars":"i0QfX","./tmp":"54jAJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"54jAJ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const navigationTmp = `
-	<nav class="nav">
-		<ul class="nav__list">
-			{{#each links}}
-			<li class="nav__list__item"><a class="btn" href="{{value}}">{{label}}</a></li>
-			{{/each}}
-		</ul>
-	</nav>
-`;
-exports.default = navigationTmp;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kun6Q":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13178,6 +13117,8 @@ var _authControllerDefault = parcelHelpers.interopDefault(_authController);
 var _store = require("../../core/store/Store");
 var _mapStateToProps = require("../../utils/mapStateToProps/mapStateToProps");
 var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _enterPageScss = require("./enterPage.scss");
@@ -13261,15 +13202,19 @@ class BaseSignUpPage extends (0, _blockDefault.default) {
                     }
                 }),
                 secondBtn: new (0, _buttonDefault.default)({
-                    tagName: "a",
-                    href: "/login",
+                    tagName: "button",
+                    type: "button",
                     classNames: [
                         "enter__btns__link",
-                        "btn_flat"
+                        "btn_flat",
+                        "btn"
                     ],
                     text: "Войти",
                     settings: {
                         withInternalID: true
+                    },
+                    events: {
+                        click: ()=>(0, _routerDefault.default).go("/")
                     }
                 }),
                 events: {
@@ -13292,7 +13237,7 @@ class BaseSignUpPage extends (0, _blockDefault.default) {
 const SignUpPage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseSignUpPage);
 exports.default = SignUpPage;
 
-},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/EnterInput":"1fCZE","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"m8YrX":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/EnterInput":"1fCZE","../../components/form/Form":"9jm2L","../../utils/validate":"24nAO","../../core/controllers/AuthController":"5uAVV","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../core/router/router":"8L95r","./tmp":"kun6Q","./enterPage.scss":"7j52r","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7j52r":[function() {},{}],"m8YrX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _block = require("../../core/eventBus/Block");
@@ -13323,6 +13268,10 @@ var _addFileModal = require("../../components/modals/AddFileModal");
 var _addFileModalDefault = parcelHelpers.interopDefault(_addFileModal);
 var _addLocationModal = require("../../components/modals/AddLocationModal");
 var _addLocationModalDefault = parcelHelpers.interopDefault(_addLocationModal);
+var _changeChatAvatarModal = require("../../components/modals/ChangeChatAvatarModal");
+var _changeChatAvatarModalDefault = parcelHelpers.interopDefault(_changeChatAvatarModal);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
 var _homePageScss = require("./homePage.scss");
 class BaseHomePage extends (0, _blockDefault.default) {
     constructor(props){
@@ -13331,15 +13280,18 @@ class BaseHomePage extends (0, _blockDefault.default) {
                 "home"
             ],
             profileBtn: new (0, _buttonDefault.default)({
-                tagName: "a",
-                href: "/profile",
+                tagName: "button",
+                type: "button",
                 classNames: [
                     "profile-btn",
-                    "btn_flat"
+                    "btn"
                 ],
                 text: "Профиль",
                 settings: {
                     withInternalID: true
+                },
+                events: {
+                    click: ()=>(0, _routerDefault.default).go("/settings")
                 }
             }),
             search: new (0, _searchInputDefault.default)({
@@ -13377,6 +13329,7 @@ class BaseHomePage extends (0, _blockDefault.default) {
             addPhotoModal: new (0, _addPhotoModalDefault.default)(),
             addFileModal: new (0, _addFileModalDefault.default)(),
             addLocationModal: new (0, _addLocationModalDefault.default)(),
+            changeChatAvatarModal: new (0, _changeChatAvatarModalDefault.default)(),
             // emptyChat: { //для заглушки при невыбранном чате
             // 	className: 'empty-chat',
             // 	text: 'Выберите чат чтобы отправить сообщение',
@@ -13399,7 +13352,7 @@ class BaseHomePage extends (0, _blockDefault.default) {
 const HomePage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseHomePage);
 exports.default = HomePage;
 
-},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/SearchInput":"7v1rT","../../components/chat/Chat":"6pJRz","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","./tmp":"6dTgg","../../components/modals/AddChatModal":"8EIKf","../../components/modals/AddUserModal":"gvBCC","../../core/controllers/ChatController":"7XzYw","../../components/modals/DeleteUserModal":"9qUUM","../../components/modals/AddPhotoModal":"9Y1az","../../components/modals/AddFileModal":"MOYGv","../../components/modals/AddLocationModal":"luIWk","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7v1rT":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/input/SearchInput":"7v1rT","../../components/chat/Chat":"6pJRz","../../core/store/Store":"fM7h4","../../utils/mapStateToProps/mapStateToProps":"kqM99","./tmp":"6dTgg","../../components/modals/AddChatModal":"8EIKf","../../components/modals/AddUserModal":"gvBCC","../../core/controllers/ChatController":"7XzYw","../../components/modals/DeleteUserModal":"9qUUM","../../components/modals/AddPhotoModal":"9Y1az","../../components/modals/AddFileModal":"MOYGv","../../components/modals/AddLocationModal":"luIWk","../../components/modals/ChangeChatAvatarModal":"8aEOm","../../core/router/router":"8L95r","./homePage.scss":"jkT4w","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7v1rT":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _block = require("../../core/eventBus/Block");
@@ -13458,6 +13411,24 @@ class BaseChat extends (0, _blockDefault.default) {
                 "right"
             ],
             chatName: "Chat",
+            chatAvatar: "https://www.film.ru/sites/default/files/filefield_paths/aanganim.jpg",
+            changeChatAvatarBtn: new (0, _buttonDefault.default)({
+                tagName: "button",
+                classNames: [
+                    "btn",
+                    "btn_mini",
+                    "user-bar__photo__btn"
+                ],
+                settings: {
+                    withInternalID: true
+                },
+                events: {
+                    click: ()=>{
+                        const addModal = document.querySelector(".modal__change-chat-avatar");
+                        addModal.style.display = "block";
+                    }
+                }
+            }),
             optionsBtn: new (0, _buttonDefault.default)({
                 tagName: "button",
                 classNames: [
@@ -13548,6 +13519,10 @@ class BaseChat extends (0, _blockDefault.default) {
         });
     }
     render() {
+        if ((0, _storeDefault.default).getState().activeChat && this.props.chatName != (0, _storeDefault.default).getState().activeChatTitle) {
+            this.props.chatName = (0, _storeDefault.default).getState().activeChatTitle;
+            this.props.chatAvatar = (0, _storeDefault.default).getState().activeChatAvatar;
+        }
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
@@ -13560,7 +13535,10 @@ parcelHelpers.defineInteropFlag(exports);
 const chatTmp = `
 	<div class="user-bar">
 		<div class="user-bar__user">
-			<div class="user-bar__photo"></div>
+			<div class="user-bar__photo">
+				<img class="user__avatar__img" src="{{{ chatAvatar }}}" alt="Аватар"></img>
+				{{{ changeChatAvatarBtn }}}
+			</div>
 			<div class="user-bar__name">{{chatName}}</div>
 		</div>
 		{{{ optionsBtn }}}
@@ -13576,11 +13554,7 @@ const chatTmp = `
 	
 	{{{ form }}}				
 `;
-exports.default = chatTmp; // <div class="user-bar__menu">
- // 			<span></span>
- // 			<span></span>
- // 			<span></span>
- // 		</div>
+exports.default = chatTmp;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cTDG3":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13896,7 +13870,7 @@ class ChatController {
                 if (item?.last_message?.time) date = new Date(item.last_message.time);
                 return new (0, _chatListItemDefault.default)({
                     isActive: false,
-                    avatar: item.avatar ? item.avatar && "https://ya-praktikum.tech/api/v2/resources" + item.avatar : "",
+                    avatar: item.avatar ? item.avatar && "https://ya-praktikum.tech/api/v2/resources" + item.avatar : "https://64.media.tumblr.com/566faeb5cedfa26e59c4242c59cb5db4/d950528b1063571e-ee/s1280x1920/a356414c6329b368cb4536e391880471011f09f7.jpg",
                     title: item.title,
                     lastMessage: item.last_message ? item.last_message && item.last_message.content : "",
                     lastMessageTime: date ? `${date.getHours()}:${date.getMinutes()}` : "",
@@ -13927,11 +13901,33 @@ class ChatController {
             console.log(error.message);
         }
     }
+    async getChatUsers(chatId) {
+        try {
+            const result = await this.api.getChatUsers(chatId);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            return result;
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
     async getToken(chatId) {
         try {
             const result = await this.api.getToken(chatId);
             if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
             return JSON.parse(result.response);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+    async uploadChatAvatar(data) {
+        try {
+            const result = await this.api.uploadChatAvatar(data);
+            if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
+            const activeChatAvatar = JSON.parse(result.response);
+            (0, _storeDefault.default).set("activeChatAvatar", {
+                avatar: "https://ya-praktikum.tech/api/v2/resources" + activeChatAvatar.avatar
+            });
+            return result;
         } catch (error) {
             console.log(error.message);
         }
@@ -13985,14 +13981,11 @@ class ChatAPI extends (0, _apiDefault.default) {
             data: JSON.stringify(data)
         });
     }
-    uploadChatAvatar(chatId, avatar) {
+    uploadChatAvatar(data) {
         return this.http.put("/avatar", {
             headers: {},
             withCredentials: true,
-            data: {
-                chatId,
-                avatar
-            }
+            data
         });
     }
     getToken(id) {
@@ -14030,6 +14023,8 @@ class ChatListItem extends (0, _blockDefault.default) {
                         elem.classList.remove("chat_active");
                     });
                     (0, _storeDefault.default).set("activeChat", this.props.chatId);
+                    (0, _storeDefault.default).set("activeChatAvatar", this.props.avatar);
+                    (0, _storeDefault.default).set("activeChatTitle", this.props.title);
                     this.setProps({
                         isActive: "true"
                     });
@@ -14055,7 +14050,7 @@ exports.default = ChatListItem;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const chatItemTmp = `
-	<div class="chat__avatar">{{ avatar }}</div>
+	<img class="chat__avatar" src="{{ avatar }}"></img>
 	<div class="chat__info">
 		<div class="chat__info__message">
 			<div class="chat__info__title">{{ title }}</div>
@@ -14166,7 +14161,6 @@ const homePageTmp = `
 	{{{ chat }}}
 	<div class="{{{ emptyChat.className }}}">{{{ emptyChat.text }}}</div>
 	
-	
 
 	{{{ addChatModal }}}
 	{{{ addUserModal }}}
@@ -14174,6 +14168,7 @@ const homePageTmp = `
 	{{{ addPhotoModal }}}
 	{{{ addFileModal }}}
 	{{{ addLocationModal }}}
+	{{{ changeChatAvatarModal }}}
 `;
 exports.default = homePageTmp;
 
@@ -14454,7 +14449,7 @@ class DeleteUserModal extends (0, _modalDefault.default) {
                     }
                 }),
                 events: {
-                    submit: (event)=>{
+                    submit: async (event)=>{
                         event.preventDefault();
                         const data = {
                             users: [
@@ -14462,11 +14457,16 @@ class DeleteUserModal extends (0, _modalDefault.default) {
                             ],
                             chatId: Number((0, _storeDefault.default).getState().activeChat)
                         };
-                        if (data) {
+                        const users = await (0, _chatControllerDefault.default).getChatUsers(data.chatId);
+                        const match = JSON.parse(users.response).filter((user)=>{
+                            console.log(user.id, ...data.users);
+                            return user.id == data.users;
+                        }).length;
+                        if (data && match) {
                             (0, _chatControllerDefault.default).deleteUserFromChat(data);
                             this.hide();
                             console.log(`Пользователь ${Number((0, _validate.formValidation)(event.target).deleteUserModalInput)} удален`);
-                        }
+                        } else console.log(`Пользователь ${Number((0, _validate.formValidation)(event.target).deleteUserModalInput)} не является участником чата`);
                     }
                 }
             }),
@@ -14700,7 +14700,85 @@ class AddLocationModal extends (0, _modalDefault.default) {
 }
 exports.default = AddLocationModal;
 
-},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"jkT4w":[function() {},{}],"042Wj":[function(require,module,exports) {
+},{"../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"8aEOm":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _store = require("../../core/store/Store");
+var _storeDefault = parcelHelpers.interopDefault(_store);
+var _button = require("../button/Button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _form = require("../form/Form");
+var _formDefault = parcelHelpers.interopDefault(_form);
+var _modalInput = require("../input/ModalInput");
+var _modalInputDefault = parcelHelpers.interopDefault(_modalInput);
+var _chatController = require("../../core/controllers/ChatController");
+var _chatControllerDefault = parcelHelpers.interopDefault(_chatController);
+var _modal = require("./Modal");
+var _modalDefault = parcelHelpers.interopDefault(_modal);
+var _modalsScss = require("./modals.scss");
+class ChangeChatAvatarModal extends (0, _modalDefault.default) {
+    constructor(){
+        super("div", {
+            classNames: [
+                "modal-overlay",
+                "modal__change-chat-avatar"
+            ],
+            form: new (0, _formDefault.default)({
+                classNames: [
+                    "modal__form"
+                ],
+                title: "Добавить файл",
+                input: new (0, _modalInputDefault.default)({
+                    classNames: [
+                        "modal__input",
+                        "input"
+                    ],
+                    input: {
+                        classNames: [
+                            "input"
+                        ],
+                        name: "addChatModalInput",
+                        type: "file"
+                    }
+                }),
+                submitBtn: new (0, _buttonDefault.default)({
+                    tagName: "button",
+                    type: "submit",
+                    classNames: [
+                        "btn",
+                        "actions__btn-save"
+                    ],
+                    text: "Добавить",
+                    settings: {
+                        withInternalID: true
+                    }
+                }),
+                events: {
+                    submit: (event)=>{
+                        event.preventDefault();
+                        const file = event.target[0].files[0];
+                        if (file) {
+                            const formData = new FormData();
+                            formData.append("avatar", file);
+                            formData.append("chatId", `${(0, _storeDefault.default).getState().activeChat}`);
+                            (0, _chatControllerDefault.default).uploadChatAvatar(formData);
+                            this.hide();
+                        }
+                    }
+                }
+            }),
+            events: {
+                click: (event)=>{
+                    this.hideModal(event);
+                }
+            }
+        });
+    }
+}
+// const ChangeChatAvatarModal = withStore(mapStateToProps)(BaseChangeChatAvatarModal);
+exports.default = ChangeChatAvatarModal;
+
+},{"../../core/store/Store":"fM7h4","../button/Button":"6D5CV","../form/Form":"9jm2L","../input/ModalInput":"cXWPg","../../core/controllers/ChatController":"7XzYw","./Modal":"i7OuK","./modals.scss":"lorVV","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lorVV":[function() {},{}],"jkT4w":[function() {},{}],"042Wj":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _block = require("../../core/eventBus/Block");
@@ -14726,6 +14804,7 @@ class BaseProfilePage extends (0, _blockDefault.default) {
             ],
             backButton: new (0, _buttonDefault.default)({
                 tagName: "button",
+                type: "button",
                 classNames: [
                     "back-btn",
                     "btn"
@@ -14736,12 +14815,12 @@ class BaseProfilePage extends (0, _blockDefault.default) {
                 events: {
                     click: (event)=>{
                         event.preventDefault();
-                        (0, _routerDefault.default).go("/home");
+                        (0, _routerDefault.default).go("/messenger");
                     }
                 }
             }),
             changeable: false,
-            userAvatar: (0, _storeDefault.default).getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${(0, _storeDefault.default).getState().user?.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            userAvatar: (0, _storeDefault.default).getState().user ? (0, _storeDefault.default).getState().user.avatar : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
             userName: (0, _storeDefault.default).getState().user?.first_name,
             changeDataButton: new (0, _buttonDefault.default)({
                 tagName: "button",
@@ -14757,7 +14836,7 @@ class BaseProfilePage extends (0, _blockDefault.default) {
                 events: {
                     click: (event)=>{
                         event.preventDefault();
-                        (0, _routerDefault.default).go("/profile/changedata");
+                        (0, _routerDefault.default).go("/settings/changedata");
                     }
                 }
             }),
@@ -14775,7 +14854,7 @@ class BaseProfilePage extends (0, _blockDefault.default) {
                 events: {
                     click: (event)=>{
                         event.preventDefault();
-                        (0, _routerDefault.default).go("/profile/changepass");
+                        (0, _routerDefault.default).go("/settings/changepass");
                     }
                 }
             }),
@@ -14806,6 +14885,7 @@ class BaseProfilePage extends (0, _blockDefault.default) {
         });
     }
     render() {
+        if (this.props.userAvatar != (0, _storeDefault.default).getState().user.avatar) this.props.userAvatar = (0, _storeDefault.default).getState().user.avatar;
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
@@ -14866,7 +14946,7 @@ const profilePageTmp = `
 		</div>
 	{{/if}}
 `;
-exports.default = profilePageTmp;
+exports.default = profilePageTmp; // {{{ userAvatar }}}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f2frq":[function() {},{}],"5wl6t":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -14893,6 +14973,8 @@ var _changeUserAvatarModalDefault = parcelHelpers.interopDefault(_changeUserAvat
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _profilePageScss = require("./profilePage.scss");
+var _baseURL = require("../../core/controllers/baseURL");
+var _baseURLDefault = parcelHelpers.interopDefault(_baseURL);
 class BaseChangeProfilePage extends (0, _blockDefault.default) {
     constructor(props){
         super("section", {
@@ -14911,12 +14993,13 @@ class BaseChangeProfilePage extends (0, _blockDefault.default) {
                 events: {
                     click: (event)=>{
                         event.preventDefault();
-                        (0, _routerDefault.default).go("/profile");
+                        (0, _routerDefault.default).go("/settings");
                     }
                 }
             }),
             changeable: true,
-            userAvatar: (0, _storeDefault.default).getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${(0, _storeDefault.default).getState().user?.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            userAvatar: (0, _storeDefault.default).getState().user ? `${0, _baseURLDefault.default}${(0, _storeDefault.default).getState().user.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            // userAvatar: new UserAvatar({}),
             userAvatarBtn: new (0, _buttonDefault.default)({
                 tagName: "button",
                 classNames: [
@@ -15011,7 +15094,7 @@ class BaseChangeProfilePage extends (0, _blockDefault.default) {
                         const data = (0, _validate.formValidation)(event.target);
                         if (data) {
                             (0, _userControllerDefault.default).changeUserProfile(data);
-                            (0, _routerDefault.default).go("/profile");
+                            (0, _routerDefault.default).go("/settings");
                         }
                     }
                 }
@@ -15023,13 +15106,14 @@ class BaseChangeProfilePage extends (0, _blockDefault.default) {
         });
     }
     render() {
+        if (this.props.userAvatar != (0, _storeDefault.default).getState().user.avatar) this.props.userAvatar = (0, _storeDefault.default).getState().user.avatar;
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
 const ChangeProfilePage = (0, _store.withStore)((0, _mapStateToPropsDefault.default))(BaseChangeProfilePage);
 exports.default = ChangeProfilePage;
 
-},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/form/Form":"9jm2L","../../components/input/ProfileInput":"lxrx6","../../core/router/router":"8L95r","../../utils/validate":"24nAO","../../core/store/Store":"fM7h4","../../core/controllers/UserController":"dNi2S","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../components/modals/ChangeUserAvatarModal":"iIzoz","./tmp":"b779O","./profilePage.scss":"f2frq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lxrx6":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../components/form/Form":"9jm2L","../../components/input/ProfileInput":"lxrx6","../../core/router/router":"8L95r","../../utils/validate":"24nAO","../../core/store/Store":"fM7h4","../../core/controllers/UserController":"dNi2S","../../utils/mapStateToProps/mapStateToProps":"kqM99","../../components/modals/ChangeUserAvatarModal":"iIzoz","./tmp":"b779O","./profilePage.scss":"f2frq","../../core/controllers/baseURL":"1D0FJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lxrx6":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _block = require("../../core/eventBus/Block");
@@ -15076,15 +15160,17 @@ var _userAPI = require("../api/UserAPI");
 var _userAPIDefault = parcelHelpers.interopDefault(_userAPI);
 var _store = require("../store/Store");
 var _storeDefault = parcelHelpers.interopDefault(_store);
+var _baseURL = require("./baseURL");
+var _baseURLDefault = parcelHelpers.interopDefault(_baseURL);
 class UserController {
     async changeUserProfile(data) {
         try {
             const result = await this.api.changeUserProfile(data);
             if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
-            const newUserInfo = JSON.parse(result.response);
+            const user = JSON.parse(result.response);
             (0, _storeDefault.default).set("user", {
-                ...newUserInfo,
-                avatar: "https://ya-praktikum.tech/api/v2/resources" + newUserInfo.avatar
+                ...user,
+                avatar: `${(0, _baseURLDefault.default)}${user.avatar}`
             });
             return result;
         } catch (error) {
@@ -15104,10 +15190,10 @@ class UserController {
         try {
             const result = await this.api.changeUserAvatar(data);
             if (result.status !== 200) throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
-            const newUserInfo = JSON.parse(result.response);
+            const user = JSON.parse(result.response);
             (0, _storeDefault.default).set("user", {
-                ...newUserInfo,
-                avatar: "https://ya-praktikum.tech/api/v2/resources" + newUserInfo.avatar
+                ...user,
+                avatar: `${(0, _baseURLDefault.default)}${user.avatar}`
             });
             return result;
         } catch (error) {
@@ -15120,7 +15206,7 @@ class UserController {
 }
 exports.default = new UserController();
 
-},{"../api/UserAPI":"jMPIq","../store/Store":"fM7h4","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jMPIq":[function(require,module,exports) {
+},{"../api/UserAPI":"jMPIq","../store/Store":"fM7h4","./baseURL":"1D0FJ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jMPIq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _api = require("./api");
@@ -15277,12 +15363,12 @@ class BaseChangePasswordPage extends (0, _blockDefault.default) {
                 events: {
                     click: (event)=>{
                         event.preventDefault();
-                        (0, _routerDefault.default).go("/profile");
+                        (0, _routerDefault.default).go("/settings");
                     }
                 }
             }),
             changeable: true,
-            userAvatar: (0, _storeDefault.default).getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${(0, _storeDefault.default).getState().user?.avatar}` : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
+            userAvatar: (0, _storeDefault.default).getState().user ? (0, _storeDefault.default).getState().user.avatar : "https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png",
             userName: (0, _storeDefault.default).getState().user?.first_name,
             form: new (0, _formDefault.default)({
                 classNames: [
@@ -15333,7 +15419,7 @@ class BaseChangePasswordPage extends (0, _blockDefault.default) {
                         const data = (0, _validate.formValidation)(event.target);
                         if (data) {
                             (0, _userControllerDefault.default).changeUserPassword(data);
-                            (0, _routerDefault.default).go("/profile");
+                            (0, _routerDefault.default).go("/settins");
                         }
                     }
                 }
@@ -15345,6 +15431,7 @@ class BaseChangePasswordPage extends (0, _blockDefault.default) {
         });
     }
     render() {
+        if (this.props.userAvatar != (0, _storeDefault.default).getState().user.avatar) this.props.userAvatar = (0, _storeDefault.default).getState().user.avatar;
         return this.compile((0, _tmpDefault.default), this.props);
     }
 }
@@ -15358,6 +15445,8 @@ var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _button = require("../../components/button/Button");
 var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _errorPageScss = require("./errorPage.scss");
@@ -15379,6 +15468,9 @@ class Error404Page extends (0, _blockDefault.default) {
                 text: "Назад к чатам",
                 settings: {
                     withInternalID: true
+                },
+                events: {
+                    click: ()=>(0, _routerDefault.default).go("/messenger")
                 }
             })
         });
@@ -15392,7 +15484,7 @@ class Error404Page extends (0, _blockDefault.default) {
 }
 exports.default = Error404Page;
 
-},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7kuGo":[function(require,module,exports) {
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../core/router/router":"8L95r","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7kuGo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const errorTmp = `
@@ -15409,6 +15501,8 @@ var _block = require("../../core/eventBus/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _button = require("../../components/button/Button");
 var _buttonDefault = parcelHelpers.interopDefault(_button);
+var _router = require("../../core/router/router");
+var _routerDefault = parcelHelpers.interopDefault(_router);
 var _tmp = require("./tmp");
 var _tmpDefault = parcelHelpers.interopDefault(_tmp);
 var _errorPageScss = require("./errorPage.scss");
@@ -15430,6 +15524,9 @@ class Error500Page extends (0, _blockDefault.default) {
                 text: "Назад к чатам",
                 settings: {
                     withInternalID: true
+                },
+                events: {
+                    click: ()=>(0, _routerDefault.default).go("/messenger")
                 }
             })
         });
@@ -15443,6 +15540,6 @@ class Error500Page extends (0, _blockDefault.default) {
 }
 exports.default = Error500Page;
 
-},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}]},["fUTXd","jeorp"], "jeorp", "parcelRequirefc40")
+},{"../../core/eventBus/Block":"h0Aox","../../components/button/Button":"6D5CV","../../core/router/router":"8L95r","./tmp":"7kuGo","./errorPage.scss":"3kp0d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3kp0d":[function() {},{}]},["fUTXd","jeorp"], "jeorp", "parcelRequirefc40")
 
 //# sourceMappingURL=index.b7a05eb9.js.map

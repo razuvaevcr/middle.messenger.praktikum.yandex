@@ -46,14 +46,11 @@ class ChatAPI extends BaseAPI {
 		});
 	}
 
-	public uploadChatAvatar(chatId: number, avatar: FormData): Promise<XMLHttpRequest> {
+	public uploadChatAvatar(data: FormData): Promise<XMLHttpRequest> {
 		return this.http.put('/avatar', {
 			headers: {},
 			withCredentials: true,
-			data: {
-				chatId,
-				avatar,
-			},
+			data,
 		});
 	}
 

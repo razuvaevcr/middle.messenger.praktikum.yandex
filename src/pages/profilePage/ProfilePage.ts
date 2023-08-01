@@ -19,6 +19,7 @@ class BaseProfilePage extends Block<TProfilePage> {
 			],
 			backButton: new Button({
 				tagName: 'button',
+				type: 'button',
 				classNames: [
 					'back-btn',
 					'btn',
@@ -27,12 +28,12 @@ class BaseProfilePage extends Block<TProfilePage> {
 				events: {
 					click: (event) => {
 						event.preventDefault();
-						router.go('/home');
+						router.go('/messenger');
 					},
 				},
 			}),
 			changeable: false,
-			userAvatar: store.getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${store.getState().user?.avatar}` : 'https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png',
+			userAvatar: store.getState().user ? store.getState().user!.avatar : 'https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png',
 			userName: store.getState().user?.first_name,
 			changeDataButton: new Button({
 				tagName: 'button',
@@ -46,7 +47,7 @@ class BaseProfilePage extends Block<TProfilePage> {
 				events: {
 					click: (event) => {
 						event.preventDefault();
-						router.go('/profile/changedata');
+						router.go('/settings/changedata');
 					},
 				},
 			}),
@@ -62,7 +63,7 @@ class BaseProfilePage extends Block<TProfilePage> {
 				events: {
 					click: (event) => {
 						event.preventDefault();
-						router.go('/profile/changepass');
+						router.go('/settings/changepass');
 					},
 				},
 			}),
@@ -94,6 +95,9 @@ class BaseProfilePage extends Block<TProfilePage> {
 	}
 
 	render() {
+		if (this.props.userAvatar != store.getState().user!.avatar) {
+			this.props.userAvatar = store.getState().user!.avatar;
+		}
 		return this.compile(profilePageTmp, this.props);
 	}
 }

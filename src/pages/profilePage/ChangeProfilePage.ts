@@ -12,6 +12,7 @@ import ChangeUserAvatarModal from '../../components/modals/ChangeUserAvatarModal
 import profilePageTmp from './tmp';
 
 import './profilePage.scss';
+import BASE_URL_RESOURCES from '../../core/controllers/baseURL';
 
 
 class BaseChangeProfilePage extends Block<TProfilePage> {
@@ -30,12 +31,13 @@ class BaseChangeProfilePage extends Block<TProfilePage> {
 				events: {
 					click: (event) => {
 						event.preventDefault();
-						router.go('/profile');
+						router.go('/settings');
 					},
 				},
 			}),
 			changeable: true,
-			userAvatar: store.getState().user?.avatar ? `https://ya-praktikum.tech/api/v2/resources/${store.getState().user?.avatar}` : 'https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png',
+			userAvatar: store.getState().user ? `${BASE_URL_RESOURCES}${store.getState().user!.avatar}` : 'https://s.oxbridge.es/ox/Oxteacher/informacion%20personal/ficheros/201000401370_20221121_141124.png',
+			// userAvatar: new UserAvatar({}),
 			userAvatarBtn: new Button({
 				tagName: 'button',
 				classNames: [
@@ -129,7 +131,7 @@ class BaseChangeProfilePage extends Block<TProfilePage> {
 
 						if (data) {
 							UserController.changeUserProfile(data);
-							router.go('/profile');
+							router.go('/settings');
 						}
 					},
 				},
@@ -143,6 +145,9 @@ class BaseChangeProfilePage extends Block<TProfilePage> {
 	}
 
 	render() {
+		if (this.props.userAvatar != store.getState().user!.avatar) {
+			this.props.userAvatar = store.getState().user!.avatar;
+		}
 		return this.compile(profilePageTmp, this.props);
 	}
 }

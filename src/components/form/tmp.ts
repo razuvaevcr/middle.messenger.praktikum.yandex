@@ -19,6 +19,9 @@ const formTmp: string = `
 		{{else}}
 			<div class="modal__title">{{title}}</div>
 			{{{input}}}
+			{{#if fileInput}}
+				{{{fileInput}}}
+			{{/if}}
 			{{{submitBtn}}}
 		{{/if}}
 	{{else}}

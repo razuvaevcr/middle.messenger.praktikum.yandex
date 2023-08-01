@@ -1,4 +1,4 @@
-import { TState } from '../store/Store';
+import { TState } from '../../types/types';
 import store from '../store/Store';
 import Message from '../../components/message/Message';
 

@@ -7,7 +7,8 @@ import { formValidation } from '../../utils/validate';
 import AuthController from '../../core/controllers/AuthController';
 import { withStore } from '../../core/store/Store';
 import mapStateToProps from '../../utils/mapStateToProps/mapStateToProps';
-import navigation from '../../components/navigation/navigation';
+// import navigation from '../../components/navigation/navigation';
+import router from '../../core/router/router';
 import enterTmp from './tmp';
 
 import './enterPage.scss';
@@ -51,14 +52,18 @@ class BaseLogInPage extends Block<TEnterPage> {
 					settings: { withInternalID: true },
 				}),
 				secondBtn: new Button({
-					tagName: 'a',
-					href: '/signup',
+					tagName: 'button',
+					type: 'button',
 					classNames: [
 						'enter__btns__link',
 						'btn_flat',
+						'btn',
 					],
 					text: 'Нет аккаунта',
 					settings: { withInternalID: true },
+					events: {
+						click: () => router.go('/sign-up'),
+					},
 				}),
 				events: {
 					submit: (event) => {
@@ -71,7 +76,7 @@ class BaseLogInPage extends Block<TEnterPage> {
 					},
 				},
 			}),
-			navigation,
+			// navigation,
 		});
 
 		this.props.classNames.forEach((className: string) => {
