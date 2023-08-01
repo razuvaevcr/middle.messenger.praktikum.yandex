@@ -1,7 +1,6 @@
 import Block from '../../core/eventBus/Block';
 import { TChat } from '../../types/types';
 import chatTmp from './tmp';
-
 import Button from '../button/Button';
 import MessageInput from '../input/MessageInput';
 import Form from '../form/Form';
@@ -21,6 +20,23 @@ class BaseChat extends Block<TChat> {
 				'right',
 			],
 			chatName: 'Chat',
+			chatAvatar: 'https://www.film.ru/sites/default/files/filefield_paths/aanganim.jpg',
+			changeChatAvatarBtn: new Button({
+				tagName: 'button',
+				classNames: [
+					'btn',
+					'btn_mini',
+					'user-bar__photo__btn',
+				],
+				settings: { withInternalID: true },
+				events: {
+					click: () => {
+						const addModal = document.querySelector('.modal__change-chat-avatar');
+
+						(addModal! as HTMLElement).style.display = 'block';
+					},
+				},
+			}),
 			optionsBtn: new Button({
 				tagName: 'button',
 				classNames: [
@@ -113,6 +129,10 @@ class BaseChat extends Block<TChat> {
 	}
 
 	render() {
+		if (store.getState().activeChat && this.props.chatName != store.getState().activeChatTitle) {
+			this.props.chatName = store.getState().activeChatTitle;
+			this.props.chatAvatar = store.getState().activeChatAvatar;
+		}
 		return this.compile(chatTmp, this.props);
 	}
 }

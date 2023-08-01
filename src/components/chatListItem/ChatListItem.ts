@@ -24,6 +24,8 @@ class ChatListItem extends Block<TChatItem> {
 					}
 
 					store.set('activeChat', this.props.chatId);
+					store.set('activeChatAvatar', this.props.avatar);
+					store.set('activeChatTitle', this.props.title);
 					this.setProps({
 						isActive: 'true',
 					});

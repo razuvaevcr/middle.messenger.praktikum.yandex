@@ -1,6 +1,7 @@
 import UserAPI from '../api/UserAPI';
 import { TUser } from '../../types/types';
 import store from '../store/Store';
+import BASE_URL_RESOURCES from './baseURL';
 
 
 class UserController {
@@ -14,12 +15,9 @@ class UserController {
 				throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
 			}
 
-			const newUserInfo = JSON.parse(result.response);
+			const user = JSON.parse(result.response);
 
-			store.set('user', {
-				...newUserInfo,
-				avatar: 'https://ya-praktikum.tech/api/v2/resources' + newUserInfo.avatar,
-			});
+			store.set('user', { ...user, avatar: `${BASE_URL_RESOURCES}${user.avatar}` });
 
 			return result;
 		} catch (error) {
@@ -49,12 +47,9 @@ class UserController {
 				throw new Error(`Ошибка: ${result.status} ${result.statusText || result.responseText}`);
 			}
 
-			const newUserInfo = JSON.parse(result.response);
+			const user = JSON.parse(result.response);
 
-			store.set('user', {
-				...newUserInfo,
-				avatar: 'https://ya-praktikum.tech/api/v2/resources' + newUserInfo.avatar,
-			});
+			store.set('user', { ...user, avatar: `${BASE_URL_RESOURCES}${user.avatar}` });
 
 			return result;
 		} catch (error) {

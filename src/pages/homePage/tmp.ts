@@ -9,7 +9,6 @@ const homePageTmp: string = `
 	{{{ chat }}}
 	<div class="{{{ emptyChat.className }}}">{{{ emptyChat.text }}}</div>
 	
-	
 
 	{{{ addChatModal }}}
 	{{{ addUserModal }}}
@@ -17,6 +16,7 @@ const homePageTmp: string = `
 	{{{ addPhotoModal }}}
 	{{{ addFileModal }}}
 	{{{ addLocationModal }}}
+	{{{ changeChatAvatarModal }}}
 `;
 
 export default homePageTmp;

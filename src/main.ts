@@ -11,25 +11,21 @@ import AuthController from './core/controllers/AuthController';
 
 
 enum Routes {
-	index = '/',
-	login = '/login',
-	signup = '/signup',
-	home = '/home',
-	chat = '/home/chat',
+	login = '/',
+	signup = '/sign-up',
+	home = '/messenger',
 	error500 = '/error500',
 	error404 = '/error404',
-	profile = '/profile',
-	changedata = '/profile/changedata',
-	changepass = '/profile/changepass',
+	profile = '/settings',
+	changedata = '/settings/changedata',
+	changepass = '/settings/changepass',
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
 	router
-		.use(Routes.index, LogInPage)
 		.use(Routes.login, LogInPage)
 		.use(Routes.signup, SignUpPage)
 		.use(Routes.home, HomePage)
-		.use(Routes.chat, HomePage)
 		.use(Routes.error500, Error500Page)
 		.use(Routes.error404, Error404Page)
 		.use(Routes.profile, ProfilePage)
@@ -39,7 +35,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 	let isProtectedRoute = true;
 
 	switch (window.location.pathname) {
-	case Routes.index:
 	case Routes.login:
 	case Routes.signup:
 		isProtectedRoute = false;
@@ -52,7 +47,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 		router.start();
 
 		if (!isProtectedRoute) {
-			router.go('/');
+			router.go('/messenger');
 		}
 	} catch (e) {
 		console.log(e);

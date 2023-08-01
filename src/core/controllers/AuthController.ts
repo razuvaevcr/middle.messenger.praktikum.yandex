@@ -2,6 +2,7 @@ import AuthAPI from '../api/AuthAPI';
 import { TSignInData, TSignUpData } from '../../types/types';
 import store from '../store/Store';
 import router from '../router/router';
+import BASE_URL_RESOURCES from './baseURL';
 
 
 class AuthController {
@@ -13,7 +14,7 @@ class AuthController {
 
 			await this.fetchUser();
 
-			router.go('/profile');
+			router.go('/messenger');
 			console.log('loged in');
 		} catch (error) {
 			console.log(error);
@@ -24,7 +25,7 @@ class AuthController {
 		try {
 			await this.api.signup(data);
 
-			router.go('/profile');
+			router.go('/messenger');
 		} catch (error) {
 			console.log(error);
 		}
@@ -35,7 +36,6 @@ class AuthController {
 			await this.api.logout();
 
 			store.set('user', undefined);
-			console.log('store: undef');
 
 			router.go('/');
 			console.log('loged out');
@@ -54,7 +54,7 @@ class AuthController {
 
 			const user = JSON.parse(request.response);
 
-			store.set('user', user);
+			store.set('user', { ...user, avatar: `${BASE_URL_RESOURCES}${user.avatar}` });
 		} catch (error) {
 			throw error;
 		}

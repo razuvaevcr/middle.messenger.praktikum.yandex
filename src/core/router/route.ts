@@ -1,4 +1,3 @@
-import renderDOM from './renderDOM';
 import Block from '../eventBus/Block';
 
 
@@ -27,8 +26,11 @@ class Route {
 
 	leave() {
 		if (this._block) {
-			this._block.hide();
+			this._block.getContent()?.remove();
 		}
+		// if (this._block) {
+		// 	this._block.hide();
+		// }
 	}
 
 	match(pathname: string) {
@@ -38,11 +40,14 @@ class Route {
 	public render() {
 		if (!this._block) {
 			this._block = new this._blockClass();
-			renderDOM(this._props.rootQuery, this._block!);
-			return;
 		}
 
-		this._block.show();
+		const root = document.querySelector(this._props.rootQuery);
+
+		this._block!.dispatchComponentDidMount();
+
+		root.innerHTML = '';
+		root.append(this._block!.getContent());
 	}
 
 	getPathname() {

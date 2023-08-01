@@ -2,6 +2,11 @@ import Block from '../core/eventBus/Block';
 
 
 // Components
+type TAvatar = {
+	classNames?: string[],
+	avatar?: string,
+}
+
 type TButton = {
 	tagName: string,
 	href?: string,
@@ -75,7 +80,11 @@ type TForm = {
 
 type TChat = {
 	classNames: string[],
-	chatName: any,
+	chatAvatar?: {
+		img?: string,
+		changeChatAvatarBtn: Block<TButton>,
+	},
+	chatName?: string,
 	optionsBtn?: Block<TButton>,
 	optionsMenu?: Block<TBurgerMenu>,
 	messageOptionsMenu?: Block<TBurgerMenu>,
@@ -85,6 +94,7 @@ type TChat = {
 
 type TModal = {
 	classNames?: string[],
+	chatId?: number | string;
 	form: Block<TForm>,
 	events: Record<string,(event: Event) => void>,
 };
@@ -116,15 +126,17 @@ type THomePage = {
 	profileBtn: Block<TButton>,
 	search: Block<TInput>,
 	addChatBtn: Block<TButton>,
-	chatsList?: any,
 	chats?: [],
 	chat?: Block<TChat>,
 	emptyChat?: string,
-	// optionsMenu: Block<TBurgerMenu>,
 	message?: [],
 	addChatModal: Block<TModal>,
 	addUserModal: Block<TModal>,
 	deleteUserModal: Block<TModal>,
+	addPhotoModal: Block<TModal>,
+	addFileModal: Block<TModal>,
+	addLocationModal: Block<TModal>,
+	changeChatAvatarModal: Block<TModal>,
 };
 
 type TProfilePage = {
@@ -178,7 +190,6 @@ type Indexed<T = any> = {
 	[key in string]: T;
 };
 
-
 type TSignUpData = {
 	first_name: string;
 	second_name: string;
@@ -206,8 +217,19 @@ type TUser = {
 
 type TChats = Record<string, TChatItem>
 
+type TState = {
+	user?: TUser,
+	chats?: [],
+	activeChat?: number,
+	activeChatAvatar?: string;
+	activeChatTitle?: string;
+	messages?: string[] | any,
+	token?: string,
+}
+
 
 export {
+	TAvatar,
 	TButton,
 	TMessage,
 	TChat,
@@ -228,4 +250,5 @@ export {
 	TSignInData,
 	TUser,
 	TChats,
+	TState,
 };

@@ -7,6 +7,7 @@ import { formValidation } from '../../utils/validate';
 import AuthController from '../../core/controllers/AuthController';
 import { withStore } from '../../core/store/Store';
 import mapStateToProps from '../../utils/mapStateToProps/mapStateToProps';
+import router from '../../core/router/router';
 import enterTmp from './tmp';
 
 import './enterPage.scss';
@@ -90,14 +91,18 @@ class BaseSignUpPage extends Block<TEnterPage> {
 					settings: { withInternalID: true },
 				}),
 				secondBtn: new Button({
-					tagName: 'a',
-					href: '/login',
+					tagName: 'button',
+					type: 'button',
 					classNames: [
 						'enter__btns__link',
 						'btn_flat',
+						'btn',
 					],
 					text: 'Войти',
 					settings: { withInternalID: true },
+					events: {
+						click: () => router.go('/'),
+					},
 				}),
 				events: {
 					submit: (event) => {

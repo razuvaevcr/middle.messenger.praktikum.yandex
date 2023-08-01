@@ -14,6 +14,8 @@ import DeleteUserModal from '../../components/modals/DeleteUserModal';
 import AddPhotoModal from '../../components/modals/AddPhotoModal';
 import AddFileModal from '../../components/modals/AddFileModal';
 import AddLocationModal from '../../components/modals/AddLocationModal';
+import ChangeChatAvatarModal from '../../components/modals/ChangeChatAvatarModal';
+import router from '../../core/router/router';
 
 import './homePage.scss';
 
@@ -25,14 +27,17 @@ class BaseHomePage extends Block<THomePage> {
 				'home',
 			],
 			profileBtn: new Button({
-				tagName: 'a',
-				href: '/profile',
+				tagName: 'button',
+				type: 'button',
 				classNames: [
 					'profile-btn',
-					'btn_flat',
+					'btn',
 				],
 				text: 'Профиль',
 				settings: { withInternalID: true },
+				events: {
+					click: () => router.go('/settings'),
+				},
 			}),
 			search: new SearchInput({
 				tagName: 'div',
@@ -68,6 +73,7 @@ class BaseHomePage extends Block<THomePage> {
 			addPhotoModal: new AddPhotoModal(),
 			addFileModal: new AddFileModal(),
 			addLocationModal: new AddLocationModal(),
+			changeChatAvatarModal: new ChangeChatAvatarModal(),
 			// emptyChat: { //для заглушки при невыбранном чате
 			// 	className: 'empty-chat',
 			// 	text: 'Выберите чат чтобы отправить сообщение',

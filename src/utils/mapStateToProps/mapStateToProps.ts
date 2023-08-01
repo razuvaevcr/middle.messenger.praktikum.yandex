@@ -1,7 +1,7 @@
-import { TState } from '../../core/store/Store';
+import { TState } from '../../types/types';
 
 function mapStateToProps(state: TState) {
-	return { ...state.user, chats: state.chats, messages: state.messages };
+	return { ...state.user, /* avatar: state.user!.avatar, */ chats: state.chats, messages: state.messages, activeChat: state.activeChat };
 }
 
 export default mapStateToProps;

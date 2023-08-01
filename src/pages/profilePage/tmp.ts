@@ -51,3 +51,5 @@ const profilePageTmp: string = `
 `;
 
 export default profilePageTmp;
+
+// {{{ userAvatar }}}

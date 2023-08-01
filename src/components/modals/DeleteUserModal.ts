@@ -47,7 +47,7 @@ class DeleteUserModal extends Modal {
 					settings: { withInternalID: true },
 				}),
 				events: {
-					submit: (event) => {
+					submit: async (event) => {
 						event.preventDefault();
 
 						const data = {
@@ -55,11 +55,20 @@ class DeleteUserModal extends Modal {
 							chatId: Number(store.getState().activeChat),
 						};
 
-						if (data) {
+						const users = await ChatController.getChatUsers(data.chatId);
+
+						const match = JSON.parse(users!.response).filter((user: Record<string, unknown>) => {
+							console.log(user.id, ...data.users);
+							return user.id == data.users;
+						}).length;
+
+						if (data && match) {
 							ChatController.deleteUserFromChat(data);
 
 							this.hide();
 							console.log(`Пользователь ${Number(formValidation(event.target).deleteUserModalInput)} удален`);
+						} else {
+							console.log(`Пользователь ${Number(formValidation(event.target).deleteUserModalInput)} не является участником чата`);
 						}
 					},
 				},

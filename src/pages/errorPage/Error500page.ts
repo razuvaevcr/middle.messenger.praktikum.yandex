@@ -1,6 +1,7 @@
 import Block from '../../core/eventBus/Block';
 import { TErrorPage } from '../../types/types';
 import Button from '../../components/button/Button';
+import router from '../../core/router/router';
 import errorTmp from './tmp';
 
 import './errorPage.scss';
@@ -23,6 +24,9 @@ class Error500Page extends Block<TErrorPage> {
 				],
 				text: 'Назад к чатам',
 				settings: { withInternalID: true },
+				events: {
+					click: () => router.go('/messenger'),
+				},
 			}),
 		});
 
