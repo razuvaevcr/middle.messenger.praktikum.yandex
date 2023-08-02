@@ -1,20 +1,29 @@
 const formTmp: string = `
 	{{#if title}}
-		<div class="enter__title">{{title}}</div>
-		<ul class="inputs">
-			{{{email}}}
-			{{{login}}}
-			{{{first_name}}}
-			{{{second_name}}}
-			{{{phone}}}
-			{{{password}}}
-			{{{second_password}}}
-		</ul>
+		{{#if login}}
+			<div class="enter__title">{{title}}</div>
+			<ul class="inputs">
+				{{{email}}}
+				{{{login}}}
+				{{{first_name}}}
+				{{{second_name}}}
+				{{{phone}}}
+				{{{password}}}
+				{{{second_password}}}
+			</ul>
 
-		<div class="enter__btns">
-			{{{ mainBtn }}}
-			{{{ secondBtn }}}
-		</div>
+			<div class="enter__btns">
+				{{{ mainBtn }}}
+				{{{ secondBtn }}}
+			</div>
+		{{else}}
+			<div class="modal__title">{{title}}</div>
+			{{{input}}}
+			{{#if fileInput}}
+				{{{fileInput}}}
+			{{/if}}
+			{{{submitBtn}}}
+		{{/if}}
 	{{else}}
 		{{#if saveButton}}
 			<ul class="info">
@@ -24,15 +33,15 @@ const formTmp: string = `
 				{{{ second_name }}}
 				{{{ display_name }}}
 				{{{ phone }}}
-				{{{ old_password }}}
-				{{{ new_password }}}
-				{{{ new_password_again }}}
+				{{{ oldPassword }}}
+				{{{ newPassword }}}
+				{{{ newPasswordAgain }}}
 			</ul>
 			{{{ saveButton }}}
 		{{else}}
-			{{{ sendBtn }}}
+			{{{ optionsBtn }}}
 			{{{ input }}}
-			{{{ addBtn }}}
+			{{{ sendBtn }}}
 		{{/if}}
 		
 	{{/if}}

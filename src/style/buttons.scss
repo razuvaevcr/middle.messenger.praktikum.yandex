@@ -22,4 +22,7 @@
 		background-color: transparent;
 		text-decoration: none;
 	}
+	&_red {
+		background-color: $validate;
+	}
 }

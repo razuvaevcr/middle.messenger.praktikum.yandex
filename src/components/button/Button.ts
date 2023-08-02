@@ -1,4 +1,4 @@
-import Block from '../../utils/eventBus/Block';
+import Block from '../../core/eventBus/Block';
 import { TButton } from '../../types/types';
 import buttonTmp from './tmp';
 

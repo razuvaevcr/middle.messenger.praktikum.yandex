@@ -9,13 +9,12 @@
 		"removeComments": true,
 		"outDir": "dist",
 		"target": "es2018",
-		"declaration": true,
+		"declaration": false,
 		"module": "commonjs",
 		"esModuleInterop": true
 	},
 	"include": [
 		"src/**/*.ts",
-		"src/utils/router/renderDOM.ts"
 	],
 	"exclude": [
 		"node_modules",

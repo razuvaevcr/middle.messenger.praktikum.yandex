@@ -8,39 +8,39 @@ const listItems: Record<string, Record<string, Record<string, string>>> = {
 	links: {
 		enter: {
 			label: 'Вход',
-			value: '/#/login',
+			value: '/login',
 		},
 		registration: {
 			label: 'Регистрация',
-			value: '/#/signin',
+			value: '/signup',
 		},
 		home: {
 			label: 'Домашняя',
-			value: '/#/home',
+			value: '/home',
 		},
 		chat: {
 			label: 'Чат',
-			value: '/#/home/chat',
+			value: '/home/chat',
 		},
 		profile: {
 			label: 'Профиль',
-			value: '/#/profile',
+			value: '/profile',
 		},
 		page404: {
 			label: 'Страница 404',
-			value: '/#/error404',
+			value: '/error404',
 		},
 		page500: {
 			label: 'Страница 500',
-			value: '/#/error500',
+			value: '/error500',
 		},
 		changeProfile: {
 			label: 'Изменить профиль',
-			value: '/#/profile/changedata',
+			value: '/profile/changedata',
 		},
 		changePassword: {
 			label: 'Изменить пароль',
-			value: '/#/profile/changepass',
+			value: '/profile/changepass',
 		},
 	},
 };

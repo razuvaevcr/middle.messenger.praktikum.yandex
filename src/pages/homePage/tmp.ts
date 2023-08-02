@@ -1,17 +1,22 @@
 const homePageTmp: string = `
-	<div class="left">
+	<div class='left'>
 		{{{ profileBtn }}}
 		{{{ search }}}
-		{{{ chatsList }}}
+		{{{ addChatBtn }}}
+		{{{ chats }}}
 	</div>
 
-	{{#if chat}}
-		{{{ chat }}}
-	{{else}}
-		<div class='right'>
-			{{{ emptyChat }}}
-		</div>
-	{{/if}}
+	{{{ chat }}}
+	<div class="{{{ emptyChat.className }}}">{{{ emptyChat.text }}}</div>
+	
+
+	{{{ addChatModal }}}
+	{{{ addUserModal }}}
+	{{{ deleteUserModal }}}
+	{{{ addPhotoModal }}}
+	{{{ addFileModal }}}
+	{{{ addLocationModal }}}
+	{{{ changeChatAvatarModal }}}
 `;
 
 export default homePageTmp;

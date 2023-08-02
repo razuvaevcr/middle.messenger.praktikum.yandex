@@ -40,15 +40,15 @@ const validate = (target: HTMLInputElement): boolean | HTMLParagraphElement => {
 		return matcher(value, phoneRegEx) || createError(phoneErrorMessage);
 	case 'password':
 	case 'second_password':
-	case 'old_password':
-	case 'new_password':
-	case 'new_password_again':
+	case 'oldPassword':
+	case 'newPassword':
+	case 'newPasswordAgain':
 		return matcher(value, passwordRegEx) || createError(passwordErrorMessage);
 	case 'message':
 	case 'display_name':
 		return value.length > 1 || createError(messageErrorMessage);
 	default:
-		return false;
+		return value.length > 1 || createError(messageErrorMessage);
 	}
 };
 

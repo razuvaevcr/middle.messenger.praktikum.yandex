@@ -1,5 +1,5 @@
 const messageTmp: string = `
-	{{text}}
+	{{content}}
 `;
 
 export default messageTmp;

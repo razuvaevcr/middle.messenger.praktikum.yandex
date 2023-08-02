@@ -1,5 +1,4 @@
-import Block from '../../utils/eventBus/Block';
-import { formValidation } from '../../utils/validate';
+import Block from '../../core/eventBus/Block';
 import { TForm } from '../../types/types';
 import formTmp from './tmp';
 
@@ -11,13 +10,6 @@ class Form extends Block<TForm> {
 		this.props.classNames.forEach((className: string) => {
 			this.element.classList.add(className);
 		});
-
-		this.props.events = {
-			submit: (event: Event) => {
-				event.preventDefault();
-				formValidation(event.target);
-			},
-		};
 	}
 
 	render() {

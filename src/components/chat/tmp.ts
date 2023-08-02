@@ -1,21 +1,25 @@
 const chatTmp: string = `
 	<div class="user-bar">
 		<div class="user-bar__user">
-			<div class="user-bar__photo"></div>
-			<div class="user-bar__name">{{name}}</div>
+			<div class="user-bar__photo">
+				<img class="user__avatar__img" src="{{{ chatAvatar }}}" alt="Аватар"></img>
+				{{{ changeChatAvatarBtn }}}
+			</div>
+			<div class="user-bar__name">{{chatName}}</div>
 		</div>
-		<div class="user-bar__menu">
-			<span></span>
-			<span></span>
-			<span></span>
-		</div>
+		{{{ optionsBtn }}}
 	</div>
+
+	{{{ optionsMenu }}}
+	
 	<div class="message-history">
-		{{{ friendMessage }}}
-		{{{ userMessage }}}
+		{{{ messages }}}
 	</div>
-	{{{ form }}}
-					
+	
+	{{{ messageOptionsMenu }}}
+	
+	{{{ form }}}				
 `;
 
 export default chatTmp;
+
