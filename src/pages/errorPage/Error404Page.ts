@@ -16,8 +16,8 @@ class Error404Page extends Block<TErrorPage> {
 			errorNumber: '404',
 			subtitle: 'Не туда попали',
 			button: new Button({
-				tagName: 'a',
-				href: '/home',
+				tagName: 'button',
+				type: 'button',
 				classNames: [
 					'error__link',
 					'btn_flat',

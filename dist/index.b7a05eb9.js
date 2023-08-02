@@ -648,15 +648,18 @@ class Router {
         return this;
     }
     start() {
-        window.onpopstate = (()=>{
+        window.onpopstate = ()=>{
             this._onRoute(window.location.pathname);
-        }).bind(this);
+        };
         this._onRoute(window.location.pathname);
     }
     _onRoute(pathname) {
         const route = this.getRoute(pathname);
-        if (!route) return;
-        if (this._currentRoute && this._currentRoute !== route) this._currentRoute.leave();
+        if (!route) {
+            this.go("/error404");
+            return;
+        }
+        if (this._currentRoute) this._currentRoute.leave();
         this._currentRoute = route;
         route.render();
     }
@@ -688,16 +691,13 @@ class Route {
         this._props = props;
     }
     navigate(pathname) {
-        if (this.match(pathname)) {
+        if (!this.match(pathname)) {
             this.pathname = pathname;
             this.render();
         }
     }
     leave() {
         if (this._block) this._block.getContent()?.remove();
-    // if (this._block) {
-    // 	this._block.hide();
-    // }
     }
     match(pathname) {
         return isEqual(pathname, this.pathname);
@@ -15459,8 +15459,8 @@ class Error404Page extends (0, _blockDefault.default) {
             errorNumber: "404",
             subtitle: "Не туда попали",
             button: new (0, _buttonDefault.default)({
-                tagName: "a",
-                href: "/home",
+                tagName: "button",
+                type: "button",
                 classNames: [
                     "error__link",
                     "btn_flat"
@@ -15515,8 +15515,8 @@ class Error500Page extends (0, _blockDefault.default) {
             errorNumber: "500",
             subtitle: "Мы уже фиксим",
             button: new (0, _buttonDefault.default)({
-                tagName: "a",
-                href: "/home",
+                tagName: "button",
+                type: "button",
                 classNames: [
                     "error__link",
                     "btn_flat"

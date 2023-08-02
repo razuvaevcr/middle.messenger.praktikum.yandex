@@ -16,8 +16,8 @@ class Error500Page extends Block<TErrorPage> {
 			errorNumber: '500',
 			subtitle: 'Мы уже фиксим',
 			button: new Button({
-				tagName: 'a',
-				href: '/home',
+				tagName: 'button',
+				type: 'button',
 				classNames: [
 					'error__link',
 					'btn_flat',
