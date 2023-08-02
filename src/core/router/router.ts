@@ -36,7 +36,7 @@ class Router {
 	public start() {
 		window.onpopstate = (() => {
 			this._onRoute(window.location.pathname);
-		}).bind(this);
+		});
 
 		this._onRoute(window.location.pathname);
 	}
@@ -45,10 +45,11 @@ class Router {
 		const route = this.getRoute(pathname);
 
 		if (!route) {
+			this.go('/error404');
 			return;
 		}
 
-		if (this._currentRoute && this._currentRoute !== route) {
+		if (this._currentRoute) {
 			this._currentRoute.leave();
 		}
 

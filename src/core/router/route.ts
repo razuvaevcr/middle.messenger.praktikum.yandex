@@ -18,7 +18,7 @@ class Route {
 	}
 
 	navigate(pathname: string) {
-		if (this.match(pathname)) {
+		if (!this.match(pathname)) {
 			this.pathname = pathname;
 			this.render();
 		}
@@ -28,9 +28,6 @@ class Route {
 		if (this._block) {
 			this._block.getContent()?.remove();
 		}
-		// if (this._block) {
-		// 	this._block.hide();
-		// }
 	}
 
 	match(pathname: string) {
