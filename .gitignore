@@ -8,8 +8,8 @@
 .parcel-cache
 
 # production
-# /build
-# /dist
+/build
+/dist
 
 # local
 .DS_Store

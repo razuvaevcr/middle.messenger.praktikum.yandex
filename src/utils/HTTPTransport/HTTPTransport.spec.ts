@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import HTTPTransport from './HTTPTransport';
-// import { TSignInData } from '../../types/types';
 
 
 describe('HTTPTransport', () => {
@@ -12,7 +11,7 @@ describe('HTTPTransport', () => {
 	beforeEach(() => {
 		xhr = sinon.useFakeXMLHttpRequest();
 
-		// @ts-ignore
+		// @ts-expect-error: Type 'SinonFakeXMLHttpRequestStatic' is missing
 		global.XMLHttpRequest = xhr;
 
 		xhr.onCreate = ((request: sinon.SinonFakeXMLHttpRequest) => {
