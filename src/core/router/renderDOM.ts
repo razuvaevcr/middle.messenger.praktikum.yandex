@@ -1,4 +1,4 @@
-import Block from '../eventBus/Block';
+import Block from '../block/Block';
 
 
 function renderDOM(query: string, block: Block<Record<string, unknown>>) {

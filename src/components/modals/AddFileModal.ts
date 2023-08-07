@@ -1,8 +1,6 @@
 import Button from '../button/Button';
 import Form from '../form/Form';
 import ModalInput from '../input/ModalInput';
-import ChatController from '../../core/controllers/ChatController';
-import { formValidation } from '../../utils/validate';
 import Modal from './Modal';
 
 import './modals.scss';

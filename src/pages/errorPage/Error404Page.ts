@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { TErrorPage } from '../../types/types';
 import Button from '../../components/button/Button';
 import router from '../../core/router/router';

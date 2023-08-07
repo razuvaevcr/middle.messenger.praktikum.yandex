@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { TForm } from '../../types/types';
 import formTmp from './tmp';
 

@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { inputValidation } from '../../utils/validate';
 import { TInput } from '../../types/types';
 

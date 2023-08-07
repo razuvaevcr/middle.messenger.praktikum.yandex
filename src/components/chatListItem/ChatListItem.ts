@@ -1,5 +1,5 @@
 import ChatController from '../../core/controllers/ChatController';
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import store from '../../core/store/Store';
 import { TChatItem } from '../../types/types';
 import chatItemTmp from './tmp';
