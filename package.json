@@ -4,11 +4,13 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-	  "dev": "vite",
-	  "build": "vite build",
+    "dev": "vite",
+    "build": "vite build",
     "start": "npm run build && node server.js",
     "preview": "vite preview",
-    "lint": "eslint ./src/**/**/*.ts && tsc --noemit",
+    "lint:all": "npm run lint:ts && npm run lint:style",
+    "lint:ts": "eslint ./src/**/**/*.ts && tsc --noemit",
+    "lint:style": "npx stylelint \"**/*.{css,scss}\"",
     "test": "mocha --require ts-node/register --require ./mochaSetup.cjs './src/**/*.spec.ts'",
     "prepare": "husky install"
   },
@@ -31,6 +33,7 @@
     "express": "^4.18.2",
     "husky": "^8.0.0",
     "jsdom": "^22.1.0",
+    "lint-staged": "^13.2.3",
     "mocha": "^10.2.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
@@ -52,10 +55,8 @@
   "dependencies": {
     "uuid": "^9.0.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm-run-all test lint:all",
-      "pre-push": "npm run other command"
-    }
+  "lint-staged": {
+    "src/**/!(*spec).ts": "npm run lint:ts",
+    "*.scss": "npm run lint:style"
   }
 }
