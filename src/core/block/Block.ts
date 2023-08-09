@@ -1,5 +1,5 @@
 import { v4 as makeUUID } from 'uuid';
-import EventBus from './EventBus';
+import EventBus from '../eventBus/EventBus';
 import Compiler from '../../utils/compiler/compiler';
 import isEqual from '../../utils/isEqual/isEqual';
 

@@ -4,11 +4,18 @@
 //design reference https://www.figma.com/file/jF5fFFzgGOxQeB4CmKWTiE/Chat_external_link?node-id=0-1&t=WIOudi7IwyoQqTI0-0
 
 
+//scripts
+npm run dev - запуск проекта в режиме разработки,
+npm run lint - запуск линтеров,
+npm run test - запуск тестов mocha и chai, 
+
+
 //technologies used
 TypeScript 
 SPA
 Handlebars
-Parcel
+Parcel (sprint_1 - sprint_3)
+Vite (sprint_4)
 Node.js
 WebSocket
 XMLHttpRequest
@@ -16,6 +23,9 @@ ESlint, Stylelint
 Store EventBus и Router Proxy
 SCSS
 Express
+Mocha
+Chai
+Husky
 
 
 //source structure
@@ -44,6 +54,8 @@ Express
 	|--- core
 	|		|
 	|		|--- api
+	|		|
+	|		|--- block
 	|		|
 	|		|--- controllers
 	|		|

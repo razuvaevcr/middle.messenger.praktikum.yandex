@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { TChat } from '../../types/types';
 import chatTmp from './tmp';
 import Button from '../button/Button';

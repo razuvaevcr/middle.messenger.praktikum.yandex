@@ -1,5 +1,5 @@
 import burgerTmp from './tmp';
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import Button from '../button/Button';
 import { TBurgerMenu } from '../../types/types';
 

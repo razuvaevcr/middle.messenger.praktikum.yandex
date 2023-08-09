@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { THomePage } from '../../types/types';
 import Button from '../../components/button/Button';
 import SearchInput from '../../components/input/SearchInput';

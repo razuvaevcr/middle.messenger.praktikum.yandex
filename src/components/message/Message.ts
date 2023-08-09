@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { TMessage } from '../../types/types';
 import messageTmp from './tmp';
 

@@ -1,4 +1,4 @@
-import Block from '../../core/eventBus/Block';
+import Block from '../../core/block/Block';
 import { TEnterPage } from '../../types/types';
 import Button from '../../components/button/Button';
 import EnterInput from '../../components/input/EnterInput';

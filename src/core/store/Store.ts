@@ -1,5 +1,5 @@
 import EventBus from '../eventBus/EventBus';
-import Block from '../eventBus/Block';
+import Block from '../block/Block';
 import { TState } from '../../types/types';
 import set from '../../utils/set/set';
 
